@@ -71,105 +71,46 @@
   box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 0 20px 0 rgba(197, 160, 89, 0.08);
 }
 
-/* Optional warm off-white theme. Toggle is available from the fixed theme button. */
-.hurr-app.light-mode {
-  background: #f7f4ec !important;
-  color: #28251f !important;
-  color-scheme: light;
-}
+
+/* Light theme defaults and readable contrast for the storefront. */
+html, body, #root { min-height: 100%; }
+html, body { background: #f7f4ec; color: #28251f; }
+.hurr-app.light-mode { background: #f7f4ec !important; color: #28251f !important; }
 .hurr-app.light-mode [class~="bg-[#080808]"],
 .hurr-app.light-mode [class~="bg-[#0A0A0A]"],
 .hurr-app.light-mode [class~="bg-[#0a0a0a]"],
 .hurr-app.light-mode [class~="bg-[#0e0e0e]"],
 .hurr-app.light-mode [class~="bg-[#111111]"],
 .hurr-app.light-mode [class~="bg-[#111]"],
+.hurr-app.light-mode [class~="bg-[#121212]"],
 .hurr-app.light-mode [class~="bg-[#141414]"],
 .hurr-app.light-mode [class~="bg-[#161616]"],
+.hurr-app.light-mode [class~="bg-[#181818]"],
 .hurr-app.light-mode [class~="bg-[#1A1A1A]"],
 .hurr-app.light-mode [class~="bg-[#1a1a1a]"],
 .hurr-app.light-mode [class~="bg-[#1c1c1c]"],
 .hurr-app.light-mode [class~="bg-[#222]"],
-.hurr-app.light-mode [class~="bg-[#262626]"] {
-  background-color: #fffdf8 !important;
-}
-.hurr-app.light-mode [class~="text-[#EDE8DC]"],
-.hurr-app.light-mode [class~="text-[#FBF9F5]"],
-.hurr-app.light-mode [class~="text-[#E5C378]"],
-.hurr-app.light-mode [class~="text-[#C8C2B3]"],
+.hurr-app.light-mode [class~="bg-[#222222]"],
+.hurr-app.light-mode [class~="bg-[#262626]"],
+.hurr-app.light-mode [class~="bg-[#333]"] { background-color: #fffdf8 !important; }
+.hurr-app.light-mode [class~="text-[#777]"],
+.hurr-app.light-mode [class~="text-[#777777]"],
+.hurr-app.light-mode [class~="text-[#888]"],
+.hurr-app.light-mode [class~="text-[#888888]"],
+.hurr-app.light-mode [class~="text-[#8A8275]"],
+.hurr-app.light-mode [class~="text-[#A69F90]"],
 .hurr-app.light-mode [class~="text-[#B0A99B]"],
-.hurr-app.light-mode [class~="text-[#C5BFB0]"] {
-  color: #39352d !important;
-}
+.hurr-app.light-mode [class~="text-[#C8C2B3]"],
+.hurr-app.light-mode [class~="text-[#EDE8DC]"],
+.hurr-app.light-mode [class~="text-[#FBF9F5]"] { color: #39352d !important; }
 .hurr-app.light-mode [class~="border-[#222]"],
 .hurr-app.light-mode [class~="border-[#262626]"],
 .hurr-app.light-mode [class~="border-[#1c1c1c]"],
-.hurr-app.light-mode [class~="border-[#C5A059]/20"] {
-  border-color: #e4dccb !important;
+.hurr-app.light-mode [class~="border-[#333]"] { border-color: #e4dccb !important; }
+.hurr-app.light-mode header, .hurr-app.light-mode footer {
+  background-color: rgba(247, 244, 236, .97) !important; color: #28251f !important;
 }
-.hurr-app.light-mode .royal-glass {
-  background: rgba(255, 253, 248, .92);
-  border-color: rgba(169, 131, 56, .25);
+.hurr-app.light-mode input, .hurr-app.light-mode textarea, .hurr-app.light-mode select {
+  background-color: #fffdf8 !important; color: #28251f !important; border-color: #d9cfbc !important;
 }
-.hurr-app.light-mode header,
-.hurr-app.light-mode footer {
-  background-color: rgba(247, 244, 236, .96) !important;
-  color: #28251f !important;
-}
-.hurr-app.light-mode input,
-.hurr-app.light-mode textarea,
-.hurr-app.light-mode select {
-  background-color: #fffdf8 !important;
-  color: #28251f !important;
-  border-color: #d9cfbc !important;
-}
-.hurr-app.light-mode .hurr-theme-toggle {
-  background: #fffdf8 !important;
-  color: #6f531d !important;
-  border-color: #d9c79f !important;
-}
-.hurr-app.light-mode ::-webkit-scrollbar-track { background: #f7f4ec; }
-.hurr-app.light-mode ::-webkit-scrollbar-thumb { background: #d8cbb0; border-color: #f7f4ec; }
-
-/* Responsive safeguards for phones, tablets, and narrow desktop windows. */
-*, *::before, *::after { box-sizing: border-box; }
-html { width: 100%; max-width: 100%; overflow-x: clip; -webkit-text-size-adjust: 100%; }
-body, #root, .hurr-app { width: 100%; min-width: 0; max-width: 100%; overflow-x: clip; }
-img, video, canvas, svg { max-width: 100%; }
-button, input, select, textarea { font: inherit; }
-button { touch-action: manipulation; }
-input, select, textarea { min-width: 0; max-width: 100%; }
-
-@media (max-width: 640px) {
-  .hurr-app main { min-width: 0; }
-  header .max-w-7xl { gap: .5rem !important; padding-inline: .75rem !important; }
-  header .flex.items-center.gap-3.sm\:gap-4 { gap: .25rem !important; }
-  header button { min-height: 40px; }
-  header input { font-size: 16px !important; }
-  #catalog-section { padding-inline: .875rem !important; padding-top: 2rem !important; padding-bottom: 2rem !important; gap: 1.25rem !important; }
-  #catalog-section h2 { font-size: clamp(1.25rem, 5vw, 1.7rem) !important; line-height: 1.5 !important; overflow-wrap: anywhere; }
-  #catalog-section > div:first-child { align-items: stretch; }
-  #catalog-section > div:first-child > div:last-child { flex-wrap: wrap; justify-content: space-between; }
-  #catalog-section select { max-width: 100%; flex: 1 1 150px; }
-  #catalog-section .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .75rem !important; }
-  #catalog-section article { min-width: 0; border-radius: .75rem; }
-  #catalog-section article > div:first-child { aspect-ratio: 4 / 3; padding: .5rem; }
-  #catalog-section article > div:last-child { padding: .75rem !important; gap: .6rem !important; }
-  #catalog-section article h3 { font-size: .9rem !important; line-height: 1.55 !important; overflow-wrap: anywhere; }
-  #catalog-section article p { overflow-wrap: anywhere; }
-  #catalog-section article .pt-3.border-t { align-items: flex-start; flex-direction: column; }
-  #catalog-section article .pt-3.border-t button { width: 100%; justify-content: center; }
-  .hurr-theme-toggle { left: .75rem !important; bottom: max(.75rem, env(safe-area-inset-bottom)) !important; padding: .65rem .8rem !important; font-size: .75rem !important; }
-}
-@media (max-width: 380px) {
-  header .flex.items-center.shrink-0 { min-width: 0; }
-  header .flex.items-center.gap-3.sm\:gap-4 > button { padding-inline: .45rem !important; }
-  #catalog-section .grid { grid-template-columns: minmax(0, 1fr) !important; }
-  #catalog-section article > div:first-child { aspect-ratio: 5 / 4; }
-  #catalog-section article > div:last-child { padding: 1rem !important; }
-}
-@media (min-width: 641px) and (max-width: 1023px) {
-  #catalog-section .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
+.hurr-app.light-mode .hurr-theme-toggle { background: #fffdf8 !important; color: #6f531d !important; }

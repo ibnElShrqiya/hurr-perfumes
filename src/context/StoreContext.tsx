@@ -9,6 +9,7 @@ import {
   ShippingStatus,
   PaymentStatus,
 } from '../types';
+import { INITIAL_PRODUCTS, INITIAL_COUPONS } from '../data/perfumes';
 import { EGYPTIAN_GOVERNORATES, FREE_SHIPPING_THRESHOLD } from '../data/governorates';
 import { supabase, fromDbProduct, toDbProduct, fromDbCoupon, fromDbOrder } from '../lib/supabase';
 
@@ -90,10 +91,79 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
+// Sample initial order for demonstration
+const SAMPLE_INITIAL_ORDERS: Order[] = [
+  {
+    id: 'HURR-EG-10842',
+    customerName: 'م. أحمد كمال الشريف',
+    customerPhone: '01012345678',
+    customerEmail: 'ahmed.kamal@example.com',
+    governorate: 'القاهرة',
+    city: 'التجمع الخامس',
+    detailedAddress: 'شارع التسعين الشمالي، كمبوند النرجس، عمارة 14 شقة 3',
+    notes: 'يرجى الاتصال قبل الوصول للتأكد من وجود المستلم',
+    paymentMethod: 'cod',
+    paymentStatus: 'pending',
+    shippingStatus: 'shipped',
+    subtotal: 1850,
+    shippingFee: 0,
+    discountAmount: 0,
+    totalAmount: 1850,
+    items: [
+      {
+        productId: 'hurr-oud-royal',
+        productName: 'عود أصيل معتّق',
+        productImage: '/bottles/oud-royal-1.jpg',
+        quantity: 1,
+        unitPrice: 1850,
+        totalPrice: 1850,
+        selectedSize: '100 مل / Extrait de Parfum',
+      },
+    ],
+    createdAt: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
+    trackingHistory: [
+      {
+        status: 'new',
+        label: 'تم تسجيل الطلب',
+        date: 'أمس 10:00 ص',
+        description: 'تم استلام وتأكيد بيانات الطلب بنجاح',
+        completed: true,
+      },
+      {
+        status: 'processing',
+        label: 'التجهيز والتعطير والتغليف',
+        date: 'أمس 02:30 م',
+        description: 'تم تجهيز العبوة الفاخرة وختمها بشعار دار حُرّ وتضمين العينة المجانية',
+        completed: true,
+      },
+      {
+        status: 'shipped',
+        label: 'خرج مع مندوب التوصيل',
+        date: 'اليوم 09:15 ص',
+        description: 'الشحنة مع مندوب حُرّ في طريقها إليك بالقاهرة',
+        completed: true,
+      },
+      {
+        status: 'delivered',
+        label: 'تم التسليم بنجاح',
+        date: 'المتوقع اليوم خلال ساعتين',
+        description: 'سيتم فحص العطر مع المندوب قبل السداد',
+        completed: false,
+      },
+    ],
+  },
+];
+
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Inventory comes only from Supabase; never show stale local/demo products.
-  const [products, setProducts] = useState<Product[]>([]);
-  useEffect(() => { localStorage.removeItem('hurr_products'); }, []);
+  // Initialize products from localStorage or default
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('hurr_products');
+      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    } catch {
+      return INITIAL_PRODUCTS;
+    }
+  });
 
   // Save products on change
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
@@ -121,6 +191,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           supabase!.from('coupons').select('*').order('created_at', { ascending: false }),
           supabase!.from('orders').select('*,order_items(*)').order('created_at', { ascending: false }),
         ]);
+        if (products?.length === 0) {
+          const { error } = await supabase!.from('products').insert(INITIAL_PRODUCTS.map(toDbProduct));
+          if (!error) ({ data: products } = await supabase!.from('products').select('*').order('created_at', { ascending: false }));
+        }
+        if (coupons?.length === 0) {
+          const { error } = await supabase!.from('coupons').insert(INITIAL_COUPONS.map((c) => ({ code: c.code, discount_type: c.discountType, value: c.value, min_order_amount: c.minOrderAmount, is_active: c.isActive, usage_count: 0, description: c.description })));
+          if (!error) ({ data: coupons } = await supabase!.from('coupons').select('*').order('created_at', { ascending: false }));
+        }
         if (alive) { if (products) setProducts(products.map(fromDbProduct)); if (coupons) setCoupons(coupons.map(fromDbCoupon)); if (orders) setOrders(orders.map(fromDbOrder)); }
       }
     };
@@ -176,8 +254,16 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => { if (!supabase) localStorage.setItem('hurr_orders', JSON.stringify(orders)); }, [orders]);
 
   // Coupons state
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
-  useEffect(() => { localStorage.removeItem('hurr_coupons'); }, []);
+  const [coupons, setCoupons] = useState<Coupon[]>(() => {
+    try {
+      const saved = localStorage.getItem('hurr_coupons');
+      return saved ? JSON.parse(saved) : INITIAL_COUPONS;
+    } catch {
+      return INITIAL_COUPONS;
+    }
+  });
+
+  useEffect(() => { if (!supabase) localStorage.setItem('hurr_coupons', JSON.stringify(coupons)); }, [coupons]);
 
   // Governorate
   const [selectedGovernorate, setSelectedGovernorate] = useState<GovernorateShipping>(

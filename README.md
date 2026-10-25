@@ -74,3 +74,16 @@ npm run build
 ## التواصل والهوية
 
 تظل الواجهة العربية RTL، وألوان الأسود المطفي والذهب والعاج، وشعار ومواد دار حُرّ كما في ملفات المشروع.
+ 
+
+## النشر على Cloudflare Pages
+
+- Production branch: `main`
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Root directory: اتركه فارغاً إذا كان `package.json` في جذر المستودع.
+- استخدم `package-lock.json` مع npm، ولا تترك `bun.lock` في المستودع إلا إذا كنت ستحدّثه مع كل تغيير في `package.json`.
+- أضف متغيري `VITE_SUPABASE_URL` و`VITE_SUPABASE_ANON_KEY` في إعدادات المشروع على Cloudflare Pages. المفتاح يجب أن يكون المفتاح العام/anon فقط، وليس `service_role`.
+- لا ترفع ملف `.env.local` أو أي مفاتيح سرية إلى GitHub.
+
+بعد النشر، راجع سجل البناء وتأكد أن Vite أنشأ مجلد `dist`.
