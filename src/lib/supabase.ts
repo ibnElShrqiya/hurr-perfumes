@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
-export const supabase = url && key ? createClient(url, key) : null;
+const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim();
+// Support both the legacy Supabase anon key variable and the newer publishable-key name.
+const key = (
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ||
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined)
+)?.trim();
+export const supabase = url && key && url.startsWith('https://') ? createClient(url, key) : null;
 export const hasSupabaseConfig = Boolean(supabase);
 
 export function fromDbProduct(row: any) {

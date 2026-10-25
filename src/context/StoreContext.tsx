@@ -165,6 +165,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   });
 
+  // Admin role lookup supports the deployed schema's admin_roles table and the optional profiles table.
+  const getAdminRole = async (userId: string): Promise<string | null> => {
+    if (!supabase) return null;
+    const { data: adminRole, error: adminRoleError } = await supabase
+      .from('admin_roles').select('role').eq('user_id', userId).maybeSingle();
+    if (!adminRoleError && adminRole?.role) return adminRole.role;
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles').select('role').eq('user_id', userId).maybeSingle();
+    if (!profileError && profile?.role) return profile.role;
+    return null;
+  };
+
   // Save products on change
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   useEffect(() => {
@@ -183,9 +195,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
     const checkAdmin = async (session: any) => {
       if (!session) { setIsAdminLoggedIn(false); return; }
-      const { data } = await supabase!.from('profiles').select('role').eq('user_id', session.user.id).maybeSingle();
-      if (alive) setIsAdminLoggedIn(data?.role === 'admin');
-      if (data?.role === 'admin') {
+      const role = await getAdminRole(session.user.id);
+      if (alive) setIsAdminLoggedIn(role === 'admin');
+      if (role === 'admin') {
         let [{ data: products }, { data: coupons }, { data: orders }] = await Promise.all([
           supabase!.from('products').select('*').order('created_at', { ascending: false }),
           supabase!.from('coupons').select('*').order('created_at', { ascending: false }),
@@ -302,8 +314,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { showToast('تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور وصلاحية المدير.', 'error'); return false; }
     const { data } = await supabase.auth.getUser();
-    const { data: profile } = await supabase.from('profiles').select('role').eq('user_id', data.user?.id).maybeSingle();
-    if (profile?.role !== 'admin') { await supabase.auth.signOut(); showToast('هذا الحساب غير مخوّل لإدارة المتجر', 'error'); return false; }
+    const role = data.user?.id ? await getAdminRole(data.user.id) : null;
+    if (role !== 'admin') { await supabase.auth.signOut(); showToast('تم تسجيل الدخول لكن الحساب غير مخوّل للإدارة. تحقق من جدول admin_roles وصلاحيات القراءة.', 'error'); return false; }
     setIsAdminLoggedIn(true); showToast('تم تسجيل الدخول إلى لوحة حُرّ', 'success'); return true;
   };
 
