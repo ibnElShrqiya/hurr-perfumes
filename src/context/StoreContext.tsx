@@ -490,22 +490,27 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Admin Product Mutations
   const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>) => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return; }
-    const newId = `hurr-${Date.now()}`;
-    const newProduct: Product = {
+    const draftProduct: Product = {
       ...productData,
-      id: newId,
+      id: '', // Supabase generates the UUID primary key.
       createdAt: new Date().toISOString(),
     };
-    if (supabase) { const { error } = await supabase.from('products').insert(toDbProduct(newProduct)); if (error) { showToast(error.message, 'error'); return; } }
-    setProducts((prev) => [newProduct, ...prev]);
-    showToast(`تمت إضافة العطر الفاخر "${newProduct.nameAr}" بنجاح`, 'success');
+    const { data: savedRow, error } = await supabase.from('products')
+      .insert(toDbProduct(draftProduct)).select('*').single();
+    if (error || !savedRow) { showToast(error?.message || 'تعذر حفظ المنتج في قاعدة البيانات.', 'error'); return; }
+    const savedProduct = fromDbProduct(savedRow);
+    setProducts((prev) => [savedProduct, ...prev]);
+    showToast(`تمت إضافة العطر "${savedProduct.nameAr}" بنجاح`, 'success');
   };
 
   const updateProduct = async (updated: Product) => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لتعديل المنتج.', 'error'); return; }
-    if (supabase) { const { error } = await supabase.from('products').update(toDbProduct(updated)).eq('id', updated.id); if (error) { showToast(error.message, 'error'); return; } }
-    setProducts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    showToast(`تم تحديث بيانات العطر "${updated.nameAr}"`, 'success');
+    const { data: savedRow, error } = await supabase.from('products')
+      .update(toDbProduct(updated)).eq('id', updated.id).select('*').single();
+    if (error || !savedRow) { showToast(error?.message || 'تعذر تحديث المنتج في قاعدة البيانات.', 'error'); return; }
+    const savedProduct = fromDbProduct(savedRow);
+    setProducts((prev) => prev.map((p) => (p.id === updated.id ? savedProduct : p)));
+    showToast(`تم تحديث بيانات العطر "${savedProduct.nameAr}"`, 'success');
   };
 
   const deleteProduct = async (productId: string) => {

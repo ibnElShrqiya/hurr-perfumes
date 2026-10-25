@@ -9,31 +9,61 @@ const key = (
 export const supabase = url && key && url.startsWith('https://') ? createClient(url, key) : null;
 export const hasSupabaseConfig = Boolean(supabase);
 
+/**
+ * Maps the real production products schema to the richer UI model.
+ * Current public.products columns: id, name, slug, description, price,
+ * image_url, stock, is_active, created_at, updated_at.
+ * Keep unsupported presentation-only fields in the UI defaults; never send
+ * columns that do not exist in Supabase.
+ */
 export function fromDbProduct(row: any) {
+  const image = typeof row.image_url === 'string' && row.image_url.trim() ? row.image_url : '';
+  const active = row.is_active !== false;
   return {
-    id: row.id, name: row.name, nameAr: row.name_ar, slug: row.slug, tagline: row.tagline,
-    description: row.description, story: row.story, category: row.category, price: Number(row.price),
-    originalPrice: row.original_price == null ? undefined : Number(row.original_price),
-    discountPercentage: Number(row.discount_percentage) || undefined, stock: row.stock, images: row.images || [],
-    bottleStyle: row.bottle_style ?? 'obsidian', rating: Number(row.rating), reviewsCount: row.reviews_count,
-    isBestseller: row.is_bestseller, isNew: row.is_new, isFeatured: row.is_featured,
-    volume: row.volume, concentration: row.concentration, longevity: row.longevity, sillage: row.sillage,
-    notes: row.notes && typeof row.notes === 'object' ? { top: Array.isArray(row.notes.top) ? row.notes.top : [], heart: Array.isArray(row.notes.heart) ? row.notes.heart : [], base: Array.isArray(row.notes.base) ? row.notes.base : [] } : { top: [], heart: [], base: [] }, scentFamily: row.scent_family,
-    scentFamilyAr: row.scent_family_ar, occasion: row.occasion, season: row.season,
-    status: row.status, createdAt: row.created_at,
+    id: String(row.id),
+    name: row.name ?? '',
+    nameAr: row.name ?? '',
+    slug: row.slug ?? '',
+    tagline: '',
+    description: row.description ?? '',
+    story: '',
+    category: 'unisex' as const,
+    price: Number(row.price ?? 0),
+    originalPrice: undefined,
+    discountPercentage: undefined,
+    stock: Number(row.stock ?? 0),
+    images: image ? [image] : [],
+    bottleStyle: 'obsidian' as const,
+    rating: 0,
+    reviewsCount: 0,
+    isBestseller: false,
+    isNew: false,
+    isFeatured: false,
+    volume: '',
+    concentration: 'Eau de Parfum' as const,
+    longevity: '',
+    sillage: '',
+    notes: { top: [], heart: [], base: [] },
+    scentFamily: 'oud' as const,
+    scentFamilyAr: '',
+    occasion: '',
+    season: '',
+    status: active ? (Number(row.stock ?? 0) > 0 ? 'active' : 'out_of_stock') : 'draft',
+    createdAt: row.created_at ?? new Date().toISOString(),
   };
 }
 
+/** Only persist columns that actually exist in public.products. */
 export function toDbProduct(p: any) {
+  const image = Array.isArray(p.images) ? p.images.find((item: unknown) => typeof item === 'string' && item.trim()) : null;
   return {
-    id: p.id, name: p.name, name_ar: p.nameAr, slug: p.slug, tagline: p.tagline,
-    description: p.description, story: p.story, category: p.category, price: p.price,
-    original_price: p.originalPrice ?? null, discount_percentage: p.discountPercentage ?? 0,
-    stock: p.stock, images: p.images, rating: p.rating,
-    reviews_count: p.reviewsCount, is_bestseller: p.isBestseller ?? false, is_new: p.isNew ?? false,
-    is_featured: p.isFeatured ?? false, volume: p.volume, concentration: p.concentration,
-    longevity: p.longevity, sillage: p.sillage, notes: p.notes, scent_family: p.scentFamily,
-    scent_family_ar: p.scentFamilyAr, occasion: p.occasion, season: p.season, status: p.status,
+    name: String(p.nameAr || p.name || '').trim(),
+    slug: String(p.slug || '').trim() || null,
+    description: String(p.description || ''),
+    price: Number(p.price),
+    image_url: image || null,
+    stock: Math.max(0, Math.trunc(Number(p.stock) || 0)),
+    is_active: p.status !== 'draft' && p.status !== 'out_of_stock',
   };
 }
 
