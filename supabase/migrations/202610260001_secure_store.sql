@@ -64,6 +64,10 @@ grant select on public.products to anon,authenticated;
 grant select on public.coupons to anon,authenticated;
 grant select,insert,update,delete on public.products,public.coupons,public.orders,public.order_items to authenticated;
 grant select on public.profiles to authenticated;
+-- Admin UI reads the signed-in user's role from this table. RLS alone is not enough:
+-- the authenticated role also needs table-level SELECT permission.
+grant select on public.admin_roles to authenticated;
+
 create policy products_public_active on public.products for select to anon,authenticated using (status='active');
 create policy products_admin_all on public.products for all to authenticated using (public.is_store_admin()) with check (public.is_store_admin());
 create policy profiles_self_read on public.profiles for select to authenticated using (user_id=auth.uid());
@@ -135,3 +139,17 @@ begin
 end $$;
 drop trigger if exists orders_tracking_history on public.orders;
 create trigger orders_tracking_history before insert or update of shipping_status on public.orders for each row execute function public.refresh_order_tracking();
+
+
+-- Let each signed-in user read only their own admin role.
+do $$ begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'public' and tablename = 'admin_roles'
+      and policyname = 'Users can read own admin role'
+  ) then
+    create policy "Users can read own admin role"
+      on public.admin_roles for select to authenticated
+      using (user_id = (select auth.uid()));
+  end if;
+end $$;

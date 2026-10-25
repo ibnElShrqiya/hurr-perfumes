@@ -84,6 +84,15 @@ npm run build
 - Root directory: اتركه فارغاً إذا كان `package.json` في جذر المستودع.
 - استخدم `package-lock.json` مع npm، ولا تترك `bun.lock` في المستودع إلا إذا كنت ستحدّثه مع كل تغيير في `package.json`.
 - أضف متغيري `VITE_SUPABASE_URL` و`VITE_SUPABASE_ANON_KEY` في إعدادات المشروع على Cloudflare Pages. المفتاح يجب أن يكون المفتاح العام/anon فقط، وليس `service_role`.
+- في Cloudflare Pages، أضف المتغيرات ضمن **Settings → Variables and Secrets** لبيئة **Production** (ولـ Preview إذا كنت تختبر رابط المعاينة)، ثم نفّذ **Create deployment / Retry deployment** لأن Vite يضمّن قيم `VITE_*` وقت البناء ولا يقرأها مباشرة بعد تحميل الصفحة.
+- يقبل التطبيق الآن `VITE_SUPABASE_ANON_KEY` أو `VITE_SUPABASE_PUBLISHABLE_KEY`. استخدم اسمًا واحدًا فقط مع قيمة المفتاح العام.
+- التحقق من صلاحية المدير يجرب `public.admin_roles` أولًا ثم `public.profiles`، حتى يتوافق مع القاعدة التي تستخدم جدول `admin_roles`.
 - لا ترفع ملف `.env.local` أو أي مفاتيح سرية إلى GitHub.
 
 بعد النشر، راجع سجل البناء وتأكد أن Vite أنشأ مجلد `dist`.
+
+## إصلاح صلاحية دخول مدير Supabase
+
+إذا نجح تسجيل الدخول لكن ظهرت رسالة أن الحساب غير مخوّل، شغّل الملف `supabase/fix-admin-role-permissions.sql` مرة واحدة من Supabase SQL Editor. يمنح هذا الملف دور `authenticated` صلاحية قراءة جدول `admin_roles` مع سياسة RLS تقصر القراءة على سجل المستخدم الحالي فقط. لا يمنح صلاحية تعديل الأدوار.
+
+بعد ذلك أعد نشر Cloudflare Pages ثم سجّل الخروج والدخول مجددًا. إذا استمرت المشكلة، افتح Developer Tools في المتصفح ثم Console وابحث عن رسائل تبدأ بـ `[HUR admin]`؛ ستوضح إن كان الاستعلام مرفوضًا أو أن جدول الصلاحيات غير متاح.

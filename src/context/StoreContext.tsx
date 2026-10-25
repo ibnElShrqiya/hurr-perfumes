@@ -171,9 +171,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const { data: adminRole, error: adminRoleError } = await supabase
       .from('admin_roles').select('role').eq('user_id', userId).maybeSingle();
     if (!adminRoleError && adminRole?.role) return adminRole.role;
+    if (adminRoleError) console.error('[HUR admin] Could not read public.admin_roles:', adminRoleError.message, adminRoleError.code);
     const { data: profile, error: profileError } = await supabase
       .from('profiles').select('role').eq('user_id', userId).maybeSingle();
     if (!profileError && profile?.role) return profile.role;
+    if (profileError) console.warn('[HUR admin] Optional public.profiles lookup failed:', profileError.message, profileError.code);
     return null;
   };
 
