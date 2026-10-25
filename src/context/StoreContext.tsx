@@ -9,7 +9,6 @@ import {
   ShippingStatus,
   PaymentStatus,
 } from '../types';
-import { INITIAL_PRODUCTS, INITIAL_COUPONS } from '../data/perfumes';
 import { EGYPTIAN_GOVERNORATES, FREE_SHIPPING_THRESHOLD } from '../data/governorates';
 import { supabase, fromDbProduct, toDbProduct, fromDbCoupon, fromDbOrder } from '../lib/supabase';
 
@@ -91,79 +90,9 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
-// Sample initial order for demonstration
-const SAMPLE_INITIAL_ORDERS: Order[] = [
-  {
-    id: 'HURR-EG-10842',
-    customerName: 'م. أحمد كمال الشريف',
-    customerPhone: '01012345678',
-    customerEmail: 'ahmed.kamal@example.com',
-    governorate: 'القاهرة',
-    city: 'التجمع الخامس',
-    detailedAddress: 'شارع التسعين الشمالي، كمبوند النرجس، عمارة 14 شقة 3',
-    notes: 'يرجى الاتصال قبل الوصول للتأكد من وجود المستلم',
-    paymentMethod: 'cod',
-    paymentStatus: 'pending',
-    shippingStatus: 'shipped',
-    subtotal: 1850,
-    shippingFee: 0,
-    discountAmount: 0,
-    totalAmount: 1850,
-    items: [
-      {
-        productId: 'hurr-oud-royal',
-        productName: 'عود أصيل معتّق',
-        productImage: '/bottles/oud-royal-1.jpg',
-        quantity: 1,
-        unitPrice: 1850,
-        totalPrice: 1850,
-        selectedSize: '100 مل / Extrait de Parfum',
-      },
-    ],
-    createdAt: new Date(Date.now() - 36 * 3600 * 1000).toISOString(),
-    trackingHistory: [
-      {
-        status: 'new',
-        label: 'تم تسجيل الطلب',
-        date: 'أمس 10:00 ص',
-        description: 'تم استلام وتأكيد بيانات الطلب بنجاح',
-        completed: true,
-      },
-      {
-        status: 'processing',
-        label: 'التجهيز والتعطير والتغليف',
-        date: 'أمس 02:30 م',
-        description: 'تم تجهيز العبوة الفاخرة وختمها بشعار دار حُرّ وتضمين العينة المجانية',
-        completed: true,
-      },
-      {
-        status: 'shipped',
-        label: 'خرج مع مندوب التوصيل',
-        date: 'اليوم 09:15 ص',
-        description: 'الشحنة مع مندوب حُرّ في طريقها إليك بالقاهرة',
-        completed: true,
-      },
-      {
-        status: 'delivered',
-        label: 'تم التسليم بنجاح',
-        date: 'المتوقع اليوم خلال ساعتين',
-        description: 'سيتم فحص العطر مع المندوب قبل السداد',
-        completed: false,
-      },
-    ],
-  },
-];
-
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize products from localStorage or default
-  const [products, setProducts] = useState<Product[]>(() => {
-    try {
-      const saved = localStorage.getItem('hurr_products');
-      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
-    } catch {
-      return INITIAL_PRODUCTS;
-    }
-  });
+  // Production catalog is sourced from Supabase only. Never display seeded/demo products.
+  const [products, setProducts] = useState<Product[]>([]);
 
   // Admin role lookup supports the deployed schema's admin_roles table and the optional profiles table.
   const getAdminRole = async (userId: string): Promise<string | null> => {
@@ -205,14 +134,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           supabase!.from('coupons').select('*').order('created_at', { ascending: false }),
           supabase!.from('orders').select('*,order_items(*)').order('created_at', { ascending: false }),
         ]);
-        if (products?.length === 0) {
-          const { error } = await supabase!.from('products').insert(INITIAL_PRODUCTS.map(toDbProduct));
-          if (!error) ({ data: products } = await supabase!.from('products').select('*').order('created_at', { ascending: false }));
-        }
-        if (coupons?.length === 0) {
-          const { error } = await supabase!.from('coupons').insert(INITIAL_COUPONS.map((c) => ({ code: c.code, discount_type: c.discountType, value: c.value, min_order_amount: c.minOrderAmount, is_active: c.isActive, usage_count: 0, description: c.description })));
-          if (!error) ({ data: coupons } = await supabase!.from('coupons').select('*').order('created_at', { ascending: false }));
-        }
+        // Empty database stays empty until the store owner adds real products/coupons.
         if (alive) { if (products) setProducts(products.map(fromDbProduct)); if (coupons) setCoupons(coupons.map(fromDbCoupon)); if (orders) setOrders(orders.map(fromDbOrder)); }
       }
     };
@@ -229,7 +151,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Cart state
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem('hurr_cart');
+      const saved = localStorage.getItem('hurr_cart_v2');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -237,13 +159,13 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   useEffect(() => {
-    localStorage.setItem('hurr_cart', JSON.stringify(cart));
+    localStorage.setItem('hurr_cart_v2', JSON.stringify(cart));
   }, [cart]);
 
   // Wishlist state
   const [wishlist, setWishlist] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem('hurr_wishlist');
+      const saved = localStorage.getItem('hurr_wishlist_v2');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -251,33 +173,15 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   });
 
   useEffect(() => {
-    localStorage.setItem('hurr_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('hurr_wishlist_v2', JSON.stringify(wishlist));
   }, [wishlist]);
 
   // Orders state
-  const [orders, setOrders] = useState<Order[]>(() => {
-    if (supabase) return [];
-    try {
-      const saved = localStorage.getItem('hurr_orders');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => { if (!supabase) localStorage.setItem('hurr_orders', JSON.stringify(orders)); }, [orders]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   // Coupons state
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    try {
-      const saved = localStorage.getItem('hurr_coupons');
-      return saved ? JSON.parse(saved) : INITIAL_COUPONS;
-    } catch {
-      return INITIAL_COUPONS;
-    }
-  });
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
 
-  useEffect(() => { if (!supabase) localStorage.setItem('hurr_coupons', JSON.stringify(coupons)); }, [coupons]);
 
   // Governorate
   const [selectedGovernorate, setSelectedGovernorate] = useState<GovernorateShipping>(
@@ -577,7 +481,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const { data, error } = await supabase.functions.invoke('track-order', { body: { id: id.trim().toUpperCase(), trackingToken: token } });
     if (error || !data?.id) return null;
     return { id: data.id, customerName: '', customerPhone: '', governorate: '', city: '', detailedAddress: '',
-      paymentMethod: 'cod', paymentStatus: data.paymentStatus, shippingStatus: data.shippingStatus,
+      paymentStatus: data.paymentStatus, shippingStatus: data.shippingStatus,
       subtotal: Number(data.subtotal || 0), shippingFee: Number(data.shippingFee || 0), discountAmount: Number(data.discountAmount || 0), totalAmount: Number(data.totalAmount || 0),
       paymentMethod: data.paymentMethod || 'cod', items: (data.items || []).map((i: any) => ({ productId: '', productName: i.productName, productImage: '', quantity: i.quantity, unitPrice: Number(i.unitPrice || 0), totalPrice: Number(i.totalPrice || 0), selectedSize: i.selectedSize })),
       createdAt: data.createdAt, trackingHistory: data.trackingHistory || [] };
@@ -585,6 +489,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Admin Product Mutations
   const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return; }
     const newId = `hurr-${Date.now()}`;
     const newProduct: Product = {
       ...productData,
@@ -597,12 +502,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const updateProduct = async (updated: Product) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لتعديل المنتج.', 'error'); return; }
     if (supabase) { const { error } = await supabase.from('products').update(toDbProduct(updated)).eq('id', updated.id); if (error) { showToast(error.message, 'error'); return; } }
     setProducts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     showToast(`تم تحديث بيانات العطر "${updated.nameAr}"`, 'success');
   };
 
   const deleteProduct = async (productId: string) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحذف المنتج.', 'error'); return; }
     if (supabase) { const { error } = await supabase.from('products').delete().eq('id', productId); if (error) { showToast(error.message, 'error'); return; } }
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     showToast('تم حذف المنتج من المتجر', 'info');
@@ -610,12 +517,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Admin Coupon Mutations
   const addCoupon = async (coupon: Coupon) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لإضافة كوبون.', 'error'); return; }
     if (supabase) { const { error } = await supabase.from('coupons').insert({ code: coupon.code, discount_type: coupon.discountType, value: coupon.value, min_order_amount: coupon.minOrderAmount, is_active: coupon.isActive, usage_count: coupon.usageCount, description: coupon.description }); if (error) { showToast(error.message, 'error'); return; } }
     setCoupons((prev) => [coupon, ...prev]);
     showToast(`تمت إضافة كود الخصم "${coupon.code}"`, 'success');
   };
 
   const toggleCouponStatus = async (code: string) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لتعديل الكوبون.', 'error'); return; }
     const current = coupons.find((c) => c.code === code); if (!current) return;
     if (supabase) { const { error } = await supabase.from('coupons').update({ is_active: !current.isActive }).eq('code', code); if (error) { showToast(error.message, 'error'); return; } }
     setCoupons((prev) =>
@@ -624,6 +533,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const deleteCoupon = async (code: string) => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحذف الكوبون.', 'error'); return; }
     if (supabase) { const { error } = await supabase.from('coupons').delete().eq('code', code); if (error) { showToast(error.message, 'error'); return; } }
     setCoupons((prev) => prev.filter((c) => c.code !== code));
     showToast('تم حذف كود الخصم', 'info');

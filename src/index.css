@@ -191,3 +191,16 @@ body { overflow-x: hidden; }
   .hurr-app section h1, .hurr-app section h2, .hurr-app section p { overflow-wrap: anywhere; }
   .hurr-app .mobile-category-strip { overscroll-behavior-inline: contain; }
 }
+
+
+/* Launch-ready responsive admin workspace */
+.admin-shell { min-height: 100dvh; overflow-x: clip; background: #080808 !important; color: #EDE8DC !important; }
+.admin-dashboard { min-width: 0; }
+.admin-dashboard input, .admin-dashboard select, .admin-dashboard textarea { max-width: 100%; min-width: 0; }
+.admin-dashboard table { width: 100%; }
+@media (max-width: 640px) {
+  .admin-dashboard { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  .admin-dashboard h1 { font-size: 1.15rem; line-height: 1.7; }
+  .admin-dashboard .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+  .admin-dashboard button { touch-action: manipulation; }
+}

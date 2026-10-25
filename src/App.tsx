@@ -57,12 +57,6 @@ function MainApp() {
     setCurrentView('admin');
   };
 
-  const returnToStore = () => {
-    if (window.location.pathname.replace(/\/$/, '') === '/admin') {
-      window.history.pushState({}, '', '/');
-    }
-    setCurrentView('store');
-  };
 
   const handleOrderCompleted = (order: Order) => {
     setActiveTrackingOrder(order);
@@ -75,18 +69,18 @@ function MainApp() {
   };
 
   return (
-    <div className={`hurr-app min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-[#0A0A0A] ${isLightMode ? 'light-mode' : 'bg-[#080808] text-[#EDE8DC]'}`}>
-      {/* Top Header */}
-      <Header
-        onOpenTracking={() => setCurrentView('tracking')}
-        onOpenAdmin={openAdmin}
-        onOpenBrandStory={() => {
-          setCurrentView('brand_story');
-        }}
-        onOpenFaq={() => handleOpenFaqWithTab('faq')}
-        isLightMode={isLightMode}
-        onToggleTheme={() => setIsLightMode((value) => !value)}
-      />
+    <div className={`hurr-app min-h-screen flex flex-col selection:bg-[#C5A059] selection:text-[#0A0A0A] ${currentView === 'admin' ? 'admin-shell bg-[#080808] text-[#EDE8DC]' : isLightMode ? 'light-mode justify-between' : 'bg-[#080808] text-[#EDE8DC] justify-between'}`}>
+      {/* The admin is a standalone workspace: no storefront/customer navigation. */}
+      {currentView !== 'admin' && (
+        <Header
+          onOpenTracking={() => setCurrentView('tracking')}
+          onOpenAdmin={openAdmin}
+          onOpenBrandStory={() => setCurrentView('brand_story')}
+          onOpenFaq={() => handleOpenFaqWithTab('faq')}
+          isLightMode={isLightMode}
+          onToggleTheme={() => setIsLightMode((value) => !value)}
+        />
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1">
@@ -122,20 +116,18 @@ function MainApp() {
         )}
 
         {currentView === 'admin' && (
-          <AdminDashboard onBackToStore={returnToStore} />
+          <AdminDashboard />
         )}
       </main>
 
-      {/* Footer */}
-      <Footer
+      {currentView !== 'admin' && <Footer
         onOpenBrandStory={() => setCurrentView('brand_story')}
         onOpenFaq={() => handleOpenFaqWithTab('faq')}
         onOpenTracking={() => setCurrentView('tracking')}
-      />
+      />}
 
-      {/* Modals & Drawers */}
-      {/* 1. Product Detail Modal */}
-      {quickViewProduct && (
+      {/* Storefront overlays must never appear inside the admin workspace. */}
+      {currentView !== 'admin' && quickViewProduct && (
         <ProductDetailModal
           product={quickViewProduct}
           onClose={() => setQuickViewProduct(null)}
@@ -147,35 +139,33 @@ function MainApp() {
       )}
 
       {/* 2. Slide-over Shopping Cart Drawer */}
-      <CartDrawer
-        onProceedToCheckout={() => {
-          setCurrentView('checkout');
-        }}
-      />
-
-      {/* 3. Interactive Scent Quiz Assistant */}
-      <ScentQuizModal />
-
-      {/* 4. FAQs & Egyptian Return Policy Modal */}
-      <FaqPolicyModal
-        isOpen={isFaqOpen}
-        onClose={() => setIsFaqOpen(false)}
-        defaultTab={faqTab}
-      />
-
-      {/* 5. Floating Luxury Egypt WhatsApp Concierge */}
-      <FloatingWhatsApp />
-
-      {/* 6. Notifications Toast Container */}
+      {currentView !== 'admin' && <CartDrawer onProceedToCheckout={() => setCurrentView('checkout')} />}
+      {currentView !== 'admin' && <ScentQuizModal />}
+      {currentView !== 'admin' && <FaqPolicyModal isOpen={isFaqOpen} onClose={() => setIsFaqOpen(false)} defaultTab={faqTab} />}
+      {currentView !== 'admin' && <FloatingWhatsApp />}
       <ToastContainer />
     </div>
   );
 }
 
+class AppErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: Error) { console.error('[HUR runtime] Application render failed:', error); }
+  render() {
+    if (this.state.hasError) return (
+      <main dir="rtl" className="min-h-screen flex items-center justify-center bg-[#f7f4ec] text-[#28251f] p-6">
+        <section className="max-w-lg w-full text-center rounded-2xl border border-[#d6b66a] bg-white p-8 shadow-xl">
+          <h1 className="text-2xl font-bold mb-3">تعذر تحميل الصفحة</h1>
+          <p className="text-sm leading-7 mb-5">حدث خطأ أثناء تشغيل الموقع. حدّث الصفحة، وإذا استمرت المشكلة تواصل مع إدارة الموقع.</p>
+          <button className="rounded-lg bg-[#c5a059] px-5 py-3 font-bold" onClick={() => window.location.reload()}>إعادة تحميل الصفحة</button>
+        </section>
+      </main>
+    );
+    return this.props.children;
+  }
+}
+
 export default function App() {
-  return (
-    <StoreProvider>
-      <MainApp />
-    </StoreProvider>
-  );
+  return <AppErrorBoundary><StoreProvider><MainApp /></StoreProvider></AppErrorBoundary>;
 }

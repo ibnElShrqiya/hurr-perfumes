@@ -36,7 +36,8 @@ export const CatalogSection: React.FC = () => {
   ];
 
   // Filter & Sort Logic
-  const filteredProducts = products.filter((product) => {
+  const visibleProducts = products.filter((product) => product.status !== 'draft');
+  const filteredProducts = visibleProducts.filter((product) => {
     // Category match
     const matchCategory =
       activeCategory === 'all' || product.category === activeCategory;
@@ -85,7 +86,7 @@ export const CatalogSection: React.FC = () => {
         {/* Product Count & Sort */}
         <div className="flex items-center gap-3">
           <span className="text-xs text-[#8A8275]">
-            عرض {sortedProducts.length} من {products.length} عطور
+            عرض {sortedProducts.length} من {visibleProducts.length} عطور
           </span>
 
           <select
@@ -171,21 +172,17 @@ export const CatalogSection: React.FC = () => {
       {sortedProducts.length === 0 ? (
         <div className="py-20 text-center space-y-4 bg-[#111111] border border-[#222] rounded-2xl p-8">
           <p className="text-base font-serif font-bold text-[#EDE8DC]">
-            لم نجد عطراً يطابق بحثك الحالي
+            {visibleProducts.length === 0 ? 'تُجهّز مجموعة حُرّ للإطلاق' : 'لم نجد عطراً يطابق بحثك الحالي'}
           </p>
-          <p className="text-xs text-[#8A8275] max-w-sm mx-auto">
-            جرب البحث بمفردات أخرى مثل "عود" أو "عنبر" أو تصفح كافة المجموعات الأصيلة.
+          <p className="text-xs text-[#8A8275] max-w-sm mx-auto leading-6">
+            {visibleProducts.length === 0
+              ? 'ستظهر هنا المنتجات المعتمدة وأسعارها فور إضافتها من لوحة الإدارة. لا نعرض منتجات أو أسعارًا تجريبية.'
+              : 'جرّب تعديل كلمات البحث أو إعادة ضبط عوامل التصفية.'}
           </p>
-          <button
-            onClick={() => {
-              setActiveCategory('all');
-              setSelectedFamily('all');
-              setSearchQuery('');
-            }}
+          {visibleProducts.length > 0 && <button
+            onClick={() => { setActiveCategory('all'); setSelectedFamily('all'); setSearchQuery(''); }}
             className="px-5 py-2.5 bg-[#C5A059] text-[#0A0A0A] font-bold text-xs rounded-lg"
-          >
-            عرض كافة العطور
-          </button>
+          >إعادة ضبط التصفية</button>}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

@@ -6,6 +6,7 @@ import { Product } from '../../types';
 
 export const ScentQuizModal: React.FC = () => {
   const { isQuizOpen, setIsQuizOpen, products, addToCart, setQuickViewProduct } = useStore();
+  const availableProducts = products.filter((product) => product.status !== 'draft');
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState({
     family: '',
@@ -15,6 +16,15 @@ export const ScentQuizModal: React.FC = () => {
   const [recommendedProduct, setRecommendedProduct] = useState<Product | null>(null);
 
   if (!isQuizOpen) return null;
+  if (availableProducts.length === 0) return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setIsQuizOpen(false)}>
+      <section dir="rtl" className="w-full max-w-md rounded-2xl border border-[#C5A059]/40 bg-[#0E0E0E] p-6 text-right shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <button onClick={() => setIsQuizOpen(false)} className="mb-4 rounded-lg border border-[#333] px-3 py-2 text-sm text-[#EDE8DC]">إغلاق</button>
+        <h2 className="mb-3 text-xl font-bold text-[#E5C378]">مستشار عطور حُرّ</h2>
+        <p className="text-sm leading-7 text-[#B0A99B]">ستصبح الاستشارة متاحة بعد نشر المنتجات المعتمدة في المتجر. لا نوصي بمنتج غير متوفر في الكتالوج.</p>
+      </section>
+    </div>
+  );
 
   const handleSelectAnswer = (key: 'family' | 'occasion' | 'intensity', val: string) => {
     const updated = { ...answers, [key]: val };
@@ -24,15 +34,15 @@ export const ScentQuizModal: React.FC = () => {
       setCurrentStep(currentStep + 1);
     } else {
       // Calculate matching product
-      let match = products[0];
+      let match = availableProducts[0];
       if (updated.family === 'oud') {
-        match = products.find((p) => p.scentFamily === 'oud') || products[0];
+        match = availableProducts.find((p) => p.scentFamily === 'oud') || availableProducts[0];
       } else if (updated.family === 'amber') {
-        match = products.find((p) => p.scentFamily === 'amber') || products[1];
+        match = availableProducts.find((p) => p.scentFamily === 'amber') || availableProducts[0];
       } else if (updated.family === 'musk') {
-        match = products.find((p) => p.scentFamily === 'musk') || products[2];
+        match = availableProducts.find((p) => p.scentFamily === 'musk') || availableProducts[0];
       } else if (updated.family === 'leather') {
-        match = products.find((p) => p.scentFamily === 'leather') || products[3];
+        match = availableProducts.find((p) => p.scentFamily === 'leather') || availableProducts[0];
       }
       setRecommendedProduct(match);
       setCurrentStep(4); // Result step

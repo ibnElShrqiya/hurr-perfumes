@@ -5,7 +5,8 @@ import { Sparkles, ArrowDown, Award, ShieldCheck, Flame, Droplets } from 'lucide
 
 export const HeroSection: React.FC = () => {
   const { products, setIsQuizOpen, setActiveCategory } = useStore();
-  const heroProduct = products.find((p) => p.isBestseller) || products[0];
+  const visibleProducts = products.filter((p) => p.status !== 'draft');
+  const heroProduct = visibleProducts.find((p) => p.isFeatured || p.isBestseller) || visibleProducts[0];
 
   const scrollToCatalog = () => {
     const el = document.getElementById('catalog-section');
@@ -51,7 +52,7 @@ export const HeroSection: React.FC = () => {
                 <div className="min-w-0">
                   <h4 className="text-sm font-semibold text-[#EDE8DC]">وعد حُرّ بالجودة</h4>
                   <p className="text-xs text-[#8A8275]">
-                    عينة للتجربة مع كل عطر، وسياسة استرجاع واضحة وفق الشروط المعلنة
+                    نوضح مواصفات كل منتج وشروط الطلب قبل إتمام الشراء
                   </p>
                 </div>
               </div>
@@ -77,45 +78,39 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Media Column (5 cols on lg) - Bottle Visual Presentation */}
+          {/* Product showcase renders only when a real catalog item exists. */}
           <div className="min-w-0 lg:col-span-5 relative flex items-center justify-center">
-            {/* Background circular glowing pedestal */}
-            <div className="relative w-full max-w-md aspect-square rounded-2xl bg-gradient-to-b from-[#161513] via-[#101010] to-[#0A0A0A] border border-[#C5A059]/25 p-6 flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
-              {/* Subtle gold decorative frame line */}
+            <div className="relative w-full max-w-md aspect-square rounded-2xl bg-gradient-to-b from-[#161513] via-[#101010] to-[#0A0A0A] border border-[#C5A059]/25 p-6 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
               <div className="absolute inset-3 border border-[#C5A059]/15 rounded-xl pointer-events-none" />
-
-              {/* Floating Bestseller Tag */}
-              <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1 bg-[#C5A059]/20 border border-[#C5A059]/50 rounded-full text-[11px] font-semibold text-[#E5C378] backdrop-blur-md">
-                <Award className="w-3.5 h-3.5" />
-                <span>العطر الأكثر اختياراً من عملائنا</span>
-              </div>
-
-              {/* The Flacon */}
-              <div className="relative z-10 py-4 transform group-hover:scale-105 transition-transform duration-700">
-                <BottleVisual product={heroProduct} size="lg" showAromaMist={true} />
-              </div>
-
-              {/* Product quick summary bar */}
-              <div className="relative z-20 w-full bg-[#111111]/90 border border-[#C5A059]/30 rounded-lg p-3 text-center backdrop-blur-md mt-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-right">
-                    <span className="text-xs text-[#C5A059] font-semibold block">
-                      {heroProduct.nameAr}
-                    </span>
-                    <span className="text-[11px] text-[#8C8475]">{heroProduct.concentration}</span>
+              {heroProduct ? (
+                <>
+                  <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1 bg-[#C5A059]/20 border border-[#C5A059]/50 rounded-full text-[11px] font-semibold text-[#E5C378]">
+                    <Award className="w-3.5 h-3.5" />
+                    <span>من مجموعة حُرّ</span>
                   </div>
-                  <div className="text-left">
-                    <span className="text-sm font-bold text-[#EDE8DC] font-sans tabular-nums">
-                      {heroProduct.price.toLocaleString('ar-EG')} ج.م
-                    </span>
-                    {heroProduct.originalPrice && (
-                      <span className="text-[10px] text-[#6E6759] line-through block tabular-nums">
-                        {heroProduct.originalPrice.toLocaleString('ar-EG')} ج.م
-                      </span>
-                    )}
+                  <div className="relative z-10 py-4"><BottleVisual product={heroProduct} size="lg" showAromaMist={true} /></div>
+                  <div className="relative z-20 w-full bg-[#111111]/90 border border-[#C5A059]/30 rounded-lg p-3 text-center mt-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-right min-w-0">
+                        <span className="text-xs text-[#C5A059] font-semibold block">{heroProduct.nameAr}</span>
+                        <span className="text-[11px] text-[#8C8475]">{heroProduct.concentration || heroProduct.volume}</span>
+                      </div>
+                      <div className="text-left shrink-0">
+                        <span className="text-sm font-bold text-[#EDE8DC] font-sans tabular-nums">{heroProduct.price.toLocaleString('ar-EG')} ج.م</span>
+                        {heroProduct.originalPrice && <span className="text-[10px] text-[#6E6759] line-through block tabular-nums">{heroProduct.originalPrice.toLocaleString('ar-EG')} ج.م</span>}
+                      </div>
+                    </div>
                   </div>
+                </>
+              ) : (
+                <div className="relative z-10 text-center space-y-5 px-4">
+                  <div className="mx-auto w-24 h-32 rounded-[2rem_2rem_1.2rem_1.2rem] border border-[#C5A059]/50 bg-gradient-to-b from-[#3b3321] via-[#17140e] to-[#090909] shadow-[0_0_55px_rgba(197,160,89,0.14)] flex items-center justify-center">
+                    <span className="font-serif text-3xl text-[#D4AF37]">حُرّ</span>
+                  </div>
+                  <h2 className="text-xl font-serif font-bold text-[#E5C378]">مجموعة حُرّ</h2>
+                  <p className="text-sm text-[#A69F90] leading-7">نعمل على تجهيز المنتجات المعتمدة. ستظهر التفاصيل والأسعار هنا عند نشرها من لوحة الإدارة.</p>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -127,8 +122,8 @@ export const HeroSection: React.FC = () => {
               <Droplets className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xs text-[#8A8275] block">تركيز زيتي نقي</span>
-              <span className="text-sm font-bold text-[#EDE8DC]">Extrait de Parfum</span>
+              <span className="text-xs text-[#8A8275] block">اختيار واعٍ</span>
+              <span className="text-sm font-bold text-[#EDE8DC]">تفاصيل المنتج المعتمد</span>
             </div>
           </div>
 
@@ -137,8 +132,8 @@ export const HeroSection: React.FC = () => {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xs text-[#8A8275] block">ثبات وفوحان</span>
-              <span className="text-sm font-bold text-[#EDE8DC]">+36 ساعة مضمونة</span>
+              <span className="text-xs text-[#8A8275] block">مواصفات العطر</span>
+              <span className="text-sm font-bold text-[#EDE8DC]">تفاصيل واضحة لكل منتج</span>
             </div>
           </div>
 
@@ -147,8 +142,8 @@ export const HeroSection: React.FC = () => {
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xs text-[#8A8275] block">شحن مجاني</span>
-              <span className="text-sm font-bold text-[#EDE8DC]">فوق 1,500 ج.م</span>
+              <span className="text-xs text-[#8A8275] block">خيارات التوصيل</span>
+              <span className="text-sm font-bold text-[#EDE8DC]">تُحدد عند تأكيد الطلب</span>
             </div>
           </div>
 
@@ -157,8 +152,8 @@ export const HeroSection: React.FC = () => {
               <Award className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xs text-[#8A8275] block">تقييم العملاء في مصر</span>
-              <span className="text-sm font-bold text-[#EDE8DC]">4.95 / 5.0 (تقييم العملاء)</span>
+              <span className="text-xs text-[#8A8275] block">تجربة شراء واضحة</span>
+              <span className="text-sm font-bold text-[#EDE8DC]">تقييمات موثقة بعد الشراء</span>
             </div>
           </div>
         </div>

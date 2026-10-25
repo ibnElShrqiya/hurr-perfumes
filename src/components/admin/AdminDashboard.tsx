@@ -14,23 +14,17 @@ import {
   Edit,
   CheckCircle,
   AlertTriangle,
-  ArrowRight,
   LogOut,
   Search,
   Eye,
   TrendingUp,
   DollarSign,
   Truck,
-  Copy,
   Lock,
 } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
 
-interface AdminDashboardProps {
-  onBackToStore: () => void;
-}
-
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore }) => {
+export const AdminDashboard: React.FC = () => {
   const {
     isAdminLoggedIn,
     loginAdmin,
@@ -63,21 +57,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
   const [formTagline, setFormTagline] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formCategory, setFormCategory] = useState<ProductCategory>('unisex');
-  const [formPrice, setFormPrice] = useState(1500);
-  const [formOriginalPrice, setFormOriginalPrice] = useState<number | undefined>(1900);
-  const [formStock, setFormStock] = useState(10);
+  const [formPrice, setFormPrice] = useState(0);
+  const [formOriginalPrice, setFormOriginalPrice] = useState<number | undefined>(undefined);
+  const [formStock, setFormStock] = useState(0);
   const [formVolume, setFormVolume] = useState('100 مل / Extrait de Parfum');
   const [formScentFamily, setFormScentFamily] = useState('oud');
   const [formScentFamilyAr, setFormScentFamilyAr] = useState('عود شرقي فاخر');
-  const [formTopNotes, setFormTopNotes] = useState('زعفران، هيل، برغموت');
-  const [formHeartNotes, setFormHeartNotes] = useState('عود كمبودي، ورد طائفي');
-  const [formBaseNotes, setFormBaseNotes] = useState('عنبر رمادي، جلد، باتشولي');
+  const [formTopNotes, setFormTopNotes] = useState('');
+  const [formHeartNotes, setFormHeartNotes] = useState('');
+  const [formBaseNotes, setFormBaseNotes] = useState('');
 
   // Coupon Form State
   const [newCouponCode, setNewCouponCode] = useState('');
   const [newCouponType, setNewCouponType] = useState<'percentage' | 'fixed'>('percentage');
-  const [newCouponVal, setNewCouponVal] = useState(10);
-  const [newCouponMin, setNewCouponMin] = useState(1000);
+  const [newCouponVal, setNewCouponVal] = useState(0);
+  const [newCouponMin, setNewCouponMin] = useState(0);
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // Orders Filter
@@ -134,13 +128,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
 
             <p className="text-[11px] text-[#777] text-center">يُنشأ حساب المدير من لوحة Supabase ويُمنح دور admin في قاعدة البيانات.</p>
           </form>
-
-          <button
-            onClick={onBackToStore}
-            className="w-full text-center text-xs text-[#777] hover:text-[#EDE8DC]"
-          >
-            العودة إلى متجر حُرّ
-          </button>
         </div>
       </div>
     );
@@ -157,15 +144,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
     setFormTagline('');
     setFormDescription('');
     setFormCategory('unisex');
-    setFormPrice(1500);
-    setFormOriginalPrice(1900);
-    setFormStock(10);
+    setFormPrice(0);
+    setFormOriginalPrice(undefined);
+    setFormStock(0);
     setFormVolume('100 مل / Extrait de Parfum');
     setFormScentFamily('oud');
     setFormScentFamilyAr('عود شرقي فاخر');
-    setFormTopNotes('زعفران كشميري، حب الهيل');
-    setFormHeartNotes('عود كمبودي، لبان حوجري');
-    setFormBaseNotes('عنبر رمادي، جلد، باتشولي');
+    setFormTopNotes('');
+    setFormHeartNotes('');
+    setFormBaseNotes('');
     setIsProductModalOpen(true);
   };
 
@@ -189,6 +176,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
 
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!Number.isFinite(Number(formPrice)) || Number(formPrice) <= 0) {
+      showToast('أدخل سعرًا حقيقيًا أكبر من صفر قبل حفظ المنتج.', 'error');
+      return;
+    }
     const topArray = formTopNotes.split('،').map((s) => s.trim()).filter(Boolean);
     const heartArray = formHeartNotes.split('،').map((s) => s.trim()).filter(Boolean);
     const baseArray = formBaseNotes.split('،').map((s) => s.trim()).filter(Boolean);
@@ -224,7 +215,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
         slug: formNameAr.toLowerCase().replace(/\s+/g, '-'),
         tagline: formTagline,
         description: formDescription,
-        story: 'توليفة نادرة أطلقتها دار حُرّ بعد دراسات معملية مكثفة لأرقى خلاصات الشرق.',
+        story: formDescription,
         category: formCategory,
         price: Number(formPrice),
         originalPrice: formOriginalPrice ? Number(formOriginalPrice) : undefined,
@@ -232,14 +223,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
           ? Math.round(((formOriginalPrice - formPrice) / formOriginalPrice) * 100)
           : undefined,
         stock: Number(formStock),
-        images: ['/bottles/new-perfume.jpg'],
+        images: [],
         bottleStyle: 'obsidian',
-        rating: 5.0,
-        reviewsCount: 1,
+        rating: 0,
+        reviewsCount: 0,
         volume: formVolume,
         concentration: 'Extrait de Parfum',
-        longevity: 'أكثر من 36 ساعة ثبات',
-        sillage: 'فوحان أصيل واسع',
+        longevity: 'تُحدد بعد اعتماد المواصفات',
+        sillage: 'تُحدد بعد اعتماد المواصفات',
         notes: {
           top: topArray,
           heart: heartArray,
@@ -247,8 +238,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
         },
         scentFamily: formScentFamily as any,
         scentFamilyAr: formScentFamilyAr,
-        occasion: 'كافة المناسبات الخاصة',
-        season: 'طوال العام',
+        occasion: 'تُحدد حسب المنتج',
+        season: 'غير محدد',
         status: Number(formStock) <= 0 ? 'out_of_stock' : 'active',
       });
     }
@@ -258,7 +249,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
 
   const handleCreateCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCouponCode.trim()) return;
+    if (!newCouponCode.trim() || !Number.isFinite(newCouponVal) || newCouponVal <= 0 || !Number.isFinite(newCouponMin) || newCouponMin < 0) {
+      showToast('أدخل كودًا صحيحًا وقيمة خصم موجبة وحدًا أدنى صالحًا.', 'error');
+      return;
+    }
+    if (newCouponType === 'percentage' && newCouponVal > 100) { showToast('لا يمكن أن تتجاوز نسبة الخصم 100%.', 'error'); return; }
 
     addCoupon({
       code: newCouponCode.trim().toUpperCase(),
@@ -295,7 +290,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-right space-y-8">
+    <div className="admin-dashboard w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 text-right space-y-5 sm:space-y-8">
       {/* Admin Top Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#222] pb-6">
         <div className="flex items-center gap-3">
@@ -313,13 +308,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={onBackToStore}
-            className="px-4 py-2 bg-[#181818] hover:bg-[#222] border border-[#333] text-xs font-semibold text-[#EDE8DC] rounded-lg transition-colors flex items-center gap-1.5"
-          >
-            <ArrowRight className="w-4 h-4 text-[#C5A059]" />
-            <span>معاينة المتجر</span>
-          </button>
 
           <button
             onClick={logoutAdmin}
@@ -341,7 +329,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
           <span className="text-xl font-bold font-sans text-[#EDE8DC] tabular-nums block">
             {totalRevenue.toLocaleString('ar-EG')} ج.م
           </span>
-          <span className="text-[10px] text-emerald-400 block">+100% مدفوع ومعتمد</span>
+          <span className="text-[10px] text-[#888] block">إجمالي قيمة الطلبات المسجلة</span>
         </div>
 
         <div className="p-4 bg-[#111111] border border-[#222] rounded-xl space-y-1">
@@ -417,27 +405,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
               أداء مبيعات دار حُرّ في المحافظات المصرية
             </h3>
 
-            {/* Quick Summary of Top Selling Fragrances */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-2">
-                <span className="text-xs text-[#C5A059] font-bold block">العطر الأكثر طلباً:</span>
-                <h4 className="text-sm font-serif font-bold text-[#EDE8DC]">عود أصيل معتّق (100 مل)</h4>
-                <p className="text-xs text-[#8A8275]">يمثل 42% من إجمالي المبيعات في القاهرة والجيزة</p>
-              </div>
-
-              <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-2">
-                <span className="text-xs text-[#C5A059] font-bold block">المحافظات الأكثر طلباً:</span>
-                <h4 className="text-sm font-serif font-bold text-[#EDE8DC]">القاهرة، الجيزة، الإسكندرية، الدقهلية</h4>
-                <p className="text-xs text-[#8A8275]">تستحوذ على 78% من طلبات التوصيل السريع</p>
-              </div>
-
-              <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-2">
-                <span className="text-xs text-[#C5A059] font-bold block">متوسط قيمة السلة (AOV):</span>
-                <h4 className="text-sm font-sans font-bold text-[#EDE8DC] tabular-nums">
-                  {Math.round(totalRevenue / Math.max(1, orders.length)).toLocaleString('ar-EG')} ج.م
-                </h4>
-                <p className="text-xs text-[#8A8275]">طلبات باقة الطيب رفعت معدل السلة بشكل ملحوظ</p>
-              </div>
+            <div className="rounded-xl border border-[#262626] bg-[#141414] p-5 text-sm leading-7 text-[#A69F90]">
+              تظهر تحليلات المنتجات والمحافظات بعد تسجيل طلبات حقيقية عبر المتجر. لا توجد بيانات مبيعات تجريبية في لوحة الإدارة.
             </div>
           </div>
         </div>
@@ -705,6 +674,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
                 <label className="block text-xs text-[#8A8275] mb-1">قيمة الخصم</label>
                 <input
                   type="number"
+                  min={1}
                   required
                   value={newCouponVal}
                   onChange={(e) => setNewCouponVal(Number(e.target.value))}
@@ -716,6 +686,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
                 <label className="block text-xs text-[#8A8275] mb-1">الحد الأدنى للطلب (ج.م)</label>
                 <input
                   type="number"
+                  min={0}
                   required
                   value={newCouponMin}
                   onChange={(e) => setNewCouponMin(Number(e.target.value))}
@@ -795,7 +766,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
               أسعار الشحن المعتمدة للمحافظات المصرية (27 محافظة)
             </h3>
             <p className="text-xs text-[#8A8275]">
-              الشحن المجاني مفعل تلقائياً لأي طلب بقيمة 1,500 ج.م فأكثر لكافة محافظات الجمهورية.
+              راجع رسوم التوصيل وحد الشحن المجاني واعتمد القيم التجارية الصحيحة قبل إطلاق الطلبات.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-2">
@@ -818,7 +789,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
       {/* Tab 6: Database & Supabase Integration */}
       {activeTab === 'database' && (
         <div className="space-y-6">
-          <div className="p-6 bg-[#111111] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-xl">
+          <div className="p-4 sm:p-6 bg-[#111111] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#222] pb-4">
               <div className="flex items-center gap-2">
                 <Database className="w-5 h-5 text-[#C5A059]" />
@@ -827,7 +798,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
                 </h3>
               </div>
               <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-semibold">
-                يتطلب إعداد Supabase ونشر الدوال
+                اتصال البيانات عبر إعدادات البيئة
               </span>
             </div>
 
@@ -839,59 +810,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
             <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-3">
               <h4 className="text-xs font-bold text-[#E5C378]">متغيرات البيئة للربط المباشر:</h4>
               <div className="bg-[#0A0A0A] p-3 rounded font-mono text-xs text-[#C5A059] space-y-1 overflow-x-auto">
-                <p>VITE_SUPABASE_URL="https://your-project.supabase.co"</p>
-                <p>VITE_SUPABASE_ANON_KEY="your-anon-public-key"</p>
+                <p>VITE_SUPABASE_URL</p>
+                <p>VITE_SUPABASE_ANON_KEY أو VITE_SUPABASE_PUBLISHABLE_KEY</p>
               </div>
               <p className="text-[11px] text-[#777]">
-                عند ضبط متغيرات Supabase ونشر المخطط والدوال، يتصل المتجر بقاعدة البيانات السحابية. لا تُقبل الطلبات قبل اكتمال هذه الخطوات.
+                يجب ضبط متغيرات Supabase في بيئة Production على Cloudflare Pages، وتفعيل سياسات RLS المناسبة قبل استقبال طلبات حقيقية.
               </p>
             </div>
 
-            {/* SQL Schema Preview & Download Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => {
-                  fetch('/hurr-supabase-schema.sql')
-                    .then((r) => r.text())
-                    .then((text) => {
-                      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'hurr-supabase-schema.sql';
-                      document.body.appendChild(a);
-                      a.click();
-                      document.body.removeChild(a);
-                      URL.revokeObjectURL(url);
-                      showToast('تم تحميل ملف قاعدة البيانات hurr-supabase-schema.sql بنجاح', 'success');
-                    })
-                    .catch(() => {
-                      showToast('الملف متاح في public/hurr-supabase-schema.sql', 'info');
-                    });
-                }}
-                className="px-4 py-2.5 bg-[#C5A059] hover:bg-[#D4AF37] text-[#0A0A0A] text-xs font-bold rounded-lg flex items-center gap-2 transition-colors shadow"
-              >
-                <Database className="w-4 h-4" />
-                <span>تحميل ملف قاعدة البيانات (hurr-supabase-schema.sql)</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  fetch('/hurr-supabase-schema.sql')
-                    .then((r) => r.text())
-                    .then((text) => {
-                      navigator.clipboard.writeText(text);
-                      showToast('تم نسخ كود SQL بالكامل إلى الحافظة', 'success');
-                    })
-                    .catch(() => {
-                      showToast('ملف المخطط متاح في public/hurr-supabase-schema.sql', 'info');
-                    });
-                }}
-                className="px-4 py-2.5 bg-[#1A1A1A] hover:bg-[#222] border border-[#C5A059]/40 text-xs text-[#E5C378] font-bold rounded-lg flex items-center gap-2 transition-colors"
-              >
-                <Copy className="w-4 h-4" />
-                <span>نسخ كود SQL للحافظة</span>
-              </button>
+            <div className="rounded-xl border border-[#333] bg-[#141414] p-4 text-sm leading-7 text-[#B0A99B]">
+              استخدم لوحة Supabase لإدارة المخطط وسياسات الأمان. لا يتم تنزيل ملفات قاعدة البيانات من واجهة المتجر.
             </div>
           </div>
         </div>
@@ -904,7 +832,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
           onClick={() => setIsProductModalOpen(false)}
         >
           <div
-            className="w-full max-w-2xl bg-[#111111] border border-[#C5A059]/40 rounded-2xl p-6 sm:p-8 text-right shadow-2xl my-auto space-y-4 max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-2xl bg-[#111111] border border-[#C5A059]/40 rounded-2xl p-4 sm:p-8 text-right shadow-2xl my-auto space-y-4 max-h-[90dvh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-serif font-bold text-[#FBF9F5] border-b border-[#222] pb-3">
@@ -970,6 +898,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToStore })
                   <label className="block text-xs text-[#8A8275] mb-1">السعر (ج.م) *</label>
                   <input
                     type="number"
+                    min={1}
                     required
                     value={formPrice}
                     onChange={(e) => setFormPrice(Number(e.target.value))}

@@ -13,7 +13,7 @@ create table if not exists public.products (
   price numeric(10,2) not null check (price >= 0), original_price numeric(10,2) check (original_price >= price),
   discount_percentage integer not null default 0 check (discount_percentage between 0 and 100),
   stock integer not null default 0 check (stock >= 0), images jsonb not null default '[]', bottle_style text,
-  rating numeric(3,2) not null default 5, reviews_count integer not null default 0,
+  rating numeric(3,2) not null default 0, reviews_count integer not null default 0,
   is_bestseller boolean not null default false, is_new boolean not null default false, is_featured boolean not null default false,
   volume text not null default '', concentration text not null default '', longevity text not null default '', sillage text not null default '',
   notes jsonb not null default '{"top":[],"heart":[],"base":[]}', scent_family text not null default '', scent_family_ar text not null default '',

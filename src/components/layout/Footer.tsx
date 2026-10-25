@@ -111,27 +111,27 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-sm text-[#9E9687]">
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  مجموعة العود المعتق
+                  عطور العود
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  عنبر السكينة والتوابل
+                  عطور العنبر والتوابل
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  المسك والورد الطائفي
+                  عطور المسك والزهور
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  سفير الشرق (ليذر وباتشولي)
+                  العطور الخشبية والجلدية
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  باقة الطيب الثلاثية (توفير خاص)
+                  المجموعات والباقات
                 </a>
               </li>
             </ul>
@@ -182,15 +182,6 @@ export const Footer: React.FC<FooterProps> = ({
                 >
                   مناطق التوصيل ورسوم الشحن
                 </button>
-              </li>
-              <li>
-                <a
-                  href="/hurr-perfumes-project.zip"
-                  download="hurr-perfumes-project.zip"
-                  className="text-[#C5A059] hover:text-[#FFF] hover:underline transition-colors text-right flex items-center gap-1 font-semibold pt-1"
-                >
-                  <span>📦 تحميل كامل ملفات المشروع (ZIP)</span>
-                </a>
               </li>
             </ul>
           </div>
