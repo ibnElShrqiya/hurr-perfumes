@@ -171,21 +171,25 @@ export const CatalogSection: React.FC = () => {
       {sortedProducts.length === 0 ? (
         <div className="py-20 text-center space-y-4 bg-[#111111] border border-[#222] rounded-2xl p-8">
           <p className="text-base font-serif font-bold text-[#EDE8DC]">
-            لم نجد عطراً يطابق بحثك الحالي
+            {products.length === 0 ? 'لا توجد منتجات متاحة حاليًا' : 'لم نجد عطرًا يطابق بحثك الحالي'}
           </p>
-          <p className="text-xs text-[#8A8275] max-w-sm mx-auto">
-            جرب البحث بمفردات أخرى مثل "عود" أو "عنبر" أو تصفح كافة المجموعات الأصيلة.
+          <p className="text-xs text-[#8A8275] max-w-sm mx-auto leading-7">
+            {products.length === 0
+              ? 'سيتم عرض العطور هنا بعد إضافتها من لوحة الإدارة وحفظها في قاعدة البيانات.'
+              : 'جرّب كلمات بحث أخرى أو أعد ضبط التصفية لعرض جميع المنتجات.'}
           </p>
-          <button
-            onClick={() => {
-              setActiveCategory('all');
-              setSelectedFamily('all');
-              setSearchQuery('');
-            }}
-            className="px-5 py-2.5 bg-[#C5A059] text-[#0A0A0A] font-bold text-xs rounded-lg"
-          >
-            عرض كافة العطور
-          </button>
+          {products.length > 0 && (activeCategory !== 'all' || selectedFamily !== 'all' || searchQuery) && (
+            <button
+              onClick={() => {
+                setActiveCategory('all');
+                setSelectedFamily('all');
+                setSearchQuery('');
+              }}
+              className="px-5 py-2.5 bg-[#C5A059] text-[#0A0A0A] font-bold text-xs rounded-lg"
+            >
+              عرض كافة العطور
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
