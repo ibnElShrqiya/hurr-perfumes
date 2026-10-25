@@ -76,6 +76,11 @@
 html, body, #root { min-height: 100%; }
 html, body { background: #f7f4ec; color: #28251f; }
 .hurr-app.light-mode { background: #f7f4ec !important; color: #28251f !important; }
+/* Keep horizontal scrolling inside navigation/filter strips, never on the page. */
+html, body, #root, .hurr-app { width: 100%; max-width: 100%; }
+body { overflow-x: hidden; }
+.hurr-app main { min-width: 0; }
+.hurr-app img, .hurr-app video, .hurr-app canvas, .hurr-app svg { max-width: 100%; }
 .hurr-app.light-mode [class~="bg-[#080808]"],
 .hurr-app.light-mode [class~="bg-[#0A0A0A]"],
 .hurr-app.light-mode [class~="bg-[#0a0a0a]"],
@@ -110,7 +115,39 @@ html, body { background: #f7f4ec; color: #28251f; }
 .hurr-app.light-mode header, .hurr-app.light-mode footer {
   background-color: rgba(247, 244, 236, .97) !important; color: #28251f !important;
 }
+.hurr-app.light-mode .mobile-category-strip {
+  background-color: #f7f4ec !important;
+  border-color: #e4dccb !important;
+}
+.hurr-app.light-mode .mobile-category-strip button:not([aria-pressed="true"]) {
+  background-color: #fffdf8 !important;
+  color: #5d5548 !important;
+  border: 1px solid #e4dccb;
+}
+.hurr-app.light-mode .mobile-category-strip button[aria-pressed="true"] {
+  background: linear-gradient(to right, #c5a059, #d4af37) !important;
+  color: #211b10 !important;
+}
+.hurr-app.light-mode section.bg-\[\#080808\] { background-color: #f7f4ec !important; }
+.hurr-app.light-mode section.bg-\[\#0A0A0A\] { background-color: #f7f4ec !important; }
+.hurr-app.light-mode [class*="bg-[#121212]/80"] {
+  background-color: rgba(255, 253, 248, .92) !important;
+}
+.hurr-app.light-mode .gold-gradient-text {
+  background: linear-gradient(135deg, #a98338 0%, #9a7428 50%, #76551d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .hurr-app.light-mode input, .hurr-app.light-mode textarea, .hurr-app.light-mode select {
   background-color: #fffdf8 !important; color: #28251f !important; border-color: #d9cfbc !important;
 }
 .hurr-app.light-mode .hurr-theme-toggle { background: #fffdf8 !important; color: #6f531d !important; }
+
+@media (max-width: 639px) {
+  .hurr-app header > div:first-child { gap: .5rem; }
+  .hurr-app header > div:first-child > div:last-child { gap: .25rem; }
+  .hurr-app header > div:first-child > div:last-child > button { padding: .45rem; }
+  .hurr-app section { min-width: 0; }
+  .hurr-app section h1, .hurr-app section h2, .hurr-app section p { overflow-wrap: anywhere; }
+  .hurr-app .mobile-category-strip { overscroll-behavior-inline: contain; }
+}

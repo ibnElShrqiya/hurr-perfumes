@@ -197,12 +197,13 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* Mobile Category Quick Navigation Strip */}
-      <div className="xl:hidden overflow-x-auto no-scrollbar border-t border-[#1F1E1B] bg-[#0E0E0E] px-4 py-2 flex items-center gap-2">
+      <div className="mobile-category-strip xl:hidden w-full min-w-0 overflow-x-auto no-scrollbar border-t border-[#1F1E1B] bg-[#0E0E0E] px-4 py-2 flex items-center gap-2">
         {navLinks.map((item) => {
           const isActive = item.category === activeCategory;
           return (
             <button
               key={`m-${item.label}`}
+              aria-pressed={isActive}
               onClick={() => {
                 if (item.action) {
                   item.action();

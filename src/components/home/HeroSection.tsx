@@ -22,33 +22,33 @@ export const HeroSection: React.FC = () => {
         {/* 2-Column Split Hero Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Text Column (7 cols on lg) */}
-          <div className="lg:col-span-7 space-y-6 text-right">
+          <div className="min-w-0 lg:col-span-7 space-y-6 text-right">
             {/* Quiet Editorial Kicker with Calligraphy Accent */}
-            <div className="inline-flex items-center gap-2 text-xs text-[#C5A059] font-medium tracking-wide">
+            <div className="inline-flex max-w-full flex-wrap items-center gap-2 text-xs text-[#C5A059] font-medium tracking-wide">
               <span className="w-6 h-[1px] bg-[#C5A059]" />
               <span>حكاية الطيب والأصالة من حُرّ للعطور في مصر</span>
               <span className="w-2 h-2 rotate-45 border border-[#C5A059] inline-block" />
             </div>
 
             {/* Display Headline with balanced typography */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-[#FBF9F5] leading-[1.25] tracking-tight [text-wrap:balance]">
+            <h1 className="max-w-full break-words text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-[#FBF9F5] leading-[1.25] tracking-tight [text-wrap:balance]">
               طيبٌ من روح الشرق.. <br />
               <span className="gold-gradient-text">أثرٌ طيب يبقى في الذاكرة</span>
             </h1>
 
             {/* Prose description */}
-            <p className="text-base sm:text-lg text-[#B0A99B] leading-relaxed max-w-2xl font-light">
+            <p className="max-w-full text-base sm:text-lg text-[#B0A99B] leading-relaxed max-w-2xl font-light">
               من وحي العود والعنبر والمسك، نصوغ توليفات عطرية بروح شرقية واهتمام بالتفاصيل،
               ونحرص على وضوح المكونات وجودة التجربة، لترافقك رائحة تعبّر عن ذوقك وتترك أثراً طيباً.
             </p>
 
             {/* Interactive Scent Feature Highlight */}
-            <div className="p-4 bg-[#121212]/80 border border-[#C5A059]/30 rounded-xl flex items-center justify-between gap-4 max-w-xl backdrop-blur-sm">
-              <div className="flex items-center gap-3">
+            <div className="w-full min-w-0 p-4 bg-[#121212]/80 border border-[#C5A059]/30 rounded-xl flex items-center justify-between gap-4 max-w-xl backdrop-blur-sm">
+              <div className="flex min-w-0 items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/40 flex items-center justify-center text-[#E5C378] shrink-0">
                   <Flame className="w-5 h-5" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h4 className="text-sm font-semibold text-[#EDE8DC]">وعد حُرّ بالجودة</h4>
                   <p className="text-xs text-[#8A8275]">
                     عينة للتجربة مع كل عطر، وسياسة استرجاع واضحة وفق الشروط المعلنة
@@ -78,7 +78,7 @@ export const HeroSection: React.FC = () => {
           </div>
 
           {/* Media Column (5 cols on lg) - Bottle Visual Presentation */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
+          <div className="min-w-0 lg:col-span-5 relative flex items-center justify-center">
             {/* Background circular glowing pedestal */}
             <div className="relative w-full max-w-md aspect-square rounded-2xl bg-gradient-to-b from-[#161513] via-[#101010] to-[#0A0A0A] border border-[#C5A059]/25 p-6 flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
               {/* Subtle gold decorative frame line */}
