@@ -204,3 +204,76 @@ body { overflow-x: hidden; }
   .admin-dashboard .overflow-x-auto { -webkit-overflow-scrolling: touch; }
   .admin-dashboard button { touch-action: manipulation; }
 }
+
+
+/* Mobile-first layout hardening for real devices (320px–640px). */
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: clip; -webkit-text-size-adjust: 100%; }
+body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
+.hurr-app main, .hurr-app section, .hurr-app footer, .hurr-app header { min-width: 0; max-width: 100%; }
+.hurr-app main > * { min-width: 0; max-width: 100%; }
+.hurr-app p, .hurr-app h1, .hurr-app h2, .hurr-app h3, .hurr-app label, .hurr-app td, .hurr-app th { overflow-wrap: anywhere; }
+.hurr-app input, .hurr-app textarea, .hurr-app select { min-width: 0; max-width: 100%; }
+
+@media (max-width: 639px) {
+  .hurr-app header > div:first-child {
+    height: auto !important;
+    min-height: 64px;
+    padding: .5rem .75rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+  }
+  .hurr-app header > div:first-child > div:first-child {
+    flex: 1 1 115px;
+    min-width: 0;
+    max-width: 48%;
+  }
+  .hurr-app header > div:first-child > div:first-child a,
+  .hurr-app header > div:first-child > div:first-child a > * { max-width: 100%; min-width: 0; }
+  .hurr-app header > div:first-child > div:last-child {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: .25rem;
+  }
+  .hurr-app header > div:first-child > div:last-child > button,
+  .hurr-app header > div:first-child > div:last-child > a {
+    padding: .45rem;
+    min-width: 34px;
+    min-height: 34px;
+  }
+  .hurr-app .mobile-category-strip { padding-inline: .75rem; max-width: 100%; }
+  .hurr-app section { padding-inline: 1rem; }
+  .hurr-app section h1 { font-size: clamp(1.7rem, 7vw, 2.35rem); line-height: 1.35; }
+  .hurr-app section h2 { font-size: clamp(1.3rem, 5.5vw, 1.8rem); line-height: 1.45; }
+  .hurr-app section p { font-size: .95rem; line-height: 1.85; }
+  .hurr-app section .grid { min-width: 0; }
+  .hurr-app section button { max-width: 100%; white-space: normal; }
+  .hurr-app section .overflow-x-auto { max-width: 100%; overscroll-behavior-x: contain; }
+  .hurr-app section .max-w-7xl,
+  .hurr-app section .max-w-3xl,
+  .hurr-app section .max-w-2xl,
+  .hurr-app section .max-w-xl { max-width: 100%; }
+  .hurr-app footer > div { min-width: 0; }
+  .admin-dashboard { padding-inline: .75rem !important; }
+  .admin-dashboard .grid { min-width: 0; }
+  .admin-dashboard table { min-width: 620px; }
+  .admin-dashboard .overflow-x-auto { width: 100%; max-width: 100%; }
+  .admin-dashboard form, .admin-dashboard [role="dialog"] { max-width: calc(100vw - 1.25rem); }
+}
+
+@media (max-width: 380px) {
+  .hurr-app header > div:first-child { padding-inline: .5rem; }
+  .hurr-app header > div:first-child > div:first-child { flex-basis: 100px; }
+  .hurr-app header > div:first-child > div:last-child { gap: .1rem; }
+  .hurr-app header > div:first-child > div:last-child > button,
+  .hurr-app header > div:first-child > div:last-child > a { padding: .35rem; min-width: 30px; min-height: 30px; }
+  .hurr-app section { padding-inline: .75rem; }
+}
