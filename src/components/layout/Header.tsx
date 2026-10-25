@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrandLogo } from '../common/BrandLogo';
 import { useStore } from '../../context/StoreContext';
-import { ShoppingBag, Heart, Search, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ShoppingBag, Heart, Search, ShieldCheck, Sparkles, X, Sun, Moon } from 'lucide-react';
 import { ProductCategory } from '../../types';
 
 interface HeaderProps {
@@ -9,6 +9,8 @@ interface HeaderProps {
   onOpenAdmin: () => void;
   onOpenBrandStory: () => void;
   onOpenFaq: () => void;
+  isLightMode: boolean;
+  onToggleTheme: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,6 +18,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAdmin,
   onOpenBrandStory,
   onOpenFaq,
+  isLightMode,
+  onToggleTheme,
 }) => {
   const {
     cartCount,
@@ -94,7 +98,17 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: Functional Action Controls */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="theme-nav-toggle inline-flex items-center justify-center gap-2 rounded-full border border-[#C5A059]/40 px-2.5 py-2 text-[#C5A059] transition-colors hover:bg-[#C5A059]/10 sm:px-3"
+            aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'}
+            title={isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}
+          >
+            {isLightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            <span className="hidden sm:inline text-xs font-medium">{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</span>
+          </button>
           {/* Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
@@ -146,7 +160,8 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Admin Dashboard Portal Link */}
-          <button
+          <a
+            href="/admin"
             onClick={onOpenAdmin}
             className={`p-2 rounded-full transition-colors ${
               isAdminLoggedIn
@@ -157,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="لوحة تحكم المتجر"
           >
             <ShieldCheck className="w-5 h-5" />
-          </button>
+          </a>
         </div>
       </div>
 

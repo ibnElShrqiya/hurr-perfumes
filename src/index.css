@@ -98,6 +98,40 @@ body { overflow-x: hidden; }
 .hurr-app.light-mode [class~="bg-[#222222]"],
 .hurr-app.light-mode [class~="bg-[#262626]"],
 .hurr-app.light-mode [class~="bg-[#333]"] { background-color: #fffdf8 !important; }
+.hurr-app.light-mode [class*="bg-[#070707]"],
+.hurr-app.light-mode [class*="bg-[#080808]"],
+.hurr-app.light-mode [class*="bg-[#0A0A0A]"],
+.hurr-app.light-mode [class*="bg-[#0a0a0a]"],
+.hurr-app.light-mode [class*="bg-[#0D0D0D]"],
+.hurr-app.light-mode [class*="bg-[#0E0E0E]"],
+.hurr-app.light-mode [class*="bg-[#0e0e0e]"],
+.hurr-app.light-mode [class*="bg-[#101010]"],
+.hurr-app.light-mode [class*="bg-[#111111]"],
+.hurr-app.light-mode [class*="bg-[#121212]"],
+.hurr-app.light-mode [class*="bg-[#12110F]"],
+.hurr-app.light-mode [class*="bg-[#131313]"],
+.hurr-app.light-mode [class*="bg-[#14120C]"],
+.hurr-app.light-mode [class*="bg-[#141414]"],
+.hurr-app.light-mode [class*="bg-[#16140F]"],
+.hurr-app.light-mode [class*="bg-[#161512]"],
+.hurr-app.light-mode [class*="bg-[#161616]"],
+.hurr-app.light-mode [class*="bg-[#181611]"],
+.hurr-app.light-mode [class*="bg-[#181818]"],
+.hurr-app.light-mode [class*="bg-[#1A1813]"],
+.hurr-app.light-mode [class*="bg-[#1A1916]"],
+.hurr-app.light-mode [class*="bg-[#1A1A1A]"],
+.hurr-app.light-mode [class*="bg-[#1C1A14]"],
+.hurr-app.light-mode [class*="bg-[#1C1A16]"],
+.hurr-app.light-mode [class*="bg-[#1a1a1a]"],
+.hurr-app.light-mode [class*="bg-[#1C1C1C]"],
+.hurr-app.light-mode [class*="bg-[#1c1c1c]"],
+.hurr-app.light-mode [class*="bg-[#1E1E1E]"],
+.hurr-app.light-mode [class*="bg-[#25221B]"],
+.hurr-app.light-mode [class*="bg-[#222]"],
+.hurr-app.light-mode [class*="bg-[#222222]"],
+.hurr-app.light-mode [class*="bg-[#252525]"],
+.hurr-app.light-mode [class*="bg-[#262626]"],
+.hurr-app.light-mode [class*="bg-[#333]"] { background-color: #fffdf8 !important; }
 .hurr-app.light-mode [class~="text-[#777]"],
 .hurr-app.light-mode [class~="text-[#777777]"],
 .hurr-app.light-mode [class~="text-[#888]"],
@@ -115,6 +149,12 @@ body { overflow-x: hidden; }
 .hurr-app.light-mode header, .hurr-app.light-mode footer {
   background-color: rgba(247, 244, 236, .97) !important; color: #28251f !important;
 }
+.hurr-app.light-mode .theme-nav-toggle { color: #785b24 !important; }
+.hurr-app.light-mode .gold-gradient-border { border-image-source: linear-gradient(to right, #e4dccb, #c5a059, #e4dccb); }
+.hurr-app.light-mode .royal-glass { background: rgba(255, 253, 248, .88); border-color: #e4dccb; }
+.hurr-app.light-mode [class*="from-[#12110D]"],
+.hurr-app.light-mode [class*="via-[#1A1812]"],
+.hurr-app.light-mode [class*="to-[#12110D]"] { --tw-gradient-from: #fffdf8 var(--tw-gradient-from-position); --tw-gradient-via: #f3eddf var(--tw-gradient-via-position); --tw-gradient-to: #fffdf8 var(--tw-gradient-to-position); }
 .hurr-app.light-mode .mobile-category-strip {
   background-color: #f7f4ec !important;
   border-color: #e4dccb !important;

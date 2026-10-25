@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
 import { StoreProvider, useStore } from './context/StoreContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -20,11 +19,15 @@ import { Order } from './types';
 type AppView = 'store' | 'checkout' | 'tracking' | 'admin' | 'brand_story';
 
 function MainApp() {
-  const [currentView, setCurrentView] = useState<AppView>('store');
+  const [currentView, setCurrentView] = useState<AppView>(() =>
+    window.location.pathname.replace(/\/$/, '') === '/admin' ? 'admin' : 'store',
+  );
   const [activeTrackingOrder, setActiveTrackingOrder] = useState<Order | null>(null);
   const [isFaqOpen, setIsFaqOpen] = useState(false);
   const [faqTab, setFaqTab] = useState<'faq' | 'shipping' | 'returns'>('faq');
-  const [isLightMode, setIsLightMode] = useState(true);
+  const [isLightMode, setIsLightMode] = useState(() =>
+    window.localStorage.getItem('hurr-theme') !== 'dark',
+  );
 
   const { quickViewProduct, setQuickViewProduct } = useStore();
 
@@ -32,6 +35,34 @@ function MainApp() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentView]);
+
+  useEffect(() => {
+    window.localStorage.setItem('hurr-theme', isLightMode ? 'light' : 'dark');
+  }, [isLightMode]);
+
+  useEffect(() => {
+    const syncRoute = () => {
+      const path = window.location.pathname.replace(/\/$/, '');
+      setCurrentView(path === '/admin' ? 'admin' : 'store');
+    };
+    window.addEventListener('popstate', syncRoute);
+    return () => window.removeEventListener('popstate', syncRoute);
+  }, []);
+
+  const openAdmin = (event?: React.MouseEvent<HTMLAnchorElement>) => {
+    event?.preventDefault();
+    if (window.location.pathname.replace(/\/$/, '') !== '/admin') {
+      window.history.pushState({}, '', '/admin');
+    }
+    setCurrentView('admin');
+  };
+
+  const returnToStore = () => {
+    if (window.location.pathname.replace(/\/$/, '') === '/admin') {
+      window.history.pushState({}, '', '/');
+    }
+    setCurrentView('store');
+  };
 
   const handleOrderCompleted = (order: Order) => {
     setActiveTrackingOrder(order);
@@ -45,24 +76,16 @@ function MainApp() {
 
   return (
     <div className={`hurr-app min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-[#0A0A0A] ${isLightMode ? 'light-mode' : 'bg-[#080808] text-[#EDE8DC]'}`}>
-      <button
-        type="button"
-        onClick={() => setIsLightMode((value) => !value)}
-        aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'}
-        title={isLightMode ? 'الوضع الفاتح' : 'الوضع الداكن'}
-        className="hurr-theme-toggle fixed bottom-5 left-5 z-[70] flex items-center gap-2 rounded-full border border-[#C5A059]/50 bg-[#fffdf8] px-4 py-3 text-sm font-semibold text-[#6f531d] shadow-xl transition hover:scale-105"
-      >
-        {isLightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-        <span>{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</span>
-      </button>
       {/* Top Header */}
       <Header
         onOpenTracking={() => setCurrentView('tracking')}
-        onOpenAdmin={() => setCurrentView('admin')}
+        onOpenAdmin={openAdmin}
         onOpenBrandStory={() => {
           setCurrentView('brand_story');
         }}
         onOpenFaq={() => handleOpenFaqWithTab('faq')}
+        isLightMode={isLightMode}
+        onToggleTheme={() => setIsLightMode((value) => !value)}
       />
 
       {/* Main Content Area */}
@@ -99,7 +122,7 @@ function MainApp() {
         )}
 
         {currentView === 'admin' && (
-          <AdminDashboard onBackToStore={() => setCurrentView('store')} />
+          <AdminDashboard onBackToStore={returnToStore} />
         )}
       </main>
 
