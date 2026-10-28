@@ -70,8 +70,8 @@ interface StoreContextType {
   isAdminLoggedIn: boolean;
   loginAdmin: (email: string, password: string) => Promise<boolean>;
   logoutAdmin: () => void;
-  addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => void;
-  updateProduct: (product: Product) => void;
+  addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => Promise<boolean>;
+  updateProduct: (product: Product) => Promise<boolean>;
   deleteProduct: (productId: string) => void;
   coupons: Coupon[];
   addCoupon: (coupon: Coupon) => void;
@@ -373,13 +373,29 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       if (authError || !data.session) throw new Error('تعذر إنشاء جلسة آمنة للطلب. تحقق من تفعيل الدخول المجهول في Supabase.');
     }
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
-      customerName: orderData.customerName, customerPhone: orderData.customerPhone,
+      customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
       customerEmail: orderData.customerEmail, governorate: orderData.governorate, city: orderData.city,
       detailedAddress: orderData.detailedAddress, notes: orderData.notes, paymentMethod: orderData.paymentMethod,
       couponCode: orderData.couponCode,
       items: orderData.items.map((item) => ({ productId: item.productId, quantity: item.quantity, selectedSize: item.selectedSize })),
     } });
-    if (error || !data?.id || !data?.trackingToken) throw new Error(data?.error || error?.message || 'تعذر حفظ الطلب');
+    if (error || !data?.id || !data?.trackingToken) {
+      let serverMessage = data?.error as string | undefined;
+      // Supabase wraps non-2xx Edge Function responses; extract the JSON message when possible.
+      const context = (error as any)?.context;
+      if (!serverMessage && context && typeof context.json === 'function') {
+        try { const body = await context.clone().json(); serverMessage = body?.error || body?.message; } catch { /* response may not be JSON */ }
+      }
+      const message = error?.message || '';
+      console.error('[HUR checkout] create-order failed', { message, serverMessage, status: context?.status, code: (error as any)?.name });
+      if (message.toLowerCase().includes('failed to send a request') || (error as any)?.name === 'FunctionsFetchError') {
+        throw new Error('تعذر الاتصال بخدمة الطلبات. تحقق من نشر الدالة create-order في Supabase، ومن صحة رابط المشروع ومفتاح النشر في إعدادات الموقع.');
+      }
+      if (context?.status === 401 || context?.status === 403) {
+        throw new Error('خدمة الطلبات رفضت الاتصال. تحقق من إعدادات التحقق من JWT ونشر دالة create-order في Supabase.');
+      }
+      throw new Error(serverMessage || 'تعذر حفظ الطلب. راجع سجلات Supabase > Edge Functions > create-order لمعرفة السبب.');
+    }
 
     const newOrder: Order = {
       ...orderData,
@@ -488,8 +504,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Admin Product Mutations
-  const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>) => {
-    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return; }
+  const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>): Promise<boolean> => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return false; }
     const draftProduct: Product = {
       ...productData,
       id: '', // Supabase generates the UUID primary key.
@@ -497,20 +513,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
     const { data: savedRow, error } = await supabase.from('products')
       .insert(toDbProduct(draftProduct)).select('*').single();
-    if (error || !savedRow) { showToast(error?.message || 'تعذر حفظ المنتج في قاعدة البيانات.', 'error'); return; }
+    if (error || !savedRow) { showToast(error?.message || 'تعذر حفظ المنتج في قاعدة البيانات.', 'error'); return false; }
     const savedProduct = fromDbProduct(savedRow);
     setProducts((prev) => [savedProduct, ...prev]);
     showToast(`تمت إضافة العطر "${savedProduct.nameAr}" بنجاح`, 'success');
+    return true;
   };
 
-  const updateProduct = async (updated: Product) => {
-    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لتعديل المنتج.', 'error'); return; }
+  const updateProduct = async (updated: Product): Promise<boolean> => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لتعديل المنتج.', 'error'); return false; }
     const { data: savedRow, error } = await supabase.from('products')
       .update(toDbProduct(updated)).eq('id', updated.id).select('*').single();
-    if (error || !savedRow) { showToast(error?.message || 'تعذر تحديث المنتج في قاعدة البيانات.', 'error'); return; }
+    if (error || !savedRow) { showToast(error?.message || 'تعذر تحديث المنتج في قاعدة البيانات.', 'error'); return false; }
     const savedProduct = fromDbProduct(savedRow);
     setProducts((prev) => prev.map((p) => (p.id === updated.id ? savedProduct : p)));
     showToast(`تم تحديث بيانات العطر "${savedProduct.nameAr}"`, 'success');
+    return true;
   };
 
   const deleteProduct = async (productId: string) => {

@@ -56,6 +56,7 @@ export const AdminDashboard: React.FC = () => {
   const [formNameAr, setFormNameAr] = useState('');
   const [formTagline, setFormTagline] = useState('');
   const [formDescription, setFormDescription] = useState('');
+  const [formImageUrl, setFormImageUrl] = useState('');
   const [formCategory, setFormCategory] = useState<ProductCategory>('unisex');
   const [formPrice, setFormPrice] = useState(0);
   const [formOriginalPrice, setFormOriginalPrice] = useState<number | undefined>(undefined);
@@ -143,6 +144,7 @@ export const AdminDashboard: React.FC = () => {
     setFormNameAr('');
     setFormTagline('');
     setFormDescription('');
+    setFormImageUrl('');
     setFormCategory('unisex');
     setFormPrice(0);
     setFormOriginalPrice(undefined);
@@ -161,6 +163,7 @@ export const AdminDashboard: React.FC = () => {
     setFormNameAr(prod.nameAr);
     setFormTagline(prod.tagline);
     setFormDescription(prod.description);
+    setFormImageUrl(prod.images?.[0] || '');
     setFormCategory(prod.category);
     setFormPrice(prod.price);
     setFormOriginalPrice(prod.originalPrice);
@@ -174,23 +177,29 @@ export const AdminDashboard: React.FC = () => {
     setIsProductModalOpen(true);
   };
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!Number.isFinite(Number(formPrice)) || Number(formPrice) <= 0) {
       showToast('أدخل سعرًا حقيقيًا أكبر من صفر قبل حفظ المنتج.', 'error');
       return;
     }
+    if (formImageUrl.trim()) {
+      try { const imageUrl = new URL(formImageUrl.trim()); if (!['http:', 'https:'].includes(imageUrl.protocol)) throw new Error(); }
+      catch { showToast('رابط صورة المنتج غير صالح. استخدم رابطًا يبدأ بـ https:// أو http://', 'error'); return; }
+    }
     const topArray = formTopNotes.split('،').map((s) => s.trim()).filter(Boolean);
     const heartArray = formHeartNotes.split('،').map((s) => s.trim()).filter(Boolean);
     const baseArray = formBaseNotes.split('،').map((s) => s.trim()).filter(Boolean);
 
+    let saved = false;
     if (editingProduct) {
-      updateProduct({
+      saved = await updateProduct({
         ...editingProduct,
         name: formNameAr,
         nameAr: formNameAr,
         tagline: formTagline,
         description: formDescription,
+        images: formImageUrl.trim() ? [formImageUrl.trim(), ...(editingProduct.images || []).slice(1)] : [],
         category: formCategory,
         price: Number(formPrice),
         originalPrice: formOriginalPrice ? Number(formOriginalPrice) : undefined,
@@ -209,7 +218,7 @@ export const AdminDashboard: React.FC = () => {
         status: Number(formStock) <= 0 ? 'out_of_stock' : 'active',
       });
     } else {
-      addProduct({
+      saved = await addProduct({
         name: formNameAr,
         nameAr: formNameAr,
         slug: formNameAr.toLowerCase().replace(/\s+/g, '-'),
@@ -223,7 +232,7 @@ export const AdminDashboard: React.FC = () => {
           ? Math.round(((formOriginalPrice - formPrice) / formOriginalPrice) * 100)
           : undefined,
         stock: Number(formStock),
-        images: [],
+        images: formImageUrl.trim() ? [formImageUrl.trim()] : [],
         bottleStyle: 'obsidian',
         rating: 0,
         reviewsCount: 0,
@@ -244,7 +253,7 @@ export const AdminDashboard: React.FC = () => {
       });
     }
 
-    setIsProductModalOpen(false);
+    if (saved) setIsProductModalOpen(false);
   };
 
   const handleCreateCoupon = (e: React.FormEvent) => {
@@ -891,6 +900,24 @@ export const AdminDashboard: React.FC = () => {
                   placeholder="وصف مشاعر العطر ونغماته وتأثيره..."
                   className="w-full p-2 bg-[#181818] border border-[#333] rounded text-xs text-[#EDE8DC]"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs text-[#8A8275] mb-1">رابط صورة المنتج</label>
+                <input
+                  type="url"
+                  dir="ltr"
+                  value={formImageUrl}
+                  onChange={(e) => setFormImageUrl(e.target.value)}
+                  placeholder="https://example.com/perfume.jpg"
+                  className="w-full p-2 bg-[#181818] border border-[#333] rounded text-xs text-[#EDE8DC] text-left"
+                />
+                {formImageUrl.trim() && (
+                  <div className="mt-2 flex items-center gap-3 rounded-lg border border-[#333] p-2">
+                    <img src={formImageUrl} alt="معاينة صورة المنتج" className="h-16 w-16 rounded object-cover bg-[#222]" onError={(e) => { e.currentTarget.style.opacity = '0.25'; }} />
+                    <span className="text-[11px] text-[#A69F90]">معاينة الصورة من الرابط المدخل</span>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

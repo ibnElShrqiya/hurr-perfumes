@@ -9,61 +9,61 @@ const key = (
 export const supabase = url && key && url.startsWith('https://') ? createClient(url, key) : null;
 export const hasSupabaseConfig = Boolean(supabase);
 
-/**
- * Maps the real production products schema to the richer UI model.
- * Current public.products columns: id, name, slug, description, price,
- * image_url, stock, is_active, created_at, updated_at.
- * Keep unsupported presentation-only fields in the UI defaults; never send
- * columns that do not exist in Supabase.
- */
+/** Maps the currently deployed compact products table plus the category migration. */
 export function fromDbProduct(row: any) {
   const image = typeof row.image_url === 'string' && row.image_url.trim() ? row.image_url : '';
-  const active = row.is_active !== false;
+  const category = ['men', 'women', 'unisex', 'private_collection', 'offers'].includes(row.category)
+    ? row.category
+    : 'unisex';
   return {
     id: String(row.id),
-    name: row.name ?? '',
-    nameAr: row.name ?? '',
+    name: row.name_ar ?? row.name ?? '',
+    nameAr: row.name_ar ?? row.name ?? '',
     slug: row.slug ?? '',
-    tagline: '',
+    tagline: row.tagline ?? '',
     description: row.description ?? '',
-    story: '',
-    category: 'unisex' as const,
+    story: row.story ?? '',
+    category,
     price: Number(row.price ?? 0),
-    originalPrice: undefined,
-    discountPercentage: undefined,
+    originalPrice: row.original_price == null ? undefined : Number(row.original_price),
+    discountPercentage: Number(row.discount_percentage ?? 0) || undefined,
     stock: Number(row.stock ?? 0),
-    images: image ? [image] : [],
-    bottleStyle: 'obsidian' as const,
-    rating: 0,
-    reviewsCount: 0,
-    isBestseller: false,
-    isNew: false,
-    isFeatured: false,
-    volume: '',
-    concentration: 'Eau de Parfum' as const,
-    longevity: '',
-    sillage: '',
-    notes: { top: [], heart: [], base: [] },
-    scentFamily: 'oud' as const,
-    scentFamilyAr: '',
-    occasion: '',
-    season: '',
-    status: active ? (Number(row.stock ?? 0) > 0 ? 'active' : 'out_of_stock') : 'draft',
+    images: image ? [image] : (Array.isArray(row.images) ? row.images.filter((x: unknown) => typeof x === 'string') : []),
+    bottleStyle: row.bottle_style ?? 'obsidian',
+    rating: Number(row.rating ?? 0),
+    reviewsCount: Number(row.reviews_count ?? 0),
+    isBestseller: Boolean(row.is_bestseller),
+    isNew: Boolean(row.is_new),
+    isFeatured: Boolean(row.is_featured),
+    volume: row.volume ?? '',
+    concentration: row.concentration ?? 'Extrait de Parfum',
+    longevity: row.longevity ?? '',
+    sillage: row.sillage ?? '',
+    notes: row.notes && typeof row.notes === 'object' ? { top: Array.isArray(row.notes.top) ? row.notes.top : [], heart: Array.isArray(row.notes.heart) ? row.notes.heart : [], base: Array.isArray(row.notes.base) ? row.notes.base : [] } : { top: [], heart: [], base: [] },
+    scentFamily: row.scent_family ?? 'oud',
+    scentFamilyAr: row.scent_family_ar ?? '',
+    occasion: row.occasion ?? '',
+    season: row.season ?? '',
+    status: row.is_active === false || row.status === 'draft' ? 'draft' : (Number(row.stock ?? 0) <= 0 ? 'out_of_stock' : 'active'),
     createdAt: row.created_at ?? new Date().toISOString(),
   };
 }
 
-/** Only persist columns that actually exist in public.products. */
+/** Write only columns supported by the deployed compact schema and category migration. */
 export function toDbProduct(p: any) {
   const image = Array.isArray(p.images) ? p.images.find((item: unknown) => typeof item === 'string' && item.trim()) : null;
   return {
+    id: String(p.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `hurr-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`)),
     name: String(p.nameAr || p.name || '').trim(),
-    slug: String(p.slug || '').trim() || null,
+    slug: String(p.slug || '').trim() || `hurr-${Date.now()}`,
     description: String(p.description || ''),
-    price: Number(p.price),
+    price: Number(p.price) || 0,
+    original_price: p.originalPrice != null && Number(p.originalPrice) >= Number(p.price) ? Number(p.originalPrice) : null,
+    discount_percentage: p.originalPrice && Number(p.originalPrice) > Number(p.price) ? Math.round(((Number(p.originalPrice) - Number(p.price)) / Number(p.originalPrice)) * 100) : 0,
     image_url: image || null,
     stock: Math.max(0, Math.trunc(Number(p.stock) || 0)),
-    is_active: p.status !== 'draft' && p.status !== 'out_of_stock',
+    is_active: p.status !== 'draft',
+    category: ['men', 'women', 'unisex', 'private_collection', 'offers'].includes(p.category) ? p.category : 'unisex',
   };
 }
 
