@@ -291,7 +291,21 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!Number.isFinite(Number(coupon.value)) || Number(coupon.value) <= 0 || (coupon.discountType === 'percentage' && Number(coupon.value) > 100)) { showToast('أدخل قيمة خصم صحيحة، ولا تجعل النسبة أكبر من 100%.', 'error'); return; }
     if (coupon.maxUses != null && (!Number.isInteger(Number(coupon.maxUses)) || Number(coupon.maxUses) < 1)) { showToast('حد الاستخدام يجب أن يكون رقمًا صحيحًا يبدأ من 1.', 'error'); return; }
     const code = coupon.code.trim().toUpperCase(); if (!code) { showToast('أدخل كود كوبون صحيحًا.', 'error'); return; }
-    const { data, error } = await supabase.from('coupons').insert({ code, discount_type: coupon.discountType, value: Number(coupon.value), min_order_amount: Number(coupon.minOrderAmount || 0), is_active: Boolean(coupon.isActive), usage_count: 0, max_uses: coupon.maxUses == null ? null : Number(coupon.maxUses), expires_at: coupon.expiresAt || null, description: coupon.description || '' }).select('*').single();
+    const couponValue = Number(coupon.value);
+    // Keep the legacy NOT NULL column populated while also writing the canonical fields.
+    // For fixed-amount coupons, legacy percentage is set to zero; `value` remains authoritative.
+    const { data, error } = await supabase.from('coupons').insert({
+      code,
+      discount_percent: coupon.discountType === 'percentage' ? couponValue : 0,
+      discount_type: coupon.discountType,
+      value: couponValue,
+      min_order_amount: Number(coupon.minOrderAmount || 0),
+      is_active: Boolean(coupon.isActive),
+      usage_count: 0,
+      max_uses: coupon.maxUses == null ? null : Number(coupon.maxUses),
+      expires_at: coupon.expiresAt || null,
+      description: coupon.description || '',
+    }).select('*').single();
     if (error || !data) { console.error('[HURR] Failed to add coupon:', error); showToast(`تعذرت إضافة الكوبون: ${error?.message || 'خطأ غير معروف'}`, 'error'); return; }
     const saved: Coupon = fromDbCoupon(data);
     setCoupons((prev) => [saved, ...prev.filter((item) => item.code !== saved.code)]); showToast(`تمت إضافة كود الخصم "${saved.code}" بنجاح`, 'success');

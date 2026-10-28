@@ -2,6 +2,7 @@
 -- Apply this migration in Supabase SQL Editor after backing up production.
 
 ALTER TABLE public.coupons
+  ADD COLUMN IF NOT EXISTS discount_percent numeric(10,2) NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS discount_type text NOT NULL DEFAULT 'percentage',
   ADD COLUMN IF NOT EXISTS value numeric(10,2) NOT NULL DEFAULT 1,
   ADD COLUMN IF NOT EXISTS min_order_amount numeric(10,2) NOT NULL DEFAULT 0,
@@ -10,13 +11,14 @@ ALTER TABLE public.coupons
   ADD COLUMN IF NOT EXISTS description text NOT NULL DEFAULT '';
 
 -- Preserve coupons created by the older compact schema (discount_percent).
+-- The legacy column stays populated because older deployments may enforce NOT NULL on it.
 DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_schema='public' AND table_name='coupons' AND column_name='discount_percent'
   ) THEN
-    EXECUTE 'UPDATE public.coupons SET value = discount_percent, discount_type = ''percentage'' WHERE discount_percent IS NOT NULL AND (value IS NULL OR value = 1)';
+    EXECUTE 'UPDATE public.coupons SET value = discount_percent, discount_type = ''percentage'' WHERE discount_percent > 0 AND (value IS NULL OR value = 1)';
   END IF;
 END $$;
 
