@@ -56,7 +56,7 @@ BEGIN
   FOR it IN SELECT value FROM jsonb_array_elements(p_payload->'items') LOOP
     n := (it->>'quantity')::int;
     IF n < 1 OR n > 50 THEN RAISE EXCEPTION 'Invalid quantity'; END IF;
-    SELECT * INTO p FROM public.products WHERE id=it->>'productId' AND is_active=true FOR UPDATE;
+    SELECT * INTO p FROM public.products WHERE id=(it->>'productId')::uuid AND is_active=true FOR UPDATE;
     IF NOT FOUND OR p.stock<n THEN RAISE EXCEPTION 'Product unavailable or insufficient stock'; END IF;
     sub := sub + p.price*n;
   END LOOP;
@@ -85,7 +85,7 @@ BEGIN
 
   FOR it IN SELECT value FROM jsonb_array_elements(p_payload->'items') LOOP
     n := (it->>'quantity')::int;
-    SELECT * INTO p FROM public.products WHERE id=it->>'productId' FOR UPDATE;
+    SELECT * INTO p FROM public.products WHERE id=(it->>'productId')::uuid FOR UPDATE;
     UPDATE public.products SET stock=stock-n WHERE id=p.id;
     INSERT INTO public.order_items(order_id,product_id,product_name,product_image,selected_size,quantity,unit_price)
     VALUES(oid,p.id,p.name_ar,coalesce(p.images->>0,''),coalesce(it->>'selectedSize',''),n,p.price);

@@ -84,7 +84,7 @@ begin
  if (select count(distinct value->>'productId') from jsonb_array_elements(p_payload->'items')) <> jsonb_array_length(p_payload->'items') then raise exception 'Duplicate products'; end if;
  for it in select value from jsonb_array_elements(p_payload->'items') loop
    n := (it->>'quantity')::int; if n<1 or n>50 then raise exception 'Invalid quantity'; end if;
-   select * into p from public.products where id=it->>'productId' and status='active' for update;
+   select * into p from public.products where id=(it->>'productId')::uuid and status='active' for update;
    if not found or p.stock<n then raise exception 'Product unavailable or insufficient stock'; end if;
    sub := sub + p.price*n;
  end loop;
@@ -101,7 +101,7 @@ begin
  insert into public.orders(id,tracking_token_hash,customer_name,customer_phone,customer_email,governorate,city,detailed_address,notes,payment_method,subtotal,shipping_fee,discount_amount,coupon_code,total_amount)
  values(oid,encode(digest(tok,'sha256'),'hex'),p_payload->>'customerName',p_payload->>'customerPhone',nullif(p_payload->>'customerEmail',''),p_payload->>'governorate',p_payload->>'city',p_payload->>'detailedAddress',nullif(p_payload->>'notes',''),p_payload->>'paymentMethod',sub,ship,disc,code,total);
  for it in select value from jsonb_array_elements(p_payload->'items') loop
-   n := (it->>'quantity')::int; select * into p from public.products where id=it->>'productId' for update;
+   n := (it->>'quantity')::int; select * into p from public.products where id=(it->>'productId')::uuid for update;
    update public.products set stock=stock-n,status=case when stock-n=0 then 'out_of_stock' else status end where id=p.id;
    insert into public.order_items(order_id,product_id,product_name,product_image,selected_size,quantity,unit_price)
    values(oid,p.id,p.name_ar,coalesce(p.images->>0,''),coalesce(it->>'selectedSize',''),n,p.price);
