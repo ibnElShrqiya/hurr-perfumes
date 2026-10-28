@@ -146,6 +146,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       showToast(`تم تسجيل طلبك الأصيل بنجاح برقم: ${newOrder.id}`, 'success');
       onOrderCompleted(newOrder);
     } catch (err: any) {
+      console.error('[HURR checkout] Order submission failed:', err);
       showToast(err.message || 'حدث خطأ أثناء حفظ الطلب', 'error');
       setIsSubmitting(false);
     }
