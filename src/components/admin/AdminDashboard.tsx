@@ -75,6 +75,7 @@ export const AdminDashboard: React.FC = () => {
   const [newCouponType, setNewCouponType] = useState<'percentage' | 'fixed'>('percentage');
   const [newCouponVal, setNewCouponVal] = useState(0);
   const [newCouponMin, setNewCouponMin] = useState(0);
+  const [newCouponMaxUses, setNewCouponMaxUses] = useState('');
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // Orders Filter
@@ -265,6 +266,7 @@ export const AdminDashboard: React.FC = () => {
       return;
     }
     if (newCouponType === 'percentage' && newCouponVal > 100) { showToast('لا يمكن أن تتجاوز نسبة الخصم 100%.', 'error'); return; }
+    if (newCouponMaxUses.trim() && (!Number.isInteger(Number(newCouponMaxUses)) || Number(newCouponMaxUses) < 1)) { showToast('حد الاستخدام يجب أن يكون رقمًا صحيحًا يبدأ من 1.', 'error'); return; }
 
     addCoupon({
       code: newCouponCode.trim().toUpperCase(),
@@ -273,11 +275,13 @@ export const AdminDashboard: React.FC = () => {
       minOrderAmount: Number(newCouponMin),
       isActive: true,
       usageCount: 0,
+      maxUses: newCouponMaxUses.trim() ? Number(newCouponMaxUses) : null,
       description: newCouponDesc.trim() || `خصم ${newCouponVal}${newCouponType === 'percentage' ? '%' : ' ج.م'} على الطلبات الأصيلة`,
     });
 
     setNewCouponCode('');
     setNewCouponDesc('');
+    setNewCouponMaxUses('');
   };
 
   // Filtered orders
@@ -665,7 +669,7 @@ export const AdminDashboard: React.FC = () => {
             className="p-5 bg-[#111111] border border-[#222] rounded-xl space-y-4"
           >
             <h3 className="text-sm font-semibold text-[#E5C378]">إنشاء كود خصم ترويجي جديد</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
               <div>
                 <label className="block text-xs text-[#8A8275] mb-1">كود الخصم (Code)</label>
                 <input
@@ -713,6 +717,18 @@ export const AdminDashboard: React.FC = () => {
                   className="w-full p-2 bg-[#181818] border border-[#333] rounded text-xs text-[#EDE8DC]"
                 />
               </div>
+              <div>
+                <label className="block text-xs text-[#8A8275] mb-1">حد الاستخدام (فارغ = بلا حد)</label>
+                <input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={newCouponMaxUses}
+                  onChange={(e) => setNewCouponMaxUses(e.target.value)}
+                  placeholder="مثال: 1"
+                  className="w-full p-2 bg-[#181818] border border-[#333] rounded text-xs text-[#EDE8DC]"
+                />
+              </div>
             </div>
 
             <button
@@ -732,6 +748,7 @@ export const AdminDashboard: React.FC = () => {
                   <th className="py-3 px-4">نوع وقيمة الخصم</th>
                   <th className="py-3 px-4">الحد الأدنى للطلب</th>
                   <th className="py-3 px-4">مرات الاستخدام</th>
+                  <th className="py-3 px-4">حد الاستخدام</th>
                   <th className="py-3 px-4">الحالة</th>
                   <th className="py-3 px-4 text-center">الإجراءات</th>
                 </tr>
@@ -749,6 +766,7 @@ export const AdminDashboard: React.FC = () => {
                       {c.minOrderAmount.toLocaleString('ar-EG')} ج.م
                     </td>
                     <td className="py-3 px-4 text-[#EDE8DC] tabular-nums">{c.usageCount} مرة</td>
+                    <td className="py-3 px-4 text-[#EDE8DC] tabular-nums">{c.maxUses == null ? 'بلا حد' : `${c.maxUses} مرة`}</td>
                     <td className="py-3 px-4">
                       <button
                         onClick={() => toggleCouponStatus(c.code)}

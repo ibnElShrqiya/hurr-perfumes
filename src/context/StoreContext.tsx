@@ -173,8 +173,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const freeShippingProgress = Math.min(100, Math.round(subtotal / FREE_SHIPPING_THRESHOLD * 100));
   const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
   const applyCoupon = (code: string): { success: boolean; message: string } => {
-    const clean = code.trim().toUpperCase(); const found = coupons.find((c) => c.code.toUpperCase() === clean && c.isActive);
-    if (!found) return { success: false, message: 'كود الخصم غير صحيح أو منتهي الصلاحية' };
+    const clean = code.trim().toUpperCase(); const found = coupons.find((c) => c.code.toUpperCase() === clean && c.isActive && (!c.expiresAt || new Date(c.expiresAt).getTime() > Date.now()) && (c.maxUses == null || c.usageCount < c.maxUses));
+    if (!found) return { success: false, message: 'كود الخصم غير صحيح أو منتهي الصلاحية أو استنفد عدد استخداماته' };
     if (subtotal < found.minOrderAmount) return { success: false, message: `هذا الكوبون يتطلب حداً أدنى للطلب بقيمة ${found.minOrderAmount} ج.م` };
     setActiveCoupon(found); return { success: true, message: `تم تفعيل كوبون الخصم: ${found.description}` };
   };
@@ -229,7 +229,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try { window.localStorage.setItem(`hurr_track_${newOrder.id}`, newOrder.trackingToken!); }
     catch (storageError) { console.warn('[HUR checkout] Could not persist tracking token:', storageError); }
     setProducts((prev) => prev.map((product) => { const item = orderData.items.find((entry) => entry.productId === product.id); return item ? { ...product, stock: Math.max(0, product.stock - item.quantity) } : product; }));
-    if (activeCoupon) setActiveCoupon(null);
+    if (activeCoupon) {
+      const usedCode = activeCoupon.code.toUpperCase();
+      setCoupons((prev) => prev.map((coupon) => coupon.code.toUpperCase() === usedCode ? { ...coupon, usageCount: coupon.usageCount + 1, isActive: coupon.maxUses != null && coupon.usageCount + 1 >= coupon.maxUses ? false : coupon.isActive } : coupon));
+      setActiveCoupon(null);
+    }
     setOrders((prev) => [newOrder, ...prev]); clearCart(); return newOrder;
   };
 
@@ -284,11 +288,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
   const addCoupon = async (coupon: Coupon): Promise<void> => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لإضافة كوبون.', 'error'); return; }
-    if (coupon.discountType !== 'percentage' || !Number.isFinite(Number(coupon.value)) || Number(coupon.value) <= 0 || Number(coupon.value) > 100) { showToast('الكوبون لازم يكون خصمًا بالنسبة المئوية من 1 إلى 100%.', 'error'); return; }
+    if (!Number.isFinite(Number(coupon.value)) || Number(coupon.value) <= 0 || (coupon.discountType === 'percentage' && Number(coupon.value) > 100)) { showToast('أدخل قيمة خصم صحيحة، ولا تجعل النسبة أكبر من 100%.', 'error'); return; }
+    if (coupon.maxUses != null && (!Number.isInteger(Number(coupon.maxUses)) || Number(coupon.maxUses) < 1)) { showToast('حد الاستخدام يجب أن يكون رقمًا صحيحًا يبدأ من 1.', 'error'); return; }
     const code = coupon.code.trim().toUpperCase(); if (!code) { showToast('أدخل كود كوبون صحيحًا.', 'error'); return; }
-    const { data, error } = await supabase.from('coupons').insert({ code, discount_percent: Number(coupon.value), is_active: Boolean(coupon.isActive), expires_at: null }).select('*').single();
+    const { data, error } = await supabase.from('coupons').insert({ code, discount_type: coupon.discountType, value: Number(coupon.value), min_order_amount: Number(coupon.minOrderAmount || 0), is_active: Boolean(coupon.isActive), usage_count: 0, max_uses: coupon.maxUses == null ? null : Number(coupon.maxUses), expires_at: coupon.expiresAt || null, description: coupon.description || '' }).select('*').single();
     if (error || !data) { console.error('[HURR] Failed to add coupon:', error); showToast(`تعذرت إضافة الكوبون: ${error?.message || 'خطأ غير معروف'}`, 'error'); return; }
-    const saved: Coupon = { ...coupon, code: data.code, discountType: 'percentage', value: Number(data.discount_percent), isActive: Boolean(data.is_active), description: `خصم ${Number(data.discount_percent)}%` };
+    const saved: Coupon = fromDbCoupon(data);
     setCoupons((prev) => [saved, ...prev.filter((item) => item.code !== saved.code)]); showToast(`تمت إضافة كود الخصم "${saved.code}" بنجاح`, 'success');
   };
   const toggleCouponStatus = async (code: string) => {

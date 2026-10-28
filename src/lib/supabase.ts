@@ -164,17 +164,18 @@ export function toDbProduct(p: any) {
  * id, code, discount_percent, is_active, expires_at, created_at.
  */
 export function fromDbCoupon(row: any) {
-  const discountPercent = Number(row.discount_percent ?? 0);
-
+  const discountType = row.discount_type === 'fixed' ? 'fixed' : 'percentage';
+  const value = Number(row.value ?? row.discount_percent ?? 0);
   return {
     code: String(row.code ?? ''),
-    discountType: 'percentage',
-    value: discountPercent,
-    minOrderAmount: 0,
+    discountType,
+    value,
+    minOrderAmount: Number(row.min_order_amount ?? 0),
     isActive: Boolean(row.is_active),
-    usageCount: 0,
-    description: `خصم ${discountPercent}%`,
+    usageCount: Number(row.usage_count ?? 0),
+    maxUses: row.max_uses == null ? null : Number(row.max_uses),
     expiresAt: row.expires_at ?? undefined,
+    description: row.description || `خصم ${discountType === 'percentage' ? `${value}%` : `${value} ج.م`}`,
     createdAt: row.created_at ?? undefined,
   };
 }
