@@ -47,6 +47,7 @@ interface StoreContextType {
 
   // Checkout & Pricing
   selectedGovernorate: GovernorateShipping;
+  shippingRates: GovernorateShipping[];
   setSelectedGovernorateById: (id: string) => void;
   activeCoupon: Coupon | null;
   applyCoupon: (code: string) => { success: boolean; message: string };
@@ -77,6 +78,7 @@ interface StoreContextType {
   addCoupon: (coupon: Coupon) => void;
   toggleCouponStatus: (code: string) => void;
   deleteCoupon: (code: string) => void;
+  updateShippingRate: (governorate: GovernorateShipping, fee: number) => Promise<boolean>;
 
   // Modals & UI
   isQuizOpen: boolean;
@@ -114,28 +116,31 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!supabase) return;
     let alive = true;
     const load = async () => {
-      const [{ data: productRows }, { data: couponRows }, { data: orderRows }] = await Promise.all([
+      const [{ data: productRows }, { data: couponRows }, { data: orderRows }, { data: shippingRows }] = await Promise.all([
         supabase.from('products').select('*').order('created_at', { ascending: false }),
         supabase.from('coupons').select('*').order('created_at', { ascending: false }),
         supabase.from('orders').select('*,order_items(*)').order('created_at', { ascending: false }),
+        supabase.from('shipping_rates').select('*'),
       ]);
       if (!alive) return;
       if (productRows) setProducts(productRows.map(fromDbProduct));
       if (couponRows) setCoupons(couponRows.map(fromDbCoupon));
       if (orderRows) setOrders(orderRows.map(fromDbOrder));
+      if (shippingRows) applyShippingRows(shippingRows);
     };
     const checkAdmin = async (session: any) => {
       if (!session) { setIsAdminLoggedIn(false); return; }
       const role = await getAdminRole(session.user.id);
       if (alive) setIsAdminLoggedIn(role === 'admin');
       if (role === 'admin') {
-        let [{ data: products }, { data: coupons }, { data: orders }] = await Promise.all([
+        let [{ data: products }, { data: coupons }, { data: orders }, { data: shippingRows }] = await Promise.all([
           supabase!.from('products').select('*').order('created_at', { ascending: false }),
           supabase!.from('coupons').select('*').order('created_at', { ascending: false }),
           supabase!.from('orders').select('*,order_items(*)').order('created_at', { ascending: false }),
+          supabase!.from('shipping_rates').select('*'),
         ]);
         // Empty database stays empty until the store owner adds real products/coupons.
-        if (alive) { if (products) setProducts(products.map(fromDbProduct)); if (coupons) setCoupons(coupons.map(fromDbCoupon)); if (orders) setOrders(orders.map(fromDbOrder)); }
+        if (alive) { if (products) setProducts(products.map(fromDbProduct)); if (coupons) setCoupons(coupons.map(fromDbCoupon)); if (orders) setOrders(orders.map(fromDbOrder)); if (shippingRows) applyShippingRows(shippingRows); }
       }
     };
     void load();
@@ -181,6 +186,17 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Coupons state
   const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [shippingRates, setShippingRates] = useState<GovernorateShipping[]>(EGYPTIAN_GOVERNORATES);
+  const applyShippingRows = (rows: any[]) => {
+    setShippingRates((current) => current.map((gov) => {
+      const row = rows.find((r) => r.governorate === gov.nameAr);
+      return row ? { ...gov, fee: Number(row.fee) } : gov;
+    }));
+    setSelectedGovernorate((current) => {
+      const row = rows.find((r) => r.governorate === current.nameAr);
+      return row ? { ...current, fee: Number(row.fee) } : current;
+    });
+  };
 
 
   // Governorate
@@ -216,7 +232,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const loginAdmin = async (email: string, password: string): Promise<boolean> => {
-    if (!supabase) { showToast('أضف إعدادات Supabase أولاً لتفعيل لوحة الإدارة', 'error'); return false; }
+    if (!supabase) { showToast('أكمل إعدادات الاتصال أولاً لتفعيل لوحة الإدارة', 'error'); return false; }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { showToast('تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور وصلاحية المدير.', 'error'); return false; }
     const { data } = await supabase.auth.getUser();
@@ -311,7 +327,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Governorate setter
   const setSelectedGovernorateById = (id: string) => {
-    const gov = EGYPTIAN_GOVERNORATES.find((g) => g.id === id);
+    const gov = shippingRates.find((g) => g.id === id);
     if (gov) {
       setSelectedGovernorate(gov);
     }
@@ -370,7 +386,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const { data: auth } = await supabase.auth.getSession();
     if (!auth.session) {
       const { data, error: authError } = await supabase.auth.signInAnonymously();
-      if (authError || !data.session) throw new Error('تعذر إنشاء جلسة آمنة للطلب. تحقق من تفعيل الدخول المجهول في Supabase.');
+      if (authError || !data.session) throw new Error('تعذر إنشاء جلسة آمنة للطلب. تحقق من تفعيل الدخول المجهول في إعدادات المصادقة.');
     }
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
       customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
@@ -389,12 +405,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const message = error?.message || '';
       console.error('[HUR checkout] create-order failed', { message, serverMessage, status: context?.status, code: (error as any)?.name });
       if (message.toLowerCase().includes('failed to send a request') || (error as any)?.name === 'FunctionsFetchError') {
-        throw new Error('تعذر الاتصال بخدمة الطلبات. تحقق من نشر الدالة create-order في Supabase، ومن صحة رابط المشروع ومفتاح النشر في إعدادات الموقع.');
+        throw new Error('تعذر الاتصال بخدمة الطلبات. تحقق من نشر خدمة الطلبات وصحة إعدادات الاتصال في الموقع.');
       }
       if (context?.status === 401 || context?.status === 403) {
-        throw new Error('خدمة الطلبات رفضت الاتصال. تحقق من إعدادات التحقق من JWT ونشر دالة create-order في Supabase.');
+        throw new Error('خدمة الطلبات رفضت الاتصال. تحقق من إعدادات التحقق من الهوية ونشر خدمة الطلبات.');
       }
-      throw new Error(serverMessage || 'تعذر حفظ الطلب. راجع سجلات Supabase > Edge Functions > create-order لمعرفة السبب.');
+      throw new Error(serverMessage || 'تعذر حفظ الطلب. راجع سجل أخطاء خدمة الطلبات لمعرفة السبب.');
     }
 
     const newOrder: Order = {
@@ -541,7 +557,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Admin Coupon Mutations
   const addCoupon = async (coupon: Coupon) => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لإضافة كوبون.', 'error'); return; }
-    if (supabase) { const { error } = await supabase.from('coupons').insert({ code: coupon.code, discount_type: coupon.discountType, value: coupon.value, min_order_amount: coupon.minOrderAmount, is_active: coupon.isActive, usage_count: coupon.usageCount, description: coupon.description }); if (error) { showToast(error.message, 'error'); return; } }
+    if (supabase) { const { error } = await supabase.from('coupons').insert({ code: coupon.code, discount_type: coupon.discountType, value: coupon.value, min_order_amount: coupon.minOrderAmount, is_active: coupon.isActive, usage_count: coupon.usageCount }); if (error) { showToast(error.message, 'error'); return; } }
     setCoupons((prev) => [coupon, ...prev]);
     showToast(`تمت إضافة كود الخصم "${coupon.code}"`, 'success');
   };
@@ -560,6 +576,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (supabase) { const { error } = await supabase.from('coupons').delete().eq('code', code); if (error) { showToast(error.message, 'error'); return; } }
     setCoupons((prev) => prev.filter((c) => c.code !== code));
     showToast('تم حذف كود الخصم', 'info');
+  };
+
+  const updateShippingRate = async (governorate: GovernorateShipping, fee: number): Promise<boolean> => {
+    if (!supabase || !isAdminLoggedIn) { showToast('يلزم تسجيل دخول المدير لتعديل أسعار الشحن.', 'error'); return false; }
+    if (!Number.isFinite(fee) || fee < 0) { showToast('أدخل سعر شحن صحيحًا لا يقل عن صفر.', 'error'); return false; }
+    const { error } = await supabase.from('shipping_rates').upsert({ governorate: governorate.nameAr, fee: Number(fee), active: true }, { onConflict: 'governorate' });
+    if (error) { showToast(`تعذر حفظ سعر الشحن: ${error.message}`, 'error'); return false; }
+    const updated = { ...governorate, fee: Number(fee) };
+    setShippingRates((prev) => prev.map((g) => g.id === governorate.id ? updated : g));
+    setSelectedGovernorate((prev) => prev.id === governorate.id ? updated : prev);
+    showToast(`تم حفظ سعر شحن ${governorate.nameAr}`, 'success');
+    return true;
   };
 
   return (
@@ -586,6 +614,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         toggleWishlist,
         isInWishlist,
         selectedGovernorate,
+        shippingRates,
         setSelectedGovernorateById,
         activeCoupon,
         applyCoupon,
@@ -612,6 +641,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addCoupon,
         toggleCouponStatus,
         deleteCoupon,
+        updateShippingRate,
         isQuizOpen,
         setIsQuizOpen,
         quickViewProduct,

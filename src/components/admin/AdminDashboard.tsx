@@ -39,6 +39,8 @@ export const AdminDashboard: React.FC = () => {
     addCoupon,
     toggleCouponStatus,
     deleteCoupon,
+    shippingRates,
+    updateShippingRate,
     showToast,
   } = useStore();
 
@@ -127,7 +129,7 @@ export const AdminDashboard: React.FC = () => {
               تسجيل الدخول للإدارة
             </button>
 
-            <p className="text-[11px] text-[#777] text-center">يُنشأ حساب المدير من لوحة Supabase ويُمنح دور admin في قاعدة البيانات.</p>
+            <p className="text-[11px] text-[#777] text-center">يُنشأ حساب المدير من لوحة إدارة قاعدة البيانات ويُمنح صلاحية المدير.</p>
           </form>
         </div>
       </div>
@@ -385,7 +387,7 @@ export const AdminDashboard: React.FC = () => {
           { id: 'orders', label: `إدارة الطلبات (${orders.length})`, icon: ShoppingBag },
           { id: 'coupons', label: `كوبونات الخصم (${coupons.length})`, icon: Tag },
           { id: 'shipping', label: 'الشحن والمحتوى', icon: Truck },
-          { id: 'database', label: 'سوبابيس وقاعدة البيانات', icon: Database },
+          { id: 'database', label: 'إعدادات المتجر', icon: Settings },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -630,14 +632,23 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 {/* Items in order */}
-                <div className="bg-[#141414] p-3 rounded-lg flex items-center justify-between text-xs">
-                  <div>
-                    <span className="text-[#888] ml-2">الأصناف:</span>
-                    <span className="text-[#EDE8DC]">
-                      {order.items.map((it) => `${it.productName} (${it.quantity})`).join('، ')}
-                    </span>
+                <div className="bg-[#141414] p-3 rounded-lg space-y-3 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#888]">المنتجات المطلوبة</span>
+                    <span className="text-[#E5C378] font-bold">{order.items.length} صنف</span>
                   </div>
-                  <span className="text-[#E5C378] font-bold">{order.items.length} صنف</span>
+                  <div className="space-y-2">
+                    {order.items.map((item, index) => (
+                      <div key={`${order.id}-${item.productId}-${index}`} className="flex items-center gap-3 rounded-lg border border-[#252525] bg-[#101010] p-2">
+                        {(item.productImage || products.find((product) => product.id === item.productId)?.images?.[0]) ? <img src={item.productImage || products.find((product) => product.id === item.productId)?.images?.[0] || ''} alt={item.productName} referrerPolicy="no-referrer" className="h-14 w-14 rounded-md bg-[#222] object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} /> : <div className="h-14 w-14 rounded-md bg-[#222] flex items-center justify-center text-[#777]"><Package className="h-5 w-5" /></div>}
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-[#EDE8DC]">{item.productName}</p>
+                          <p className="mt-1 text-[#8A8275]">الكمية: {item.quantity}{item.selectedSize ? ` · الحجم: ${item.selectedSize}` : ''}</p>
+                        </div>
+                        <p className="shrink-0 font-bold text-[#E5C378]">{Number(item.totalPrice || item.unitPrice * item.quantity).toLocaleString('ar-EG')} ج.م</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
@@ -785,9 +796,17 @@ export const AdminDashboard: React.FC = () => {
                     <span className="font-bold text-[#EDE8DC] block">{gov.nameAr}</span>
                     <span className="text-[10px] text-[#777]">{gov.estimatedDelivery}</span>
                   </div>
-                  <span className="font-sans font-bold text-[#C5A059] tabular-nums">
-                    {gov.fee} ج.م
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <input aria-label={`سعر شحن ${gov.nameAr}`} type="number" min={0} step="1" defaultValue={shippingRates.find((rate) => rate.id === gov.id)?.fee ?? gov.fee}
+                      key={`${gov.id}-${shippingRates.find((rate) => rate.id === gov.id)?.fee ?? gov.fee}`}
+                      onBlur={(e) => {
+                        const fee = Number(e.currentTarget.value);
+                        const current = shippingRates.find((rate) => rate.id === gov.id) || gov;
+                        if (Number.isFinite(fee) && fee >= 0 && fee !== current.fee) void updateShippingRate(current, fee);
+                      }}
+                      className="w-20 rounded border border-[#333] bg-[#0A0A0A] px-2 py-1 text-left font-sans font-bold text-[#C5A059] tabular-nums" />
+                    <span className="text-[#8A8275]">ج.م</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -795,16 +814,14 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 6: Database & Supabase Integration */}
+      {/* Tab 6: Store configuration */}
       {activeTab === 'database' && (
         <div className="space-y-6">
           <div className="p-4 sm:p-6 bg-[#111111] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#222] pb-4">
               <div className="flex items-center gap-2">
                 <Database className="w-5 h-5 text-[#C5A059]" />
-                <h3 className="text-base font-serif font-bold text-[#EDE8DC]">
-                  بنية قاعدة البيانات السحابية (Supabase & PostgreSQL Architecture)
-                </h3>
+                <h3 className="text-base font-serif font-bold text-[#EDE8DC]">إعدادات الاتصال والبيانات</h3>
               </div>
               <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-semibold">
                 اتصال البيانات عبر إعدادات البيئة
@@ -815,20 +832,20 @@ export const AdminDashboard: React.FC = () => {
               تم تجهيز المتجر بمخطط قاعدة بيانات PostgreSQL متكامل مع سياسات الأمان على مستوى الصفوف (Row Level Security)، وتحديث المخزون الذري لمنع بيع كميات غير متوفرة (Atomic Inventory Updates)، وجداول مخصصة للعملاء والطلبات والكوبونات والشحن.
             </p>
 
-            {/* Supabase Connection Setup Box */}
+            {/* إعدادات الاتصال */}
             <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-3">
               <h4 className="text-xs font-bold text-[#E5C378]">متغيرات البيئة للربط المباشر:</h4>
               <div className="bg-[#0A0A0A] p-3 rounded font-mono text-xs text-[#C5A059] space-y-1 overflow-x-auto">
-                <p>VITE_SUPABASE_URL</p>
-                <p>VITE_SUPABASE_ANON_KEY أو VITE_SUPABASE_PUBLISHABLE_KEY</p>
+                <p>رابط قاعدة البيانات</p>
+                <p>مفتاح الاتصال العام</p>
               </div>
               <p className="text-[11px] text-[#777]">
-                يجب ضبط متغيرات Supabase في بيئة Production على Cloudflare Pages، وتفعيل سياسات RLS المناسبة قبل استقبال طلبات حقيقية.
+                تُضبط إعدادات الاتصال الآمنة من إعدادات استضافة الموقع قبل استقبال طلبات حقيقية.
               </p>
             </div>
 
             <div className="rounded-xl border border-[#333] bg-[#141414] p-4 text-sm leading-7 text-[#B0A99B]">
-              استخدم لوحة Supabase لإدارة المخطط وسياسات الأمان. لا يتم تنزيل ملفات قاعدة البيانات من واجهة المتجر.
+              تُدار بنية البيانات وصلاحياتها من لوحة إدارة قاعدة البيانات. لا يتم تنزيل ملفات قاعدة البيانات من واجهة المتجر.
             </div>
           </div>
         </div>

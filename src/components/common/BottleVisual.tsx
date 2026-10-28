@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Product } from '../../types';
 
 interface BottleVisualProps {
@@ -82,6 +82,19 @@ export const BottleVisual: React.FC<BottleVisualProps> = ({
   };
 
   const colors = getGradients();
+  const productImage = product.images?.find((image) => typeof image === 'string' && image.trim());
+  const [imageFailed, setImageFailed] = useState(false);
+  useEffect(() => { setImageFailed(false); }, [productImage]);
+
+  if (productImage && !imageFailed) {
+    return (
+      <div className={`relative flex items-center justify-center overflow-hidden ${className}`} style={{ width: dimensions.w, height: dimensions.h }}>
+        <img src={productImage} alt={product.nameAr || product.name || 'صورة العطر'} loading="lazy" referrerPolicy="no-referrer"
+          className="h-full w-full object-contain transition-transform duration-500 ease-out hover:scale-[1.03]"
+          onError={() => setImageFailed(true)} />
+      </div>
+    );
+  }
 
   return (
     <div

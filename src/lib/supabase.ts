@@ -11,7 +11,8 @@ export const hasSupabaseConfig = Boolean(supabase);
 
 /** Maps the currently deployed compact products table plus the category migration. */
 export function fromDbProduct(row: any) {
-  const image = typeof row.image_url === 'string' && row.image_url.trim() ? row.image_url : '';
+  const imageCandidate = row.image_url ?? (Array.isArray(row.images) ? row.images.find((x: unknown) => typeof x === 'string' && x.trim()) : '');
+  const image = typeof imageCandidate === 'string' ? imageCandidate.trim() : '';
   const category = ['men', 'women', 'unisex', 'private_collection', 'offers'].includes(row.category)
     ? row.category
     : 'unisex';
@@ -28,7 +29,7 @@ export function fromDbProduct(row: any) {
     originalPrice: row.original_price == null ? undefined : Number(row.original_price),
     discountPercentage: Number(row.discount_percentage ?? 0) || undefined,
     stock: Number(row.stock ?? 0),
-    images: image ? [image] : (Array.isArray(row.images) ? row.images.filter((x: unknown) => typeof x === 'string') : []),
+    images: image ? [image, ...(Array.isArray(row.images) ? row.images.filter((x: unknown) => typeof x === 'string' && x !== image) : [])] : [],
     bottleStyle: row.bottle_style ?? 'obsidian',
     rating: Number(row.rating ?? 0),
     reviewsCount: Number(row.reviews_count ?? 0),
@@ -68,7 +69,7 @@ export function toDbProduct(p: any) {
 }
 
 export function fromDbCoupon(row: any) {
-  return { code: row.code, discountType: row.discount_type, value: Number(row.value), minOrderAmount: Number(row.min_order_amount), isActive: row.is_active, usageCount: row.usage_count, description: row.description };
+  return { code: row.code, discountType: row.discount_type, value: Number(row.value), minOrderAmount: Number(row.min_order_amount), isActive: row.is_active, usageCount: row.usage_count, description: row.description || `خصم ${Number(row.value)}${row.discount_type === 'percentage' ? '%' : ' ج.م'}` };
 }
 
 export function fromDbOrder(row: any) {
@@ -78,7 +79,7 @@ export function fromDbOrder(row: any) {
     paymentStatus: row.payment_status, shippingStatus: row.shipping_status, subtotal: Number(row.subtotal),
     shippingFee: Number(row.shipping_fee), discountAmount: Number(row.discount_amount), couponCode: row.coupon_code || undefined,
     totalAmount: Number(row.total_amount), items: (row.order_items || []).map((i: any) => ({ productId: i.product_id,
-      productName: i.product_name, productImage: i.product_image, quantity: i.quantity, unitPrice: Number(i.unit_price),
+      productName: i.product_name, productImage: i.product_image || '', quantity: i.quantity, unitPrice: Number(i.unit_price),
       totalPrice: Number(i.total_price), selectedSize: i.selected_size })), createdAt: row.created_at,
     trackingHistory: row.tracking_history || [] };
 }
