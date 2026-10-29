@@ -75,7 +75,7 @@ BEGIN
 
   SELECT fee INTO ship FROM public.shipping_rates WHERE governorate=p_payload->>'governorate' AND active;
   IF ship IS NULL THEN RAISE EXCEPTION 'Unsupported delivery area'; END IF;
-  IF sub-disc>=1500 THEN ship:=0; END IF;
+  IF sub-disc>=1000 THEN ship:=0; END IF;
   total := greatest(0,sub-disc+ship);
   oid := 'HURR-EG-'||upper(substr(encode(gen_random_bytes(5),'hex'),1,8));
   tok := encode(gen_random_bytes(24),'hex');

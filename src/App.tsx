@@ -74,6 +74,11 @@ function MainApp() {
       {currentView !== 'admin' && (
         <Header
           onOpenTracking={() => setCurrentView('tracking')}
+          onOpenHome={() => {
+            setCurrentView('store');
+            window.history.pushState({}, '', '/');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
           onOpenAdmin={openAdmin}
           onOpenBrandStory={() => setCurrentView('brand_story')}
           onOpenFaq={() => handleOpenFaqWithTab('faq')}

@@ -149,7 +149,7 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
             <div className="p-4 bg-[#181611] border border-[#C5A059]/30 rounded-xl space-y-1">
               <h4 className="font-bold text-[#E5C378]">ميزة الشحن المجاني الأصيل:</h4>
               <p className="text-xs">
-                تُوضح أي عروض شحن مجانية وشروطها في صفحة العرض المعتمد وقت الطلب.
+                الشحن مجاني تلقائيًا للطلبات التي تبلغ قيمة منتجاتها 1000 جنيه مصري أو أكثر، بعد تطبيق الخصم. وتظهر رسوم الشحن للطلبات الأقل من ذلك قبل تأكيد الطلب.
               </p>
             </div>
           </div>

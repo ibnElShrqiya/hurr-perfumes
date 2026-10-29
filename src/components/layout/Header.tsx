@@ -6,6 +6,7 @@ import { ProductCategory } from '../../types';
 
 interface HeaderProps {
   onOpenTracking: () => void;
+  onOpenHome: () => void;
   onOpenAdmin: () => void;
   onOpenBrandStory: () => void;
   onOpenFaq: () => void;
@@ -15,6 +16,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenTracking,
+  onOpenHome,
   onOpenAdmin,
   onOpenBrandStory,
   onOpenFaq,
@@ -36,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const navLinks: { label: string; category: ProductCategory | 'all' | 'custom'; action?: () => void }[] = [
-    { label: 'الرئيسية', category: 'all' },
+    { label: 'الرئيسية', category: 'all', action: onOpenHome },
     { label: 'عطور للجنسين', category: 'unisex' },
     { label: 'عطور رجالية', category: 'men' },
     { label: 'عطور نسائية', category: 'women' },
@@ -58,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={(e) => {
               e.preventDefault();
               setActiveCategory('all');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              onOpenHome();
             }}
             className="flex items-center"
           >
@@ -75,13 +77,14 @@ export const Header: React.FC<HeaderProps> = ({
                 key={item.label}
                 onClick={() => {
                   if (item.action) {
+                    if (item.category === 'all') setActiveCategory('all');
                     item.action();
                   } else if (item.category !== 'custom') {
                     setActiveCategory(item.category);
-                    const catalogEl = document.getElementById('catalog-section');
-                    if (catalogEl) {
-                      catalogEl.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    onOpenHome();
+                    window.setTimeout(() => {
+                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 80);
                   }
                 }}
                 className={`relative py-1 transition-colors whitespace-nowrap shrink-0 hover:text-[#E5C378] ${
@@ -221,11 +224,14 @@ export const Header: React.FC<HeaderProps> = ({
               aria-pressed={isActive}
               onClick={() => {
                 if (item.action) {
+                  if (item.category === 'all') setActiveCategory('all');
                   item.action();
                 } else if (item.category !== 'custom') {
                   setActiveCategory(item.category);
-                  const catalogEl = document.getElementById('catalog-section');
-                  if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
+                  onOpenHome();
+                  window.setTimeout(() => {
+                    document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 80);
                 }
               }}
               className={`px-3 py-1 text-xs rounded-full whitespace-nowrap shrink-0 transition-colors ${

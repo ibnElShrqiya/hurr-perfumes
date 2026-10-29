@@ -14,16 +14,16 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="relative w-full bg-[#080808] border-b border-[#C5A059]/20 overflow-hidden pt-6 pb-12 lg:py-16">
+    <section className="relative w-full bg-[#080808] border-b border-[#C5A059]/20 overflow-hidden pt-4 pb-7 sm:pt-6 sm:pb-12 lg:py-16">
       {/* Background Decorative Atmospheric Effects */}
       <div className="absolute top-0 right-10 w-[500px] h-[500px] bg-gradient-to-b from-[#C5A059]/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-10 w-[400px] h-[400px] bg-amber-900/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* 2-Column Split Hero Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-12 items-center">
           {/* Text Column (7 cols on lg) */}
-          <div className="min-w-0 lg:col-span-7 space-y-6 text-right">
+          <div className="min-w-0 lg:col-span-7 space-y-4 sm:space-y-6 text-right">
             {/* Quiet Editorial Kicker with Calligraphy Accent */}
             <div className="inline-flex max-w-full flex-wrap items-center gap-2 text-xs text-[#C5A059] font-medium tracking-wide">
               <span className="w-6 h-[1px] bg-[#C5A059]" />
@@ -32,13 +32,13 @@ export const HeroSection: React.FC = () => {
             </div>
 
             {/* Display Headline with balanced typography */}
-            <h1 className="max-w-full break-words text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-[#FBF9F5] leading-[1.25] tracking-tight [text-wrap:balance]">
+            <h1 className="max-w-full break-words text-[1.7rem] sm:text-5xl lg:text-6xl font-serif font-bold text-[#FBF9F5] leading-[1.25] tracking-tight [text-wrap:balance]">
               طيبٌ من روح الشرق.. <br />
               <span className="gold-gradient-text">أثرٌ طيب يبقى في الذاكرة</span>
             </h1>
 
             {/* Prose description */}
-            <p className="max-w-full text-base sm:text-lg text-[#B0A99B] leading-relaxed max-w-2xl font-light">
+            <p className="max-w-full text-sm sm:text-lg text-[#B0A99B] leading-relaxed max-w-2xl font-light">
               من وحي العود والعنبر والمسك، نصوغ توليفات عطرية بروح شرقية واهتمام بالتفاصيل،
               ونحرص على وضوح المكونات وجودة التجربة، لترافقك رائحة تعبّر عن ذوقك وتترك أثراً طيباً.
             </p>
@@ -80,7 +80,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Product showcase renders only when a real catalog item exists. */}
           <div className="min-w-0 lg:col-span-5 relative flex items-center justify-center">
-            <div className="relative w-full max-w-md aspect-square rounded-2xl bg-gradient-to-b from-[#161513] via-[#101010] to-[#0A0A0A] border border-[#C5A059]/25 p-6 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
+            <div className="relative w-full max-w-[280px] sm:max-w-md aspect-square rounded-2xl sm:rounded-2xl bg-gradient-to-b from-[#161513] via-[#101010] to-[#0A0A0A] border border-[#C5A059]/25 p-3 sm:p-6 flex flex-col items-center justify-center shadow-2xl overflow-hidden">
               <div className="absolute inset-3 border border-[#C5A059]/15 rounded-xl pointer-events-none" />
               {heroProduct ? (
                 <>
@@ -88,7 +88,7 @@ export const HeroSection: React.FC = () => {
                     <Award className="w-3.5 h-3.5" />
                     <span>من مجموعة حُرّ</span>
                   </div>
-                  <div className="relative z-10 py-4"><BottleVisual product={heroProduct} size="lg" showAromaMist={true} /></div>
+                  <div className="relative z-10 py-2 sm:py-4"><BottleVisual product={heroProduct} size="md" showAromaMist={true} /></div>
                   <div className="relative z-20 w-full bg-[#111111]/90 border border-[#C5A059]/30 rounded-lg p-3 text-center mt-2">
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-right min-w-0">
@@ -116,7 +116,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         {/* 4-Column KPI Trust Bar below the hero split */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-8 border-t border-[#1C1C1C]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 sm:mt-12 pt-5 sm:pt-8 border-t border-[#1C1C1C]">
           <div className="p-4 bg-[#101010] border border-[#222] rounded-xl flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#C5A059]/10 flex items-center justify-center text-[#C5A059] shrink-0">
               <Droplets className="w-5 h-5" />

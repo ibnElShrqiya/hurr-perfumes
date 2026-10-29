@@ -274,7 +274,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     >
                       {EGYPTIAN_GOVERNORATES.map((gov) => (
                         <option key={gov.id} value={gov.id}>
-                          {gov.nameAr} ({gov.fee} ج.م - {gov.estimatedDelivery})
+                          {gov.nameAr}
                         </option>
                       ))}
                     </select>

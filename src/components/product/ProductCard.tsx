@@ -18,7 +18,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <article className="group relative bg-[#121212] border border-[#222222] hover:border-[#C5A059]/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.8)] flex flex-col justify-between">
       {/* Visual Container */}
-      <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-[#181818] to-[#0E0E0E] p-4 flex items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[4/3] bg-gradient-to-b from-[#181818] to-[#0E0E0E] p-2 sm:p-4 flex items-center justify-center overflow-hidden">
         {/* Wishlist Floating Button */}
         <button
           onClick={(e) => {
@@ -56,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Card Body & Unboxed Metadata */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3 text-right">
+      <div className="p-3 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3 text-right">
         <div>
           {/* Unboxed Metadata Line with typographic separators */}
           <div className="flex items-center justify-start gap-1.5 text-xs text-[#8A8275]">
@@ -102,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         {/* Pricing & Purchase CTA */}
-        <div className="pt-3 border-t border-[#1F1E1B] flex items-center justify-between gap-2">
+        <div className="pt-2 sm:pt-3 border-t border-[#1F1E1B] flex items-center justify-between gap-2">
           {/* Price */}
           <div className="text-right">
             <div className="text-base sm:text-lg font-bold text-[#EDE8DC] tabular-nums">

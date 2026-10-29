@@ -107,7 +107,7 @@ begin
  end if;
  select fee into ship from public.shipping_rates where governorate=p_payload->>'governorate' and active;
  if ship is null then raise exception 'Unsupported delivery area'; end if;
- if sub-disc>=1500 then ship:=0; end if;
+ if sub-disc>=1000 then ship:=0; end if;
  total := sub-disc+ship; oid := 'HURR-EG-'||upper(substr(encode(gen_random_bytes(5),'hex'),1,8)); tok := encode(gen_random_bytes(24),'hex');
  insert into public.orders(id,tracking_token_hash,customer_name,customer_phone,customer_email,governorate,city,detailed_address,notes,payment_method,subtotal,shipping_fee,discount_amount,coupon_code,total_amount)
  values(oid,encode(digest(tok,'sha256'),'hex'),p_payload->>'customerName',p_payload->>'customerPhone',nullif(p_payload->>'customerEmail',''),p_payload->>'governorate',p_payload->>'city',p_payload->>'detailedAddress',nullif(p_payload->>'notes',''),p_payload->>'paymentMethod',sub,ship,disc,code,total);

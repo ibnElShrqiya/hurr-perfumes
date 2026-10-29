@@ -30,4 +30,4 @@ export const EGYPTIAN_GOVERNORATES: GovernorateShipping[] = [
   { id: 'new_valley', nameAr: 'الوادي الجديد', nameEn: 'New Valley', fee: 100, estimatedDelivery: 'خلال 4-6 أيام' },
 ];
 
-export const FREE_SHIPPING_THRESHOLD = 1500; // Free delivery in Egypt for orders >= 1500 EGP
+export const FREE_SHIPPING_THRESHOLD = 1000; // Free delivery in Egypt for orders >= 1000 EGP
