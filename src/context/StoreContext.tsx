@@ -32,16 +32,25 @@ interface StoreContextType {
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 const mapOrder = (row: any): Order => ({
-  id: String(row.id), customerName: row.customer_name ?? '', customerPhone: row.customer_phone ?? '', customerEmail: row.customer_email || undefined,
-  governorate: row.governorate ?? '', city: row.city ?? '', detailedAddress: row.detailed_address ?? '', notes: row.notes || undefined,
-  paymentMethod: row.payment_method ?? 'cod', paymentStatus: row.payment_status ?? 'pending', shippingStatus: row.shipping_status ?? 'new',
-  subtotal: Number(row.subtotal ?? 0), shippingFee: Number(row.shipping_fee ?? 0), discountAmount: Number(row.discount_amount ?? 0),
-  couponCode: row.coupon_code || undefined, totalAmount: Number(row.total_amount ?? 0),
-  items: (row.order_items || []).map((item: any) => ({
-    productId: item.product_id ?? '', productName: item.product_name ?? '', productImage: item.product_image ?? '',
-    quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? 0),
-    totalPrice: Number(item.total_price ?? Number(item.unit_price ?? 0) * Number(item.quantity ?? 0)), selectedSize: item.selected_size ?? '',
-  })), createdAt: row.created_at ?? new Date().toISOString(), trackingHistory: row.tracking_history || [],
+  id: String(row.id),
+  customerName: String(row.customer_name ?? row.customerName ?? row.name ?? ''),
+  customerPhone: String(row.customer_phone ?? row.phone ?? row.phone_number ?? row.customerPhone ?? ''),
+  customerEmail: row.customer_email ?? row.customerEmail ?? row.email ?? undefined,
+  governorate: String(row.governorate ?? row.governorate_name ?? ''),
+  city: String(row.city ?? row.area ?? row.district ?? ''),
+  detailedAddress: String(row.detailed_address ?? row.address_details ?? row.shipping_address ?? row.address ?? row.detailedAddress ?? ''),
+  notes: row.notes ?? undefined,
+  paymentReference: row.payment_reference ?? row.paymentReference ?? row.sender_wallet_phone ?? row.wallet_phone ?? undefined,
+  paymentMethod: row.payment_method ?? row.paymentMethod ?? 'cod',
+  paymentStatus: row.payment_status ?? row.paymentStatus ?? 'pending',
+  shippingStatus: row.shipping_status ?? row.shippingStatus ?? 'new',
+  subtotal: Number(row.subtotal ?? 0), shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0), discountAmount: Number(row.discount_amount ?? row.discountAmount ?? 0),
+  couponCode: row.coupon_code ?? row.couponCode ?? undefined, totalAmount: Number(row.total_amount ?? row.totalAmount ?? 0),
+  items: (row.order_items || row.items || []).map((item: any) => ({
+    productId: item.product_id ?? item.productId ?? '', productName: item.product_name ?? item.productName ?? '', productImage: item.product_image ?? item.productImage ?? '',
+    quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? item.unitPrice ?? 0),
+    totalPrice: Number(item.total_price ?? item.totalPrice ?? Number(item.unit_price ?? item.unitPrice ?? 0) * Number(item.quantity ?? 0)), selectedSize: item.selected_size ?? item.selectedSize ?? '',
+  })), createdAt: row.created_at ?? row.createdAt ?? new Date().toISOString(), trackingHistory: row.tracking_history || row.trackingHistory || [],
 });
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -189,10 +198,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const { data: anonData, error: authError } = await supabase.auth.signInAnonymously();
       if (authError || !anonData.session) throw new Error('تعذر إنشاء جلسة آمنة للطلب. تحقق من تفعيل الدخول المجهول في إعدادات المصادقة.');
     }
+    const storedNotes = [orderData.notes?.trim(), orderData.paymentReference?.trim() ? `بيانات التحويل: ${orderData.paymentReference.trim()}` : ''].filter(Boolean).join(' | ').slice(0, 500);
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
       customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
       customerEmail: orderData.customerEmail, governorate: orderData.governorate, city: orderData.city,
-      detailedAddress: orderData.detailedAddress, notes: orderData.notes, paymentMethod: orderData.paymentMethod,
+      detailedAddress: orderData.detailedAddress, notes: storedNotes || undefined, paymentMethod: orderData.paymentMethod,
       couponCode: orderData.couponCode,
       items: orderData.items.map((item) => ({ productId: item.productId, quantity: item.quantity, selectedSize: item.selectedSize })),
     } });
