@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrandLogo } from '../common/BrandLogo';
 import { useStore } from '../../context/StoreContext';
-import { ShoppingBag, Heart, Search, Sparkles, X, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Heart, Search, X, Sun, Moon } from 'lucide-react';
 import { ProductCategory } from '../../types';
 
 interface HeaderProps {
@@ -29,7 +29,6 @@ export const Header: React.FC<HeaderProps> = ({
     setActiveCategory,
     searchQuery,
     setSearchQuery,
-    setIsQuizOpen,
   } = useStore();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -49,9 +48,9 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-30 w-full bg-[#0A0A0A]/95 backdrop-blur-md border-b border-[#C5A059]/20 transition-all">
 
       {/* 2. Top Bar Contract: Zone 1 (Wordmark) — Zone 2 (4-5 Nav Links) — Zone 3 (Action cluster) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-6 sm:gap-8">
+      <div className="hurr-header-main max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-6 sm:gap-8">
         {/* Zone 1: Brand Wordmark */}
-        <div className="flex items-center shrink-0">
+        <div className="hurr-header-brand flex items-center shrink-0">
           <a
             href="/"
             onClick={(e) => {
@@ -98,11 +97,11 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: Functional Action Controls */}
-        <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
+        <div className="hurr-header-actions flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
           <button
             type="button"
             onClick={onToggleTheme}
-            className="theme-nav-toggle inline-flex items-center justify-center gap-2 rounded-full border border-[#C5A059]/40 px-2.5 py-2 text-[#C5A059] transition-colors hover:bg-[#C5A059]/10 sm:px-3"
+            className="header-icon-trigger theme-nav-toggle inline-flex items-center justify-center gap-2 rounded-full border border-[#C5A059]/40 px-2.5 py-2 text-[#C5A059] transition-colors hover:bg-[#C5A059]/10 sm:px-3"
             aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'}
             title={isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}
           >
@@ -112,20 +111,11 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Search Trigger */}
           <button
             onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="p-2 text-[#C8C2B3] hover:text-[#C5A059] transition-colors rounded-full hover:bg-[#181818]"
+            className="header-icon-trigger p-2 text-[#C8C2B3] hover:text-[#C5A059] transition-colors rounded-full hover:bg-[#181818]"
             title="بحث في العطور"
             aria-label="بحث في العطور"
           >
             <Search className="w-5 h-5" />
-          </button>
-
-          {/* Scent Quiz Assistant Trigger */}
-          <button
-            onClick={() => setIsQuizOpen(true)}
-            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E5C378] bg-[#1A1813] hover:bg-[#25221B] border border-[#C5A059]/30 rounded-md transition-all whitespace-nowrap shrink-0"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-            <span>دليل اختيار العطر</span>
           </button>
 
           {/* Wishlist count */}
