@@ -5,13 +5,11 @@ import { Phone, MessageCircle, MapPin, ShieldCheck, RefreshCw, Truck, Heart } fr
 interface FooterProps {
   onOpenBrandStory: () => void;
   onOpenFaq: () => void;
-  onOpenTracking: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onOpenBrandStory,
   onOpenFaq,
-  onOpenTracking,
 }) => {
   return (
     <footer className="bg-[#070707] text-[#C5BFB0] border-t border-[#C5A059]/20 pt-16 pb-12 overflow-hidden relative">
@@ -107,14 +105,6 @@ export const Footer: React.FC<FooterProps> = ({
               خدمة العملاء
             </h4>
             <ul className="space-y-2 text-sm text-[#9E9687]">
-              <li>
-                <button
-                  onClick={onOpenTracking}
-                  className="hover:text-[#EDE8DC] transition-colors text-right"
-                >
-                  تتبع مسار شحنتك
-                </button>
-              </li>
               <li>
                 <button
                   onClick={onOpenBrandStory}
