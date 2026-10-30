@@ -31,27 +31,37 @@ interface StoreContextType {
 }
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
-const mapOrder = (row: any): Order => ({
-  id: String(row.id),
-  customerName: String(row.customer_name || row.customerName || row.name || ''),
-  customerPhone: String(row.customer_phone || row.phone || row.phone_number || row.customerPhone || ''),
-  customerEmail: row.customer_email || row.customerEmail || row.email || undefined,
-  governorate: String(row.governorate || row.governorate_name || ''),
-  city: String(row.city || row.area || row.district || ''),
-  detailedAddress: String(row.detailed_address || row.address_details || row.shipping_address || row.address || row.detailedAddress || ''),
-  notes: row.notes ?? undefined,
-  paymentReference: row.payment_reference || row.paymentReference || row.sender_wallet_phone || row.wallet_phone || undefined,
-  paymentMethod: row.payment_method ?? row.paymentMethod ?? 'cod',
-  paymentStatus: row.payment_status ?? row.paymentStatus ?? 'pending',
-  shippingStatus: row.shipping_status ?? row.shippingStatus ?? 'new',
-  subtotal: Number(row.subtotal ?? 0), shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0), discountAmount: Number(row.discount_amount ?? row.discountAmount ?? 0),
-  couponCode: row.coupon_code ?? row.couponCode ?? undefined, totalAmount: Number(row.total_amount ?? row.totalAmount ?? 0),
-  items: (row.order_items || row.items || []).map((item: any) => ({
-    productId: item.product_id ?? item.productId ?? '', productName: item.product_name ?? item.productName ?? '', productImage: item.product_image ?? item.productImage ?? '',
-    quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? item.unitPrice ?? 0),
-    totalPrice: Number(item.total_price ?? item.totalPrice ?? Number(item.unit_price ?? item.unitPrice ?? 0) * Number(item.quantity ?? 0)), selectedSize: item.selected_size ?? item.selectedSize ?? '',
-  })), createdAt: row.created_at ?? row.createdAt ?? new Date().toISOString(), trackingHistory: row.tracking_history || row.trackingHistory || [],
-});
+const mapOrder = (row: any): Order => {
+  const rawNotes = String(row.notes || row.customer_notes || '');
+  const transferMarker = rawNotes.indexOf('بيانات التحويل:');
+  const paymentReference = row.payment_reference || row.paymentReference || row.sender_wallet_phone || row.wallet_phone || row.senderWalletPhone ||
+    (transferMarker >= 0 ? rawNotes.slice(transferMarker + 'بيانات التحويل:'.length).trim() : undefined);
+  const customerNotes = transferMarker >= 0
+    ? rawNotes.slice(0, transferMarker).replace(/[|\\s]+$/g, '').trim()
+    : rawNotes || undefined;
+
+  return {
+    id: String(row.id),
+    customerName: String(row.customer_name || row.customerName || row.name || ''),
+    customerPhone: String(row.customer_phone || row.phone || row.phone_number || row.customerPhone || ''),
+    customerEmail: row.customer_email || row.customerEmail || row.email || undefined,
+    governorate: String(row.governorate || row.governorate_name || ''),
+    city: String(row.city || row.area || row.district || ''),
+    detailedAddress: String(row.detailed_address || row.address_details || row.shipping_address || row.address || row.detailedAddress || ''),
+    notes: customerNotes,
+    paymentReference: paymentReference || undefined,
+    paymentMethod: row.payment_method ?? row.paymentMethod ?? 'cod',
+    paymentStatus: row.payment_status ?? row.paymentStatus ?? 'pending',
+    shippingStatus: row.shipping_status ?? row.shippingStatus ?? 'new',
+    subtotal: Number(row.subtotal ?? 0), shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0), discountAmount: Number(row.discount_amount ?? row.discountAmount ?? 0),
+    couponCode: row.coupon_code ?? row.couponCode ?? undefined, totalAmount: Number(row.total_amount ?? row.totalAmount ?? 0),
+    items: (row.order_items || row.items || []).map((item: any) => ({
+      productId: item.product_id ?? item.productId ?? '', productName: item.product_name ?? item.productName ?? '', productImage: item.product_image ?? item.productImage ?? '',
+      quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? item.unitPrice ?? 0),
+      totalPrice: Number(item.total_price ?? item.totalPrice ?? Number(item.unit_price ?? item.unitPrice ?? 0) * Number(item.quantity ?? item.unitPrice ?? 0)), selectedSize: item.selected_size ?? item.selectedSize ?? '',
+    })), createdAt: row.created_at ?? row.createdAt ?? new Date().toISOString(), trackingHistory: row.tracking_history || row.trackingHistory || [],
+  };
+};
 
 export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
