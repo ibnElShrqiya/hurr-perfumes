@@ -301,3 +301,208 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-app header > div:first-child { min-height: 58px; padding-block: .35rem; }
   .hurr-app #catalog-section button, .hurr-app header button { touch-action: manipulation; }
 }
+
+
+/* HURR refined mobile system — compact header, balanced catalog and no page overflow. */
+@media (max-width: 639px) {
+  .hurr-app { overflow-x: clip; }
+  .hurr-app header > div:first-child {
+    min-height: 54px !important;
+    height: auto !important;
+    padding: .3rem .55rem !important;
+    flex-wrap: nowrap !important;
+    gap: .35rem !important;
+  }
+  .hurr-app header > div:first-child > div:first-child {
+    flex: 0 1 108px !important;
+    max-width: 34% !important;
+    transform: scale(.86);
+    transform-origin: right center;
+  }
+  .hurr-app header > div:first-child > div:last-child {
+    flex: 1 1 auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: .12rem !important;
+  }
+  .hurr-app header > div:first-child > div:last-child > button,
+  .hurr-app header > div:first-child > div:last-child > a {
+    min-width: 30px !important;
+    min-height: 30px !important;
+    width: 32px;
+    height: 32px;
+    padding: .35rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hurr-app header > div:first-child > div:last-child svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+  .hurr-app header .mobile-category-strip {
+    min-height: 40px;
+    padding: .35rem .6rem !important;
+    gap: .35rem !important;
+  }
+  .hurr-app header .mobile-category-strip button {
+    font-size: .7rem !important;
+    line-height: 1.3;
+    padding: .38rem .65rem !important;
+  }
+
+  /* Hero: reduce oversized vertical rhythm and keep all controls within viewport. */
+  .hurr-app section:first-of-type:not(#catalog-section) {
+    padding-top: 1.35rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) > div.relative.z-10 {
+    padding-inline: .85rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) h1 {
+    font-size: clamp(1.45rem, 6vw, 1.85rem) !important;
+    line-height: 1.45 !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) p {
+    font-size: .88rem !important;
+    line-height: 1.8 !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .flex.flex-wrap.items-center.gap-4 {
+    gap: .55rem !important;
+    padding-top: .25rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .flex.flex-wrap.items-center.gap-4 button {
+    width: 100%;
+    justify-content: center;
+    min-height: 42px;
+    padding: .65rem .85rem !important;
+    font-size: .78rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .grid.grid-cols-2.md\:grid-cols-4 {
+    gap: .5rem !important;
+    margin-top: 1rem !important;
+    padding-top: .85rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .grid.grid-cols-2.md\:grid-cols-4 > div {
+    min-width: 0;
+    padding: .65rem !important;
+    gap: .5rem !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .grid.grid-cols-2.md\:grid-cols-4 > div > div:first-child {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .hurr-app section:first-of-type:not(#catalog-section) .grid.grid-cols-2.md\:grid-cols-4 > div span:last-child {
+    font-size: .68rem !important;
+    line-height: 1.5 !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Catalog filters remain horizontally scrollable; the page itself never scrolls sideways. */
+  .hurr-app section#catalog-section {
+    padding: 1.25rem .7rem 2rem !important;
+    gap: 1rem !important;
+  }
+  .hurr-app section#catalog-section > div:first-child {
+    padding-bottom: .75rem !important;
+    gap: .55rem !important;
+  }
+  .hurr-app section#catalog-section > div:first-child h2 {
+    font-size: 1.2rem !important;
+    line-height: 1.5 !important;
+  }
+  .hurr-app section#catalog-section > div:first-child > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+    gap: .5rem !important;
+  }
+  .hurr-app section#catalog-section > div:first-child select {
+    max-width: 68%;
+    padding: .45rem .55rem !important;
+    font-size: .68rem !important;
+  }
+  .hurr-app section#catalog-section .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .65rem !important;
+    align-items: stretch;
+  }
+  .hurr-app section#catalog-section .grid:has(> article:only-child) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-width: 100%;
+  }
+  .hurr-app section#catalog-section article.group {
+    min-width: 0;
+    border-radius: .85rem !important;
+  }
+  .hurr-app section#catalog-section article.group > div:first-child {
+    aspect-ratio: 1 / 1 !important;
+    min-height: 0;
+    padding: .35rem !important;
+  }
+  .hurr-app section#catalog-section article.group > div:first-child > div {
+    max-width: 100%;
+  }
+  .hurr-app section#catalog-section article.group > div:last-child {
+    min-width: 0;
+    padding: .6rem !important;
+    gap: .45rem !important;
+  }
+  .hurr-app section#catalog-section article.group h3 {
+    font-size: .82rem !important;
+    line-height: 1.5 !important;
+  }
+  .hurr-app section#catalog-section article.group p {
+    font-size: .68rem !important;
+    line-height: 1.55 !important;
+  }
+  .hurr-app section#catalog-section article.group .pt-2,
+  .hurr-app section#catalog-section article.group .pt-3 {
+    padding-top: .4rem !important;
+  }
+  .hurr-app section#catalog-section article.group .text-base {
+    font-size: .88rem !important;
+  }
+  .hurr-app section#catalog-section article.group button {
+    min-height: 32px !important;
+    padding: .35rem .45rem !important;
+    font-size: .64rem !important;
+    white-space: nowrap;
+  }
+  .hurr-app section#catalog-section article.group button svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+  .hurr-app section#catalog-section article.group .flex.items-center.justify-between.gap-2 {
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .hurr-app header > div:first-child > div:first-child {
+    flex-basis: 92px !important;
+    transform: scale(.78);
+  }
+  .hurr-app header > div:first-child > div:last-child > button,
+  .hurr-app header > div:first-child > div:last-child > a {
+    width: 29px;
+    min-width: 29px !important;
+    height: 29px;
+    min-height: 29px !important;
+    padding: .25rem !important;
+  }
+  .hurr-app section#catalog-section .grid {
+    gap: .5rem !important;
+  }
+  .hurr-app section#catalog-section article.group > div:last-child {
+    padding: .5rem !important;
+  }
+  .hurr-app section#catalog-section article.group button {
+    font-size: .6rem !important;
+    padding-inline: .35rem !important;
+  }
+}
+
+/* Respect desktop and tablet layouts; only prevent accidental intrinsic-width expansion. */
+.hurr-app main > *, .hurr-app section > *, .hurr-app article > * { min-width: 0; }
+.hurr-app img { height: auto; }
