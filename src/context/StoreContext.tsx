@@ -58,7 +58,7 @@ const mapOrder = (row: any): Order => {
     items: (row.order_items || row.items || []).map((item: any) => ({
       productId: item.product_id ?? item.productId ?? '', productName: item.product_name ?? item.productName ?? '', productImage: item.product_image ?? item.productImage ?? '',
       quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? item.unitPrice ?? 0),
-      totalPrice: Number(item.total_price ?? item.totalPrice ?? Number(item.unit_price ?? item.unitPrice ?? 0) * Number(item.quantity ?? item.unitPrice ?? 0)), selectedSize: item.selected_size ?? item.selectedSize ?? '',
+      totalPrice: Number(item.total_price ?? item.totalPrice ?? Number(item.unit_price ?? item.unitPrice ?? 0) * Number(item.quantity ?? 0)), selectedSize: item.selected_size ?? item.selectedSize ?? '',
     })), createdAt: row.created_at ?? row.createdAt ?? new Date().toISOString(), trackingHistory: row.tracking_history || row.trackingHistory || [],
   };
 };
