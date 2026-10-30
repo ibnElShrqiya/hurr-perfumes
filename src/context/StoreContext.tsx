@@ -249,8 +249,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const getOrderById = (id: string) => orders.find((order) => order.id.toUpperCase() === id.trim().toUpperCase());
   const getOrdersByPhone = (phone: string) => { const clean = phone.replace(/[^0-9]/g, ''); return orders.filter((order) => order.customerPhone.replace(/[^0-9]/g, '').includes(clean)); };
   const trackOrder = async (id: string, token: string): Promise<Order | null> => {
-    if (!supabase || !id.trim() || token.length < 32) return null;
-    const { data, error } = await supabase.functions.invoke('track-order', { body: { id: id.trim().toUpperCase(), trackingToken: token } });
+    const cleanId = id.trim();
+    const cleanToken = token.trim();
+    if (!supabase || !cleanId || cleanToken.length < 32) return null;
+    const { data, error } = await supabase.functions.invoke('track-order', { body: { id: cleanId, trackingToken: cleanToken } });
     if (error || !data?.id) return null;
     return { id: data.id, customerName: '', customerPhone: '', governorate: '', city: '', detailedAddress: '', paymentStatus: data.paymentStatus,
       shippingStatus: data.shippingStatus, subtotal: Number(data.subtotal || 0), shippingFee: Number(data.shippingFee || 0), discountAmount: Number(data.discountAmount || 0), totalAmount: Number(data.totalAmount || 0),
