@@ -1,5 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { getScentFamilyLabel } from '../types';
 
 const url = (
   import.meta.env.VITE_SUPABASE_URL as string | undefined
@@ -95,7 +96,7 @@ export function fromDbProduct(row: any) {
           }
         : { top: [], heart: [], base: [] },
     scentFamily: row.scent_family ?? 'oud',
-    scentFamilyAr: row.scent_family_ar ?? '',
+    scentFamilyAr: getScentFamilyLabel(row.scent_family) ?? row.scent_family_ar ?? '',
     occasion: row.occasion ?? '',
     season: row.season ?? '',
     status:
