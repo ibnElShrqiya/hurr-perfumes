@@ -34,8 +34,13 @@ const StoreContext = createContext<StoreContextType | undefined>(undefined);
 const mapOrder = (row: any): Order => {
   const rawNotes = String(row.notes || row.customer_notes || '');
   const transferMarker = rawNotes.indexOf('بيانات التحويل:');
-  const paymentReference = row.payment_reference || row.paymentReference || row.sender_wallet_phone || row.wallet_phone || row.senderWalletPhone ||
-    (transferMarker >= 0 ? rawNotes.slice(transferMarker + 'بيانات التحويل:'.length).trim() : undefined);
+  const transferDetails = transferMarker >= 0 ? rawNotes.slice(transferMarker + 'بيانات التحويل:'.length).trim() : '';
+  const senderWalletPhone = row.sender_wallet_phone || row.senderWalletPhone ||
+    transferDetails.match(/(?:رقم )?محفظة:?\\s*([^|]+)/i)?.[1]?.trim() || undefined;
+  const walletTransactionId = row.wallet_transaction_id || row.walletTransactionId ||
+    transferDetails.match(/(?:رقم )?عملية:?\\s*(.+)$/i)?.[1]?.trim() || undefined;
+  const paymentReference = row.payment_reference || row.paymentReference || row.wallet_phone ||
+    (transferDetails || (senderWalletPhone || walletTransactionId ? `محفظة: ${senderWalletPhone || '—'} | عملية: ${walletTransactionId || 'غير مسجل'}` : undefined));
   const customerNotes = transferMarker >= 0
     ? rawNotes.slice(0, transferMarker).replace(/[|\s]+$/g, '').trim()
     : rawNotes || undefined;
@@ -49,7 +54,7 @@ const mapOrder = (row: any): Order => {
     city: String(row.city || row.area || row.district || ''),
     detailedAddress: String(row.detailed_address || row.address_details || row.shipping_address || row.address || row.detailedAddress || ''),
     notes: customerNotes,
-    paymentReference: paymentReference || undefined,
+    paymentReference: paymentReference || undefined, senderWalletPhone, walletTransactionId,
     paymentMethod: row.payment_method ?? row.paymentMethod ?? 'cod',
     paymentStatus: row.payment_status ?? row.paymentStatus ?? 'pending',
     shippingStatus: row.shipping_status ?? row.shippingStatus ?? 'new',
@@ -208,7 +213,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const { data: anonData, error: authError } = await supabase.auth.signInAnonymously();
       if (authError || !anonData.session) throw new Error('تعذر إنشاء جلسة آمنة للطلب. تحقق من تفعيل الدخول المجهول في إعدادات المصادقة.');
     }
-    const storedNotes = [orderData.notes?.trim(), orderData.paymentReference?.trim() ? `بيانات التحويل: ${orderData.paymentReference.trim()}` : ''].filter(Boolean).join(' | ').slice(0, 500);
+    const transferDetails = [
+      orderData.senderWalletPhone?.trim() ? `رقم المحفظة: ${orderData.senderWalletPhone.trim()}` : '',
+      orderData.walletTransactionId?.trim() ? `رقم العملية: ${orderData.walletTransactionId.trim()}` : '',
+      !orderData.senderWalletPhone?.trim() && !orderData.walletTransactionId?.trim() && orderData.paymentReference?.trim() ? orderData.paymentReference.trim() : '',
+    ].filter(Boolean).join(' | ');
+    const storedNotes = [orderData.notes?.trim(), transferDetails ? `بيانات التحويل: ${transferDetails}` : ''].filter(Boolean).join(' | ').slice(0, 500);
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
       customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
       customerEmail: orderData.customerEmail, governorate: orderData.governorate, city: orderData.city,
