@@ -141,6 +141,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay'
             ? `محفظة: ${senderWalletPhone} | عملية: ${walletTransactionId || 'قيد المراجعة'}`
             : undefined,
+        senderWalletPhone: senderWalletPhone.trim() || undefined,
+        walletTransactionId: walletTransactionId.trim() || undefined,
       });
 
       showToast(`تم تسجيل طلبك الأصيل بنجاح برقم: ${newOrder.id}`, 'success');
