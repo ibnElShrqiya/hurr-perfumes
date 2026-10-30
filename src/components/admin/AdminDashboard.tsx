@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
-import { Product, Order, Coupon, ShippingStatus, ProductCategory } from '../../types';
+import { Product, Order, Coupon, ProductCategory } from '../../types';
 import { EGYPTIAN_GOVERNORATES } from '../../data/governorates';
 import {
   ShieldCheck,
@@ -32,7 +32,6 @@ export const AdminDashboard: React.FC = () => {
     updateProduct,
     deleteProduct,
     orders,
-    updateOrderStatus,
     deleteOrder,
     coupons,
     addCoupon,
@@ -78,7 +77,6 @@ export const AdminDashboard: React.FC = () => {
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // Orders Filter
-  const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
   const [orderSearch, setOrderSearch] = useState('');
 
   // Product Search
@@ -138,7 +136,6 @@ export const AdminDashboard: React.FC = () => {
 
   // Analytics Metrics
   const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
-  const totalDelivered = orders.filter((o) => o.shippingStatus === 'delivered').length;
   const lowStockItems = products.filter((p) => p.stock <= 5);
 
   const openNewProductModal = () => {
@@ -284,15 +281,12 @@ export const AdminDashboard: React.FC = () => {
   };
 
   // Filtered orders
-  const filteredOrders = orders.filter((o) => {
-    const matchesStatus = orderStatusFilter === 'all' || o.shippingStatus === orderStatusFilter;
-    const matchesSearch =
-      !orderSearch ||
-      o.id.toLowerCase().includes(orderSearch.toLowerCase()) ||
-      o.customerName.toLowerCase().includes(orderSearch.toLowerCase()) ||
-      o.customerPhone.includes(orderSearch);
-    return matchesStatus && matchesSearch;
-  });
+  const filteredOrders = orders.filter((o) =>
+    !orderSearch ||
+    o.id.toLowerCase().includes(orderSearch.toLowerCase()) ||
+    o.customerName.toLowerCase().includes(orderSearch.toLowerCase()) ||
+    o.customerPhone.includes(orderSearch)
+  );
 
   // Filtered products
   const filteredProducts = products.filter((p) => {
@@ -354,7 +348,6 @@ export const AdminDashboard: React.FC = () => {
           <span className="text-xl font-bold font-sans text-[#EDE8DC] tabular-nums block">
             {orders.length} طلب
           </span>
-          <span className="text-[10px] text-[#888] block">{totalDelivered} تم تسليمه بنجاح</span>
         </div>
 
         <div className="p-4 bg-[#111111] border border-[#222] rounded-xl space-y-1">
@@ -552,30 +545,6 @@ export const AdminDashboard: React.FC = () => {
               />
             </div>
 
-            {/* Status Filter Tabs */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              {[
-                { id: 'all', label: 'الكل' },
-                { id: 'new', label: 'جديد' },
-                { id: 'processing', label: 'قيد التجهيز' },
-                { id: 'shipped', label: 'خرج للشحن' },
-                { id: 'delivered', label: 'تم التسليم' },
-              ].map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => setOrderStatusFilter(st.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
-                    orderStatusFilter === st.id
-                      ? 'bg-[#C5A059] text-[#0A0A0A]'
-                      : 'bg-[#181818] text-[#888] hover:text-[#EDE8DC]'
-                  }`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Orders Cards / Table */}
           <div className="space-y-4">
             {filteredOrders.map((order) => (
@@ -594,19 +563,7 @@ export const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* Status Dropdown */}
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-[#888]">حالة الشحن:</span>
-                    <select
-                      value={order.shippingStatus}
-                      onChange={(e) => void updateOrderStatus(order.id, e.target.value as ShippingStatus).catch((error: Error) => showToast(error.message || 'تعذر تحديث حالة الطلب', 'error'))}
-                      className="p-1.5 bg-[#181818] border border-[#333] focus:border-[#C5A059] rounded text-xs text-[#EDE8DC] focus:outline-none"
-                    >
-                      <option value="new">طلب جديد</option>
-                      <option value="processing">قيد التجهيز بالمعمل</option>
-                      <option value="shipped">خرج مع مندوب التوصيل</option>
-                      <option value="delivered">تم التسليم بنجاح</option>
-                      <option value="cancelled">ملغي</option>
-                    </select>
+                  <div className="flex items-center justify-end gap-3">
                     <button
                       type="button"
                       onClick={() => {
