@@ -28,11 +28,11 @@ export const CatalogSection: React.FC = () => {
 
   const families = [
     { id: 'all', label: 'كافة النوتات' },
-    { id: 'oud', label: 'دهن العود المعتق' },
+    { id: 'oud', label: 'العود' },
     { id: 'amber', label: 'العنبر والتوابل' },
     { id: 'musk', label: 'المسك والورد الطائفي' },
     { id: 'leather', label: 'الجلود والتبغ' },
-    { id: 'oriental_floral', label: 'غورماند وزهور شرقية' },
+    { id: 'oriental_floral', label: 'الزهور الشرقية' },
   ];
 
   // Filter & Sort Logic
