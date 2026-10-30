@@ -37,7 +37,7 @@ const mapOrder = (row: any): Order => {
   const paymentReference = row.payment_reference || row.paymentReference || row.sender_wallet_phone || row.wallet_phone || row.senderWalletPhone ||
     (transferMarker >= 0 ? rawNotes.slice(transferMarker + 'بيانات التحويل:'.length).trim() : undefined);
   const customerNotes = transferMarker >= 0
-    ? rawNotes.slice(0, transferMarker).replace(/[|\\s]+$/g, '').trim()
+    ? rawNotes.slice(0, transferMarker).replace(/[|\s]+$/g, '').trim()
     : rawNotes || undefined;
 
   return {
