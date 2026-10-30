@@ -4,7 +4,7 @@ import { BottleVisual } from '../common/BottleVisual';
 import { Sparkles, ArrowDown, Award, ShieldCheck, Flame, Droplets } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
-  const { products, setIsQuizOpen, setActiveCategory } = useStore();
+  const { products, setActiveCategory } = useStore();
   const visibleProducts = products.filter((p) => p.status !== 'draft');
   const heroProduct = visibleProducts.find((p) => p.isFeatured || p.isBestseller) || visibleProducts[0];
 
@@ -67,13 +67,6 @@ export const HeroSection: React.FC = () => {
                 <ArrowDown className="w-4 h-4 text-[#0A0A0A]" />
               </button>
 
-              <button
-                onClick={() => setIsQuizOpen(true)}
-                className="px-5 py-3.5 bg-[#141414] hover:bg-[#1E1E1E] text-[#EDE8DC] hover:text-[#C5A059] border border-[#C5A059]/40 hover:border-[#C5A059] font-medium text-sm rounded-lg transition-all flex items-center gap-2"
-              >
-                <Sparkles className="w-4 h-4 text-[#C5A059]" />
-                <span>دليل حُرّ لاختيار عطر يناسبك</span>
-              </button>
             </div>
           </div>
 
