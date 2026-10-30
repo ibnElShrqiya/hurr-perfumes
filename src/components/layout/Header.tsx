@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { BrandLogo } from '../common/BrandLogo';
 import { useStore } from '../../context/StoreContext';
-import { ShoppingBag, Heart, Search, ShieldCheck, Sparkles, X, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Sparkles, X, Sun, Moon } from 'lucide-react';
 import { ProductCategory } from '../../types';
 
 interface HeaderProps {
   onOpenTracking: () => void;
   onOpenHome: () => void;
-  onOpenAdmin: () => void;
   onOpenBrandStory: () => void;
   onOpenFaq: () => void;
   isLightMode: boolean;
@@ -17,7 +16,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   onOpenTracking,
   onOpenHome,
-  onOpenAdmin,
   onOpenBrandStory,
   onOpenFaq,
   isLightMode,
@@ -32,7 +30,6 @@ export const Header: React.FC<HeaderProps> = ({
     searchQuery,
     setSearchQuery,
     setIsQuizOpen,
-    isAdminLoggedIn,
   } = useStore();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -162,20 +159,6 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </button>
 
-          {/* Admin Dashboard Portal Link */}
-          <a
-            href="/admin"
-            onClick={onOpenAdmin}
-            className={`p-2 rounded-full transition-colors ${
-              isAdminLoggedIn
-                ? 'text-[#C5A059] bg-[#C5A059]/10 border border-[#C5A059]/40'
-                : 'text-[#6A6458] hover:text-[#C5A059]'
-            }`}
-            title="لوحة الإدارة والمخزون"
-            aria-label="لوحة تحكم المتجر"
-          >
-            <ShieldCheck className="w-5 h-5" />
-          </a>
         </div>
       </div>
 
