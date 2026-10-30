@@ -152,7 +152,7 @@ class AppErrorBoundary extends React.Component<{ children: React.ReactNode }, { 
       <main dir="rtl" className="min-h-screen flex items-center justify-center bg-[#f7f4ec] text-[#28251f] p-6">
         <section className="max-w-lg w-full text-center rounded-2xl border border-[#d6b66a] bg-white p-8 shadow-xl">
           <h1 className="text-2xl font-bold mb-3">تعذر تحميل الصفحة</h1>
-          <p className="text-sm leading-7 mb-5">حدث خطأ أثناء تشغيل الموقع. حدّث الصفحة، وإذا استمرت المشكلة تواصل مع إدارة الموقع.</p>
+          <p className="text-sm leading-7 mb-5">حدث خطأ أثناء تشغيل الموقع. حدّث الصفحة، وإذا استمرت المشكلة، تواصل مع فريق حُرّ.</p>
           <button className="rounded-lg bg-[#c5a059] px-5 py-3 font-bold" onClick={() => window.location.reload()}>إعادة تحميل الصفحة</button>
         </section>
       </main>

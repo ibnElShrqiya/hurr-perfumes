@@ -72,7 +72,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({
           تتبّع طلبك والشحنة
         </h1>
         <p className="text-xs sm:text-sm text-[#8A8275] mt-1">
-          تابع مسار شحنتك لحظة بلحظة عبر كافة محافظات جمهورية مصر العربية
+          اطّلع على آخر حالة مسجلة لطلبك باستخدام رقم الطلب ورمز التتبع.
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="أدخل رقم الطلب (مثال: HURR-EG-10842) أو رقم هاتفك المحمول"
+              placeholder="أدخل رقم الطلب كما وصلك بعد إتمام الشراء"
               className="w-full pr-10 pl-3 py-2.5 bg-[#181818] border border-[#333] focus:border-[#C5A059] rounded-lg text-sm text-[#EDE8DC] focus:outline-none"
             />
           </div>
@@ -324,7 +324,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({
               </div>
               <a
                 href={`https://wa.me/201062003963?text=${encodeURIComponent(
-                  `مرحباً دار حُرّ، أود الاستفسار عن طلبي رقم: ${currentOrder.id}`
+                  `مرحباً حُرّ، أود الاستفسار عن حالة طلبي رقم: ${currentOrder.id}`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"

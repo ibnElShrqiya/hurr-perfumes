@@ -68,17 +68,17 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           fontSize="26"
           fontWeight="600"
           letterSpacing="10"
-          fill="url(#hurrWordmarkGold)"
+          fill={`url(#${gradientId})`}
         >
           HURR
         </text>
         <path d="M34 123H88M132 123H186" stroke={`url(#${gradientId})`} strokeWidth="1.5" />
-        <path d="M110 116L117 123L110 130L103 123L110 116Z" fill="url(#hurrWordmarkGold)" />
+        <path d="M110 116L117 123L110 130L103 123L110 116Z" fill={`url(#${gradientId})`} />
       </svg>
 
       {showSubtitle && (
         <span className={`mt-0.5 text-center font-sans tracking-wide text-[#A69F90] leading-tight ${currentSize.sub}`}>
-          دار العطور الشرقية الفاخرة · القاهرة
+          هويةٌ عربية · أصالةٌ ووقار
         </span>
       )}
     </div>

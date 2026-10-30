@@ -60,7 +60,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     const errs: Record<string, string> = {};
 
     if (!customerName.trim() || customerName.trim().length < 3) {
-      errs.customerName = 'يرجى إدخال الاسم بالكامل ثلاثياً لضمان دقة التوصيل';
+      errs.customerName = 'يرجى إدخال الاسم كما يظهر في بيانات الاستلام';
     }
 
     // Egyptian phone validation: 11 digits starting with 010, 011, 012, or 015
@@ -155,7 +155,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   if (cart.length === 0) {
     return (
       <div className="max-w-xl mx-auto py-20 px-4 text-center space-y-4">
-        <h2 className="text-xl font-serif font-bold text-[#EDE8DC]">لا توجد منتجات لإتمام الطلب</h2>
+        <h2 className="text-xl font-serif font-bold text-[#EDE8DC]">لا توجد منتجات في سلة الشراء</h2>
         <button
           onClick={onBackToStore}
           className="px-6 py-2.5 bg-[#C5A059] text-[#0A0A0A] font-bold text-xs rounded-lg"
@@ -209,7 +209,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="مثال: المستشار طارق عبد الرحمن الشريف"
+                    placeholder="الاسم الثلاثي لصاحب الطلب"
                     className="w-full p-2.5 bg-[#181818] border border-[#333] focus:border-[#C5A059] rounded-lg text-sm text-[#EDE8DC] focus:outline-none"
                   />
                   {errors.customerName && (
@@ -337,7 +337,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 <span className="w-5 h-5 rounded-full bg-[#C5A059]/20 text-[#C5A059] text-xs flex items-center justify-center font-bold">
                   3
                 </span>
-                <span>طريقة الدفع المعتمدة في مصر</span>
+                <span>وسيلة الدفع</span>
               </h3>
 
               <div className="space-y-3">
@@ -361,7 +361,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-[#EDE8DC] flex items-center gap-2">
                         <Banknote className="w-4 h-4 text-[#C5A059]" />
-                        <span>الدفع عند الاستلام (كاش مع المعاينة)</span>
+                        <span>الدفع عند الاستلام</span>
                       </span>
                       <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded">
                         الأكثر طلباً في مصر
@@ -393,14 +393,14 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-[#EDE8DC] flex items-center gap-2">
                         <Smartphone className="w-4 h-4 text-[#C5A059]" />
-                        <span>فودافون كاش & إنستاباي مصر (تحويل فوري)</span>
+                        <span>تحويل يدوي عبر فودافون كاش أو إنستاباي</span>
                       </span>
                       <span className="text-[10px] bg-[#C5A059]/10 text-[#E5C378] border border-[#C5A059]/30 px-2 py-0.5 rounded">
                         01062003963
                       </span>
                     </div>
                     <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                      حوّل المبلغ مباشرة على رقم دار حُرّ المعتمد: <strong>01062003963</strong>
+                      حوّل إلى الرقم الموضح، ثم أدخل بيانات التحويل لمراجعتها قبل اعتماد الطلب: <strong>01062003963</strong>
                     </p>
                   </div>
                 </label>
@@ -409,7 +409,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 {(paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay') && (
                   <div className="p-4 bg-[#181611] border border-[#C5A059]/40 rounded-xl space-y-3 mr-6 animate-in fade-in">
                     <p className="text-xs text-[#E5C378] leading-relaxed">
-                      📌 يرجى تحويل مبلغ <strong className="text-white tabular-nums">{totalAmount.toLocaleString('ar-EG')} ج.م</strong> إلى رقم فودافون كاش / إنستاباي: <strong className="text-white">01062003963</strong> ثم كتابة رقمك بالأسفل للتحقق الفوري.
+                      📌 يرجى تحويل مبلغ <strong className="text-white tabular-nums">{totalAmount.toLocaleString('ar-EG')} ج.م</strong> إلى رقم فودافون كاش / إنستاباي: <strong className="text-white">01062003963</strong> ثم أدخل بيانات التحويل لمراجعة الدفع.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
@@ -470,7 +470,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                       </span>
                     </div>
                     <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                      دفع إلكتروني آمن ومباشر عبر البوابة البنكية المعتمدة للبنك المركزي المصري.
+                      هذه الوسيلة غير مفعّلة حاليًا، وستتاح بعد ربط بوابة دفع معتمدة.
                     </p>
                   </div>
                 </label>
@@ -484,7 +484,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           <div className="lg:col-span-5 space-y-6">
             <div className="sticky top-24 p-5 sm:p-6 bg-[#111111] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-xl">
               <h3 className="text-base font-serif font-bold text-[#FBF9F5] border-b border-[#222] pb-3 flex items-center justify-between">
-                <span>ملخص الطلب الأصيل</span>
+                <span>ملخص طلبك</span>
                 <span className="text-xs font-normal text-[#C5A059]">
                   {cart.length} أصناف عطرية
                 </span>
@@ -553,11 +553,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               <div className="p-3 bg-[#161512] border border-[#C5A059]/20 rounded-xl space-y-1 text-xs">
                 <div className="flex items-center gap-1.5 text-[#E5C378] font-semibold">
                   <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
-                  <span>تعهد دار حُرّ الأصيل:</span>
+                  <span>التزام حُرّ بالوضوح:</span>
                 </div>
                 <p className="text-[11px] text-[#8C8475] leading-relaxed">
-                  يحق لك فحص العطر وتجربة العينة المرفقة قبل فتح الزجاجة، والاسترجاع خلال 14 يوماً
-                  وفقاً لقانون حماية المستهلك المصري.
+                  نوضح قيمة الطلب ورسوم التوصيل ووسائل الدفع المتاحة قبل التأكيد. راجع البيانات والشروط قبل إرسال طلبك.
                 </p>
               </div>
 
@@ -574,7 +573,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 ) : (
                   <>
                     <CheckCircle className="w-5 h-5 text-[#0A0A0A]" />
-                    <span>تأكيد الطلب وشحن العطر الآن</span>
+                    <span>تأكيد الطلب</span>
                   </>
                 )}
               </button>

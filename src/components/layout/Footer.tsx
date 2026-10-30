@@ -26,9 +26,9 @@ export const Footer: React.FC<FooterProps> = ({
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[#EDE8DC]">زيوت نقية 100%</h4>
+              <h4 className="text-sm font-semibold text-[#EDE8DC]">عنايةٌ بالتفاصيل</h4>
               <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                مستخلصة من أندر مصادر العود والعنبر الطبيعي بدون تخفيف
+                توازنٌ بين الأصالة والذوق الرفيع
               </p>
             </div>
           </div>
@@ -38,9 +38,9 @@ export const Footer: React.FC<FooterProps> = ({
               <Truck className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[#EDE8DC]">شحن لكافة محافظات مصر</h4>
+              <h4 className="text-sm font-semibold text-[#EDE8DC]">توصيل داخل مصر</h4>
               <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                توصيل خلال 24-48 ساعة للقاهرة والجيزة وجميع أنحاء الجمهورية
+                تختلف الرسوم والمدة حسب المحافظة، وتظهر قبل تأكيد الطلب.
               </p>
             </div>
           </div>
@@ -50,9 +50,9 @@ export const Footer: React.FC<FooterProps> = ({
               <RefreshCw className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-[#EDE8DC]">الضمان الذهبي للتجربة</h4>
+              <h4 className="text-sm font-semibold text-[#EDE8DC]">وضوحٌ يصون ثقتك</h4>
               <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                عينة مجانية مع كل طلب للتجربة قبل فتح التغليف واسترجاع 14 يوماً
+                نوضح تفاصيل الطلب والشروط المتاحة قبل إتمام الشراء.
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export const Footer: React.FC<FooterProps> = ({
             <div>
               <h4 className="text-sm font-semibold text-[#EDE8DC]">الدفع عند الاستلام</h4>
               <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                افحص العطر مع المندوب وادفع كاش أو عبر فودافون كاش وإنستاباي
+                تظهر وسائل الدفع المتاحة بوضوح عند تأكيد الطلب.
               </p>
             </div>
           </div>
@@ -76,9 +76,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="lg:col-span-2 space-y-4">
             <BrandLogo size="lg" />
             <p className="text-sm text-[#9E9687] leading-relaxed max-w-sm mt-3">
-              دار حُرّ للعطور الشرقية الأصيلة — تجسيد مصري للأصالة الأصيلة والروح العطرية.
-              نبتكر خلطات استثنائية من دهن العود المعتق، العنبر النقي، والمسك المخملي لنمنحك حضوراً
-              طاغياً يدوم أياماً.
+              حُرّ علامة عربية تستلهم من قيم الإسلام الصدق والإتقان وحسن المعاملة. نعتز بأصالةٍ راسخة، ونقدّمها بروح معاصرة وتواصل صادق يقدّر ثقتك.
             </p>
 
             {/* Official Contact Buttons */}
@@ -98,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({
                 className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#141414] hover:bg-[#1C1C1C] border border-[#25D366]/40 hover:border-[#25D366] rounded-lg text-xs text-[#EDE8DC] transition-colors"
               >
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                <span>واتساب المبيعات</span>
+                <span>تواصل مع حُرّ عبر واتساب</span>
               </a>
             </div>
           </div>
@@ -111,27 +109,27 @@ export const Footer: React.FC<FooterProps> = ({
             <ul className="space-y-2 text-sm text-[#9E9687]">
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  عطور العود
+                  العود
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  عطور العنبر والتوابل
+                  العنبر والتوابل
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  عطور المسك والزهور
+                  المسك والورد الطائفي
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  العطور الخشبية والجلدية
+                  الجلود والتبغ
                 </a>
               </li>
               <li>
                 <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  المجموعات والباقات
+                  الزهور الشرقية
                 </a>
               </li>
             </ul>
@@ -156,7 +154,7 @@ export const Footer: React.FC<FooterProps> = ({
                   onClick={onOpenBrandStory}
                   className="hover:text-[#EDE8DC] transition-colors text-right"
                 >
-                  حكاية دار حُرّ والأصالة
+                  حكاية حُرّ
                 </button>
               </li>
               <li>
@@ -192,7 +190,7 @@ export const Footer: React.FC<FooterProps> = ({
               تابع مجتمع حُرّ
             </h4>
             <p className="text-xs text-[#8A8275] leading-relaxed">
-              شاهد كواليس تعتيق العود، تقييمات العملاء، والعروض الحصرية على حساباتنا الرسمية:
+              تابع جديد حُرّ، وتعرّف إلى هويتنا ومنتجاتنا عبر حساباتنا الرسمية:
             </p>
 
             {/* Social Icons with exact requested links */}
@@ -202,7 +200,7 @@ export const Footer: React.FC<FooterProps> = ({
                 href="https://www.tiktok.com/@hurr771"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="حساب تيك توك دار حُرّ"
+                title="حساب حُرّ على تيك توك"
                 className="w-9 h-9 rounded-full bg-[#181818] hover:bg-[#000000] border border-[#333] hover:border-[#C5A059] flex items-center justify-center text-[#EDE8DC] hover:text-[#C5A059] transition-all"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -215,7 +213,7 @@ export const Footer: React.FC<FooterProps> = ({
                 href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=bx67p60"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="إنستغرام دار حُرّ"
+                title="حساب حُرّ على إنستغرام"
                 className="w-9 h-9 rounded-full bg-[#181818] hover:bg-[#E1306C]/20 border border-[#333] hover:border-[#E1306C] flex items-center justify-center text-[#EDE8DC] hover:text-[#E1306C] transition-all"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -228,7 +226,7 @@ export const Footer: React.FC<FooterProps> = ({
                 href="https://www.facebook.com/hurrgg1"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="فيسبوك دار حُرّ"
+                title="حساب حُرّ على فيسبوك"
                 className="w-9 h-9 rounded-full bg-[#181818] hover:bg-[#1877F2]/20 border border-[#333] hover:border-[#1877F2] flex items-center justify-center text-[#EDE8DC] hover:text-[#1877F2] transition-all"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -248,16 +246,15 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#6B6559]">
           <div className="flex items-center gap-2">
             <span>جميع الحقوق محفوظة © {new Date().getFullYear()}</span>
-            <span className="text-[#C5A059] font-serif font-bold">دار حُرّ للعطور الفاخرة</span>
-            <span>· HURR PARFUMS</span>
+            <span className="text-[#C5A059] font-serif font-bold">حُرّ</span>
+            <span>· HURR</span>
           </div>
 
           {/* Egyptian Payment Accepted Methods */}
           <div className="flex items-center gap-3 text-[11px] text-[#8C8474]">
             <span className="bg-[#141414] px-2 py-1 rounded border border-[#222]">الدفع عند الاستلام (COD)</span>
             <span className="bg-[#141414] px-2 py-1 rounded border border-[#222]">فودافون كاش & إنستاباي</span>
-            <span className="bg-[#141414] px-2 py-1 rounded border border-[#222]">ميزة Meeza</span>
-            <span className="bg-[#141414] px-2 py-1 rounded border border-[#222]">Visa / Mastercard</span>
+            
           </div>
         </div>
       </div>

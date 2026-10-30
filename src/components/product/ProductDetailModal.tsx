@@ -162,7 +162,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 {product.stock > 0 ? (
                   <span className="text-emerald-400 flex items-center gap-1.5 font-medium">
                     <CheckCircle className="w-3.5 h-3.5" />
-                    <span>متوفر في المخزن الرئيسي بالقاهرة ({product.stock} قطع متاحة)</span>
+                    <span>متوفر بالمخزون ({product.stock} قطع)</span>
                   </span>
                 ) : (
                   <span className="text-red-400">نفد المخزون حالياً</span>

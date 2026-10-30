@@ -125,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E5C378] bg-[#1A1813] hover:bg-[#25221B] border border-[#C5A059]/30 rounded-md transition-all whitespace-nowrap shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-            <span>مستشار العطور</span>
+            <span>دليل اختيار العطر</span>
           </button>
 
           {/* Wishlist count */}

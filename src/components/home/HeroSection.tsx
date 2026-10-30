@@ -27,20 +27,19 @@ export const HeroSection: React.FC = () => {
             {/* Quiet Editorial Kicker with Calligraphy Accent */}
             <div className="inline-flex max-w-full flex-wrap items-center gap-2 text-xs text-[#C5A059] font-medium tracking-wide">
               <span className="w-6 h-[1px] bg-[#C5A059]" />
-              <span>حكاية الطيب والأصالة من حُرّ للعطور في مصر</span>
+              <span>هويةٌ عربيةٌ إسلامية، بروحٍ معاصرة</span>
               <span className="w-2 h-2 rotate-45 border border-[#C5A059] inline-block" />
             </div>
 
             {/* Display Headline with balanced typography */}
             <h1 className="max-w-full break-words text-[1.7rem] sm:text-5xl lg:text-6xl font-serif font-bold text-[#FBF9F5] leading-[1.25] tracking-tight [text-wrap:balance]">
-              طيبٌ من روح الشرق.. <br />
-              <span className="gold-gradient-text">أثرٌ طيب يبقى في الذاكرة</span>
+              من أصالة الشرق.. <br />
+              <span className="gold-gradient-text">هيبةٌ في الحضور ووقارٌ في الأثر</span>
             </h1>
 
             {/* Prose description */}
             <p className="max-w-full text-sm sm:text-lg text-[#B0A99B] leading-relaxed max-w-2xl font-light">
-              من وحي العود والعنبر والمسك، نصوغ توليفات عطرية بروح شرقية واهتمام بالتفاصيل،
-              ونحرص على وضوح المكونات وجودة التجربة، لترافقك رائحة تعبّر عن ذوقك وتترك أثراً طيباً.
+              في حُرّ نعتز بهويتنا العربية والإسلامية وقيمها الأصيلة: الصدق، والإتقان، وحسن المعاملة. نؤمن بفخامةٍ هادئة، وتفاصيل واضحة، واختيارٍ يحترم ذوقك.
             </p>
 
             {/* Interactive Scent Feature Highlight */}
@@ -50,9 +49,9 @@ export const HeroSection: React.FC = () => {
                   <Flame className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-semibold text-[#EDE8DC]">وعد حُرّ بالجودة</h4>
+                  <h4 className="text-sm font-semibold text-[#EDE8DC]">ميثاق حُرّ</h4>
                   <p className="text-xs text-[#8A8275]">
-                    نوضح مواصفات كل منتج وشروط الطلب قبل إتمام الشراء
+                    صدقٌ في الوصف، ووضوحٌ في الطلب، واحترامٌ لاختيارك
                   </p>
                 </div>
               </div>
@@ -64,7 +63,7 @@ export const HeroSection: React.FC = () => {
                 onClick={scrollToCatalog}
                 className="px-6 py-3.5 bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#E5C378] hover:from-[#D4AF37] hover:to-[#FFF3D1] text-[#0A0A0A] font-bold text-sm rounded-lg shadow-[0_4px_20px_rgba(197,160,89,0.3)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2"
               >
-                <span>اكتشف مجموعة حُرّ</span>
+                <span>تعرّف إلى عطور حُرّ</span>
                 <ArrowDown className="w-4 h-4 text-[#0A0A0A]" />
               </button>
 
@@ -73,7 +72,7 @@ export const HeroSection: React.FC = () => {
                 className="px-5 py-3.5 bg-[#141414] hover:bg-[#1E1E1E] text-[#EDE8DC] hover:text-[#C5A059] border border-[#C5A059]/40 hover:border-[#C5A059] font-medium text-sm rounded-lg transition-all flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-[#C5A059]" />
-                <span>دليل اختيار العطر (اكتشف ما يناسبك)</span>
+                <span>دليل حُرّ لاختيار عطر يناسبك</span>
               </button>
             </div>
           </div>
@@ -86,7 +85,7 @@ export const HeroSection: React.FC = () => {
                 <>
                   <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-1 bg-[#C5A059]/20 border border-[#C5A059]/50 rounded-full text-[11px] font-semibold text-[#E5C378]">
                     <Award className="w-3.5 h-3.5" />
-                    <span>من مجموعة حُرّ</span>
+                    <span>اختيار من حُرّ</span>
                   </div>
                   <div className="relative z-10 py-2 sm:py-4"><BottleVisual product={heroProduct} size="md" showAromaMist={true} /></div>
                   <div className="relative z-20 w-full bg-[#111111]/90 border border-[#C5A059]/30 rounded-lg p-3 text-center mt-2">
@@ -108,7 +107,7 @@ export const HeroSection: React.FC = () => {
                     <span className="font-serif text-3xl text-[#D4AF37]">حُرّ</span>
                   </div>
                   <h2 className="text-xl font-serif font-bold text-[#E5C378]">مجموعة حُرّ</h2>
-                  <p className="text-sm text-[#A69F90] leading-7">نعمل على تجهيز المنتجات المعتمدة. ستظهر التفاصيل والأسعار هنا عند نشرها من لوحة الإدارة.</p>
+                  <p className="text-sm text-[#A69F90] leading-7">تُضاف المنتجات بعد اعتماد تفاصيلها، لتتعرّف إليها بوضوح وتختار على بيّنة.</p>
                 </div>
               )}
             </div>
@@ -153,7 +152,7 @@ export const HeroSection: React.FC = () => {
             </div>
             <div>
               <span className="text-xs text-[#8A8275] block">تجربة شراء واضحة</span>
-              <span className="text-sm font-bold text-[#EDE8DC]">تقييمات موثقة بعد الشراء</span>
+              <span className="text-sm font-bold text-[#EDE8DC]">آراء العملاء بعد التجربة</span>
             </div>
           </div>
         </div>

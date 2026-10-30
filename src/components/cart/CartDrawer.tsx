@@ -92,7 +92,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
               <Truck className="w-3.5 h-3.5" />
               <span>
                 {isFreeShipping
-                  ? 'تهانينا! حصلت على شحن مجاني لكافة محافظات مصر'
+                  ? 'أصبح طلبك مؤهلاً للشحن المجاني'
                   : `أضف بقيمة ${remainingForFreeShipping.toLocaleString('ar-EG')} ج.م للشحن المجاني`}
               </span>
             </div>
@@ -117,7 +117,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
               <div className="space-y-1">
                 <h4 className="text-sm font-semibold text-[#EDE8DC]">سلتك فارغة حالياً</h4>
                 <p className="text-xs text-[#8A8275] max-w-xs leading-relaxed">
-                  استكشف أندر خلطات العود والعنبر والمسك في مجموعات دار حُرّ واختر بصمتك العطرية.
+                  تعرّف إلى عائلات حُرّ الشمية، واختر ما يوافق ذوقك.
                 </p>
               </div>
               <button
@@ -212,7 +212,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="كوبون الخصم (جرب HURR10 أو WELCOME200)"
+                      placeholder="كوبون الخصم (أدخل الكود إن وُجد)"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value)}
                       className="flex-1 p-2 bg-[#181818] border border-[#333] rounded-lg text-xs text-[#EDE8DC] placeholder-[#666] focus:outline-none focus:border-[#C5A059]"

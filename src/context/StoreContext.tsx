@@ -220,8 +220,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       })),
       createdAt: new Date().toISOString(), trackingToken: String(response.trackingToken),
       trackingHistory: [
-        { status: 'new', label: 'تم استلام وتأكيد الطلب', date: 'الآن', description: 'تم تسجيل طلبك في نظام دار حُرّ وسيقوم قسم المبيعات بمراجعته فوراً', completed: true },
-        { status: 'processing', label: 'قيد التجهيز في مشغل العطور', date: 'خلال 4 ساعات', description: 'سيتم تجهيز وتغليف طلبك بعناية', completed: false },
+        { status: 'new', label: 'تم استلام وتأكيد الطلب', date: 'الآن', description: 'تم استلام طلبك لدى حُرّ، وسيُراجع الفريق تفاصيله قبل التأكيد', completed: true },
+        { status: 'processing', label: 'قيد التجهيز لدى فريق حُرّ', date: 'خلال 4 ساعات', description: 'يجري تجهيز طلبك وفق التفاصيل المسجلة', completed: false },
         { status: 'shipped', label: 'خرج للشحن مع المندوب', date: selectedGovernorate.estimatedDelivery, description: `تسليم الشحنة لشركة التوصيل إلى ${orderData.governorate}`, completed: false },
         { status: 'delivered', label: 'تم التسليم بنجاح', date: 'عند الوصول', description: 'فحص المنتج مع المندوب واستلام الفاتورة', completed: false },
       ],

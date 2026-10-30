@@ -19,10 +19,10 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onBackToSt
             <BrandLogo size="xl" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#FBF9F5] mt-4">
-            قصة دار حُرّ.. حين تلتقي الأصالة الشرقية بروح العطر
+            حكاية حُرّ.. أصالةٌ عربية ووقارٌ معاصر
           </h2>
           <p className="text-sm sm:text-base text-[#C5A059] max-w-2xl mx-auto font-light leading-relaxed">
-            «حُرّ» ليست مجرد زجاجة عطر.. بل هي حكاية عطرية تستلهم الطيب والأصالة وحسن الاختيار
+            حُرّ هويةٌ عربية تستلهم قيم الصدق والإتقان وحسن المعاملة، وتعبّر عن الأصالة بروح معاصرة
           </p>
         </div>
 
@@ -30,27 +30,27 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onBackToSt
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-6">
           <div className="space-y-4 text-sm sm:text-base text-[#BDB7A9] leading-relaxed font-light">
             <p>
-              انطلقت دار <strong className="text-[#EDE8DC] font-serif font-bold">حُــرّ</strong> من قلب القاهرة، مهد الحضارات وعاصمة الذوق الرفيع، لتؤسس مفهوماً مغايراً لعطور النيش الشرقية الفاخرة. رأينا في أسواق العطور طوفاناً من الروائح المكررة والزيوت المخففة تجارياً، فقررنا أن نكون <strong className="text-[#E5C378]">«أحراراً»</strong> في فلسفتنا: لا مساومة على نقاء المكونات، ولا تهاون في مدة التعتيق.
+              يستمد حُرّ روحه من هويتنا العربية والإسلامية، ويعتز بالهيبة والوقار والذوق الرفيع. نؤمن أن الصدق في الكلمة، والإتقان في العمل، وحسن التعامل قيمٌ أصيلة تظهر في كل تفصيل.
             </p>
 
             <p>
-              نستلهم مجموعاتنا من روائح العود والعنبر والمسك والورد، ونعتني بتناسق النفحات وتقديم وصف واضح لكل تركيبة، حتى يختار كل شخص ما يناسب ذوقه ومناسبته.
+              تنعكس هذه الروح في تجربة واضحة تحترم ذوقك وتقدّر ثقتك؛ نعرض التفاصيل المعتمدة كما هي، ونترك لك مساحة الاختيار على بيّنة.
             </p>
           </div>
 
           <div className="p-6 sm:p-8 bg-[#12110F] border border-[#C5A059]/30 rounded-2xl space-y-6 shadow-xl">
             <h3 className="text-lg font-serif font-bold text-[#E5C378] flex items-center gap-2 border-b border-[#222] pb-3">
               <Award className="w-5 h-5 text-[#C5A059]" />
-              <span>قيم حُرّ في صناعة العطر</span>
+              <span>قيم حُرّ</span>
             </h3>
 
             <div className="space-y-4 text-xs sm:text-sm">
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#EDE8DC]">عناية بالمكونات ووقت النضج</h4>
+                  <h4 className="font-bold text-[#EDE8DC]">الإتقان في كل تفصيل</h4>
                   <p className="text-[#8A8275] mt-0.5 leading-relaxed">
-                    تُترك زيوتنا لتنضج في بيئات معتمة ومضبوطة الحرارة لشهور طويلة لتكتسب قواماً مخملياً متماسكاً.
+                    نعتني بالتفاصيل ونقدّم المعلومات المعتمدة بوضوح، من دون مبالغة في الوعود.
                   </p>
                 </div>
               </div>
@@ -58,9 +58,9 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onBackToSt
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#EDE8DC]">أعلى تركيز في عالم العطور</h4>
+                  <h4 className="font-bold text-[#EDE8DC]">الصدق والوضوح</h4>
                   <p className="text-[#8A8275] mt-0.5 leading-relaxed">
-                    نسبة تركيز زيتي تتراوح بين 30% إلى 40% (خلاصة عطرية Extrait de Parfum) لتركيبة متوازنة صُممت لتمنحك تجربة عطرية مميزة.
+                    نذكر مواصفات كل منتج كما اعتُمدت، لتختار وأنت مطّلع على التفاصيل.
                   </p>
                 </div>
               </div>
@@ -68,9 +68,9 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onBackToSt
               <div className="flex items-start gap-3">
                 <span className="w-2 h-2 rounded-full bg-[#C5A059] mt-2 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-[#EDE8DC]">احترام ذوق العميل المصري</h4>
+                  <h4 className="font-bold text-[#EDE8DC]">احترام ذوقك</h4>
                   <p className="text-[#8A8275] mt-0.5 leading-relaxed">
-                    نوفر عينة للتجربة مع بعض المنتجات وفق العرض المعلن، ونوضح شروط الاسترجاع قبل إتمام الطلب.
+                    نقدّر اختلاف الأذواق، ونحرص على أن تكون تفاصيل الاختيار والطلب واضحة أمامك.
                   </p>
                 </div>
               </div>
@@ -81,10 +81,10 @@ export const BrandStorySection: React.FC<BrandStorySectionProps> = ({ onBackToSt
         {/* Poetic Verse / Closing */}
         <div className="p-8 bg-gradient-to-r from-[#12110D] via-[#1A1812] to-[#12110D] border border-[#C5A059]/40 rounded-2xl text-center space-y-3">
           <p className="text-lg sm:text-xl font-serif text-[#EDE8DC] italic leading-relaxed">
-            «للطيب أثرٌ جميل، وللخلق الحسن أثرٌ أبقى»
+            «الأصالةُ في الجذور، والوقارُ في الأثر»
           </p>
           <span className="text-xs text-[#C5A059] tracking-widest font-sans uppercase">
-            دار حُرّ · طيبٌ يترك أثراً
+            حُرّ · أصالةٌ ووقار
           </span>
         </div>
       </div>

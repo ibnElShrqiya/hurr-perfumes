@@ -22,7 +22,7 @@ export const CatalogSection: React.FC = () => {
     { id: 'unisex', label: 'عطور للجنسين' },
     { id: 'men', label: 'عطور رجالية' },
     { id: 'women', label: 'عطور نسائية' },
-    { id: 'private_collection', label: 'مجموعة النيش الخاص' },
+    { id: 'private_collection', label: 'المجموعة المختارة' },
     { id: 'offers', label: 'العروض الحصرية وباقات الطيب' },
   ];
 

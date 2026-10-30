@@ -19,16 +19,16 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
 
   const faqs = [
     {
-      q: 'كيف أضمن ثبات وفوحان عطور دار حُرّ قبل الشراء؟',
-      a: 'تُعرض تركيبة كل عطر وتركيزه ومواصفاته على صفحة المنتج بعد اعتماد البيانات من إدارة حُرّ. ننصح بمراجعة التفاصيل قبل الطلب، ويمكنك التواصل معنا لأي استفسار.',
+      q: 'كيف أتعرف إلى مواصفات العطر قبل الطلب؟',
+      a: 'تجد المعلومات المعتمدة لكل عطر في صفحته. راجع التفاصيل قبل الطلب، وتواصل مع حُرّ إن احتجت إلى توضيح.',
     },
     {
-      q: 'ما هو الضمان الذهبي لدار حُرّ وسياسة الاسترجاع؟',
-      a: 'تُعلن شروط الاستبدال والاسترجاع المعتمدة بوضوح قبل إطلاق البيع. يُرجى التواصل مع خدمة العملاء للحصول على السياسة السارية قبل إتمام الطلب.',
+      q: 'ما شروط الاستبدال والاسترجاع؟',
+      a: 'راجع الشروط المعروضة قبل تأكيد الطلب، وتواصل مع خدمة حُرّ إذا احتجت إلى توضيح.',
     },
     {
       q: 'هل يمكنني فحص ومعاينة الشحنة قبل الدفع للمندوب؟',
-      a: 'تُوضح خيارات المعاينة والدفع المتاحة عند تأكيد الطلب، ويمكنك التواصل مع خدمة العملاء للاستفسار عن الشحنة قبل إتمام الشراء.',
+      a: 'تعتمد خيارات المعاينة على ما يظهر عند تأكيد الطلب. تحقّق من الوسائل المتاحة قبل إتمام الشراء.',
     },
     {
       q: 'كيف يمكنني الدفع عبر فودافون كاش أو إنستاباي مصر؟',
@@ -80,7 +80,7 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
             }`}
           >
             <Truck className="w-4 h-4" />
-            <span>الشحن والتوصيل في مصر</span>
+            <span>الشحن والتوصيل</span>
           </button>
 
           <button
@@ -92,7 +92,7 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
             }`}
           >
             <ShieldCheck className="w-4 h-4" />
-            <span>الضمان الذهبي والاسترجاع</span>
+            <span>الاستبدال والاسترجاع</span>
           </button>
         </div>
 
@@ -132,10 +132,9 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
         {activeTab === 'shipping' && (
           <div className="space-y-4 text-xs sm:text-sm text-[#B0A99B] leading-relaxed">
             <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-2">
-              <h4 className="font-bold text-[#E5C378]">تغطية الشحن لكافة المحافظات المصرية (27 محافظة):</h4>
+              <h4 className="font-bold text-[#E5C378]">خيارات الشحن داخل مصر:</h4>
               <p className="text-xs">
-                نتعاون مع أفضل شركات الشحن السريع الموثوقة لضمان وصول عطرك محكم التغليف في
-                أسرع وقت.
+                تختلف التغطية ومدة التوصيل والرسوم حسب المحافظة، وتظهر التفاصيل قبل تأكيد الطلب.
               </p>
               <ul className="text-xs space-y-1 text-[#C8C2B3] pt-1">
                 <li>• <strong>القاهرة والجيزة:</strong> تُؤكد رسوم ومدة التوصيل قبل اعتماد الطلب.</li>
@@ -147,9 +146,9 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
             </div>
 
             <div className="p-4 bg-[#181611] border border-[#C5A059]/30 rounded-xl space-y-1">
-              <h4 className="font-bold text-[#E5C378]">ميزة الشحن المجاني الأصيل:</h4>
+              <h4 className="font-bold text-[#E5C378]">تفاصيل رسوم الشحن:</h4>
               <p className="text-xs">
-                الشحن مجاني تلقائيًا للطلبات التي تبلغ قيمة منتجاتها 1000 جنيه مصري أو أكثر، بعد تطبيق الخصم. وتظهر رسوم الشحن للطلبات الأقل من ذلك قبل تأكيد الطلب.
+                تظهر رسوم الشحن وأي عروض سارية في السلة قبل تأكيد الطلب.
               </p>
             </div>
           </div>
@@ -159,19 +158,19 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
         {activeTab === 'returns' && (
           <div className="space-y-4 text-xs sm:text-sm text-[#B0A99B] leading-relaxed">
             <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-2">
-              <h4 className="font-bold text-[#E5C378]">الضمان الأصيل الذهبي لدار حُرّ:</h4>
+              <h4 className="font-bold text-[#E5C378]">الاستبدال والاسترجاع لدى حُرّ:</h4>
               <p className="text-xs">
-                ثقتنا في جودة ونقاء عطورنا لا حدود لها. لهذا السبب نرفق مع كل زجاجة عطرية «عينة مجانية بحجم 3 مل» من نفس العطر لتقوم بتجربتها على بشرتك وملابسك قبل فتح الزجاجة الأصلية.
+                تواصل مع حُرّ قبل إتمام الطلب لمعرفة الشروط السارية. راجع التفاصيل المعروضة قبل تأكيد الشراء.
               </p>
             </div>
 
             <div className="space-y-2 text-xs">
-              <h5 className="font-bold text-[#EDE8DC]">شروط الاستبدال والاسترجاع:</h5>
+              <h5 className="font-bold text-[#EDE8DC]">قبل تأكيد طلبك:</h5>
               <ol className="list-decimal list-inside space-y-1.5 text-[#9E9687]">
-                <li>مدة الاسترجاع 14 يوماً من تاريخ استلام الشحنة وفقاً لقانون حماية المستهلك المصري.</li>
-                <li>يجب أن تكون زجاجة العطر الأصلية مغلفة بتغليف السوليفان المصنعي ولم يتم فتحها.</li>
-                <li>العينة المجانية هي هديتك من دار حُرّ ويمكنك الاحتفاظ بها حتى في حال استرجاع العطر.</li>
-                <li>يتم استرداد كامل المبلغ إلى حسابك البنكي أو محفظتك الإلكترونية فور وصول الشحنة وفحصها.</li>
+                <li>اقرأ الشروط المعروضة كاملة قبل إتمام الطلب.</li>
+                <li>تأكد من مراجعة تفاصيل المنتج وبيانات الطلب.</li>
+                <li>استفسر من خدمة حُرّ عن أي نقطة غير واضحة قبل تأكيد الشراء.</li>
+                <li>تخضع معالجة الطلب للشروط المعروضة عند تأكيد الشراء.</li>
               </ol>
             </div>
           </div>
@@ -179,7 +178,7 @@ export const FaqPolicyModal: React.FC<FaqPolicyModalProps> = ({
 
         {/* Footer Support Contact */}
         <div className="mt-6 pt-4 border-t border-[#222] flex items-center justify-between text-xs text-[#8A8275]">
-          <span>تحتاج لمساعدة إضافية؟</span>
+          <span>هل تحتاج إلى مساعدة؟</span>
           <a
             href="https://wa.me/201062003963"
             target="_blank"

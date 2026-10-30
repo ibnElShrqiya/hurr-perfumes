@@ -94,7 +94,7 @@ export const AdminDashboard: React.FC = () => {
               <Lock className="w-7 h-7" />
             </div>
             <h2 className="text-xl font-serif font-bold text-[#FBF9F5]">
-              لوحة تحكم دار حُرّ الإدارية
+              لوحة تحكم حُرّ
             </h2>
             <p className="text-xs text-[#8A8275]">
               الوصول مقصور على إدارة المتجر لمتابعة المخزون والطلبات في مصر
@@ -314,7 +314,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-serif font-bold text-[#FBF9F5]">
-              لوحة الإدارة والمخزون الأصيل · دار حُرّ
+              إدارة حُرّ · المنتجات والطلبات
             </h1>
             <span className="text-xs text-[#8A8275]">
               إدارة منتجات العطور، الطلبات، أكواد الخصم، وتعيين أسعار الشحن لمصر
@@ -417,7 +417,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="space-y-6">
           <div className="p-6 bg-[#111111] border border-[#222] rounded-2xl space-y-4">
             <h3 className="text-base font-serif font-bold text-[#EDE8DC]">
-              أداء مبيعات دار حُرّ في المحافظات المصرية
+              أداء المبيعات حسب المحافظة
             </h3>
 
             <div className="rounded-xl border border-[#262626] bg-[#141414] p-5 text-sm leading-7 text-[#A69F90]">

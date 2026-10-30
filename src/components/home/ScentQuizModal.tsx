@@ -20,8 +20,8 @@ export const ScentQuizModal: React.FC = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setIsQuizOpen(false)}>
       <section dir="rtl" className="w-full max-w-md rounded-2xl border border-[#C5A059]/40 bg-[#0E0E0E] p-6 text-right shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <button onClick={() => setIsQuizOpen(false)} className="mb-4 rounded-lg border border-[#333] px-3 py-2 text-sm text-[#EDE8DC]">إغلاق</button>
-        <h2 className="mb-3 text-xl font-bold text-[#E5C378]">مستشار عطور حُرّ</h2>
-        <p className="text-sm leading-7 text-[#B0A99B]">ستصبح الاستشارة متاحة بعد نشر المنتجات المعتمدة في المتجر. لا نوصي بمنتج غير متوفر في الكتالوج.</p>
+        <h2 className="mb-3 text-xl font-bold text-[#E5C378]">دليل اختيار عطر من حُرّ</h2>
+        <p className="text-sm leading-7 text-[#B0A99B]">نجهّز الدليل ليعتمد على المنتجات المنشورة ومواصفاتها المعتمدة فقط.</p>
       </section>
     </div>
   );
@@ -43,6 +43,8 @@ export const ScentQuizModal: React.FC = () => {
         match = availableProducts.find((p) => p.scentFamily === 'musk') || availableProducts[0];
       } else if (updated.family === 'leather') {
         match = availableProducts.find((p) => p.scentFamily === 'leather') || availableProducts[0];
+      } else if (updated.family === 'oriental_floral') {
+        match = availableProducts.find((p) => p.scentFamily === 'oriental_floral') || availableProducts[0];
       }
       setRecommendedProduct(match);
       setCurrentStep(4); // Result step
@@ -80,7 +82,7 @@ export const ScentQuizModal: React.FC = () => {
           <div className="flex items-center justify-between text-xs text-[#8A8275] mb-6 border-b border-[#222] pb-3">
             <div className="flex items-center gap-1.5 text-[#E5C378]">
               <Sparkles className="w-4 h-4 text-[#C5A059]" />
-              <span className="font-bold">مستشار العطور الأصيل لدار حُرّ</span>
+              <span className="font-bold">دليل حُرّ لاختيار ما يلائم ذوقك</span>
             </div>
             <span>السؤال {currentStep} من 3</span>
           </div>
@@ -90,33 +92,38 @@ export const ScentQuizModal: React.FC = () => {
         {currentStep === 1 && (
           <div className="space-y-4 animate-in fade-in">
             <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FBF9F5]">
-              ما هو الطابع العطري الذي يجذبك ويلامس ذوقك أكثر؟
+              أي العائلات الشمية أقرب إلى ذوقك؟
             </h3>
             <p className="text-xs text-[#8A8275]">
-              اختر النغمات التي تفضل أن تحيط بك وتعبر عن شخصيتك.
+              اختر العائلة التي تفضّلها؛ وتجد تفاصيل كل عطر في صفحته.
             </p>
 
             <div className="space-y-2.5 pt-2">
               {[
                 {
                   id: 'oud',
-                  title: 'العود المعتق والأخشاب الشرقية الثقيلة',
-                  desc: 'رائحة شرقية متزنة من دهن العود والزعفران',
+                  title: 'العود',
+                  desc: 'طابع شرقي عميق يعبّر عن الأصالة والوقار.',
                 },
                 {
                   id: 'amber',
-                  title: 'العنبر الدافئ والفانيليا والتوابل النبيلة',
-                  desc: 'دفء شرقي ساحر، مريح وجذاب بلمسات القرفة والبلسم',
+                  title: 'العنبر والتوابل',
+                  desc: 'دفءٌ شرقيّ وحضورٌ مميّز.',
                 },
                 {
                   id: 'musk',
-                  title: 'المسك الأبيض المخملي والورد الطائفي النقي',
-                  desc: 'قمة النظافة الفارهة والنعومة والأناقة الهادئة',
+                  title: 'المسك والورد الطائفي',
+                  desc: 'طابعٌ ناعم وأنيق لمحبي الروائح الهادئة.',
                 },
                 {
                   id: 'leather',
-                  title: 'الجلد الإيطالي المدخن والتبغ المعتق والباتشولي',
-                  desc: 'حضور رجولي قوي، جاذبية حادة وثقة مطلقة',
+                  title: 'الجلود والتبغ',
+                  desc: 'شخصية جريئة وحضورٌ لافت.',
+                },
+                {
+                  id: 'oriental_floral',
+                  title: 'الزهور الشرقية',
+                  desc: 'روحٌ زهرية شرقية بلمسة أصيلة.',
                 },
               ].map((opt) => (
                 <button
@@ -138,28 +145,33 @@ export const ScentQuizModal: React.FC = () => {
         {currentStep === 2 && (
           <div className="space-y-4 animate-in fade-in">
             <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FBF9F5]">
-              ما هي المناسبة الأساسية التي تبحث عن عطر لها؟
+              في أي وقت تفضّل استخدام العطر؟
             </h3>
             <p className="text-xs text-[#8A8275]">
-              يساعدنا هذا في اختيار التركيز ودرجة الفوحان الأنسب لبيئتك.
+              اختر ما يعبّر عن استخدامك المعتاد.
             </p>
 
             <div className="space-y-2.5 pt-2">
               {[
                 {
                   id: 'events',
-                  title: 'المناسبات الكبرى والاحتفالات الأصيلة والأعياد',
-                  desc: 'تريد عطراً يلفت الأنظار فور دخولك ويترك بصمة لا تُنسى',
+                  title: 'المناسبات واللقاءات',
+                  desc: 'للحظات التي تحب فيها حضورًا أنيقًا.',
                 },
                 {
                   id: 'daily',
-                  title: 'الاستخدام اليومي الفاخر وبيئة الأعمال واللقاءات الراقية',
-                  desc: 'عطر متوازن يمنحك حضوراً هادئاً طوال اليوم',
+                  title: 'الاستخدام اليومي والعمل',
+                  desc: 'اختيارٌ عملي للقاءاتك اليومية.',
                 },
                 {
                   id: 'evenings',
-                  title: 'السهرات والأمسيات الخاصة والليالي الشتوية الحالمة',
-                  desc: 'عبير حميمي، دافئ، جذاب ومغناطيسي يدوم طويلاً',
+                  title: 'الأمسيات واللقاءات الخاصة',
+                  desc: 'لأمسية تحب أن تعبّر فيها عن ذوقك.',
+                },
+                {
+                  id: 'oriental_floral',
+                  title: 'الزهور الشرقية',
+                  desc: 'روحٌ زهرية شرقية بلمسة أصيلة.',
                 },
               ].map((opt) => (
                 <button
@@ -181,23 +193,28 @@ export const ScentQuizModal: React.FC = () => {
         {currentStep === 3 && (
           <div className="space-y-4 animate-in fade-in">
             <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FBF9F5]">
-              ما هو معيارك الأهم في ثبات وفوحان العطر؟
+              كيف تحب أن يكون حضور العطر؟
             </h3>
             <p className="text-xs text-[#8A8275]">
-              كافة عطور دار حُرّ بتركيز عالي ونقي، ولكن بأطياف انتشار متعددة.
+              اختر الإحساس الذي تفضّله؛ وتُعرض مواصفات كل منتج كما اعتُمدت في صفحته.
             </p>
 
             <div className="space-y-2.5 pt-2">
               {[
                 {
                   id: 'monumental',
-                  title: 'ثبات فاحم يتجاوز 36 ساعة وفوحان هائل',
-                  desc: 'تريد أن تدوم الرائحة في المكان وثيابك لأيام متواصلة',
+                  title: 'حضورٌ واضح ومميّز',
+                  desc: 'أفضّل عطرًا يترك أثرًا ملحوظًا.',
                 },
                 {
                   id: 'intimate',
-                  title: 'فوحان ناعم ومخملي وثبات ثابت راقٍ',
-                  desc: 'تفضل هالة أثيرية خاصة تشعر بها أنت ومن يقترب منك',
+                  title: 'أثرٌ هادئ وقريب',
+                  desc: 'أفضّل عطرًا لطيف الحضور.',
+                },
+                {
+                  id: 'oriental_floral',
+                  title: 'الزهور الشرقية',
+                  desc: 'روحٌ زهرية شرقية بلمسة أصيلة.',
                 },
               ].map((opt) => (
                 <button
@@ -220,7 +237,7 @@ export const ScentQuizModal: React.FC = () => {
           <div className="space-y-6 text-center animate-in zoom-in-95 duration-300">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#C5A059]/20 border border-[#C5A059]/40 rounded-full text-xs text-[#E5C378]">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>العطر المتوافق تماماً مع بصمتك الأصيلة</span>
+              <span>اختيار قريب من ذوقك</span>
             </div>
 
             <div className="py-2 flex justify-center">
