@@ -71,7 +71,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Main Footer Links & Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 py-14 border-b border-[#1E1E1E]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 py-14 border-b border-[#1E1E1E]">
           {/* Brand Info & Mission */}
           <div className="lg:col-span-2 space-y-4">
             <BrandLogo size="lg" />
@@ -99,40 +99,6 @@ export const Footer: React.FC<FooterProps> = ({
                 <span>تواصل مع حُرّ عبر واتساب</span>
               </a>
             </div>
-          </div>
-
-          {/* Quick Nav Links */}
-          <div className="space-y-3">
-            <h4 className="text-xs uppercase tracking-widest text-[#E5C378] font-semibold">
-              المجموعات الأصيلة
-            </h4>
-            <ul className="space-y-2 text-sm text-[#9E9687]">
-              <li>
-                <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  العود
-                </a>
-              </li>
-              <li>
-                <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  العنبر والتوابل
-                </a>
-              </li>
-              <li>
-                <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  المسك والورد الطائفي
-                </a>
-              </li>
-              <li>
-                <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  الجلود والتبغ
-                </a>
-              </li>
-              <li>
-                <a href="#catalog-section" className="hover:text-[#EDE8DC] transition-colors">
-                  الزهور الشرقية
-                </a>
-              </li>
-            </ul>
           </div>
 
           {/* Customer Care & Policies */}
