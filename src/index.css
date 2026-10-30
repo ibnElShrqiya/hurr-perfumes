@@ -510,3 +510,71 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
 /* Respect desktop and tablet layouts; only prevent accidental intrinsic-width expansion. */
 .hurr-app main > *, .hurr-app section > *, .hurr-app article > * { min-width: 0; }
 .hurr-app img { height: auto; }
+
+/* Stable compact header layout on phones: logo and controls stay in one row. */
+@media (max-width: 767px) {
+  .hurr-app header .hurr-header-main {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: .5rem !important;
+    min-height: 60px !important;
+    height: auto !important;
+    padding: .4rem .7rem !important;
+  }
+  .hurr-app header .hurr-header-brand {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+  .hurr-app header .hurr-header-brand a,
+  .hurr-app header .hurr-header-brand a > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .hurr-app header .hurr-header-actions {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    gap: .25rem !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  .hurr-app header .hurr-header-actions > .header-icon-trigger {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: .35rem !important;
+  }
+  .hurr-app header .hurr-header-actions > .header-cart-trigger {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 48px !important;
+    max-width: none !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: .3rem .45rem !important;
+    gap: .25rem !important;
+  }
+  .hurr-app header .hurr-header-actions svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+}
+@media (max-width: 380px) {
+  .hurr-app header .hurr-header-main { padding-inline: .5rem !important; gap: .35rem !important; }
+  .hurr-app header .hurr-header-actions { gap: .12rem !important; }
+  .hurr-app header .hurr-header-actions > .header-icon-trigger {
+    flex-basis: 30px !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+  }
+}
