@@ -222,7 +222,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
       customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
       customerEmail: orderData.customerEmail, governorate: orderData.governorate, city: orderData.city,
-      detailedAddress: orderData.detailedAddress, notes: storedNotes || undefined, paymentMethod: orderData.paymentMethod,
+      detailedAddress: orderData.detailedAddress, notes: storedNotes || undefined,
+      senderWalletPhone: orderData.senderWalletPhone?.trim() || undefined,
+      walletTransactionId: orderData.walletTransactionId?.trim() || undefined,
+      paymentMethod: orderData.paymentMethod,
       couponCode: orderData.couponCode,
       items: orderData.items.map((item) => ({ productId: item.productId, quantity: item.quantity, selectedSize: item.selectedSize })),
     } });
