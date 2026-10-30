@@ -2,6 +2,18 @@ export type ProductCategory = 'men' | 'women' | 'unisex' | 'private_collection' 
 
 export type ScentFamily = 'oud' | 'amber' | 'musk' | 'leather' | 'oriental_floral' | 'spicy_woody';
 
+export const SCENT_FAMILY_LABELS: Record<ScentFamily, string> = {
+  oud: 'العود',
+  amber: 'العنبر والتوابل',
+  musk: 'المسك والورد الطائفي',
+  leather: 'الجلود والتبغ',
+  oriental_floral: 'الزهور الشرقية',
+  spicy_woody: 'العنبر والتوابل',
+};
+
+export const getScentFamilyLabel = (family: string): string | undefined =>
+  SCENT_FAMILY_LABELS[family as ScentFamily];
+
 export type PerfumeConcentration = 'Extrait de Parfum' | 'Eau de Parfum' | 'Pure Dehn Oud Oil';
 
 export interface ScentNotes {
