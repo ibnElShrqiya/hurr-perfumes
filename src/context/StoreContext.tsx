@@ -36,9 +36,9 @@ const mapOrder = (row: any): Order => {
   const transferMarker = rawNotes.indexOf('بيانات التحويل:');
   const transferDetails = transferMarker >= 0 ? rawNotes.slice(transferMarker + 'بيانات التحويل:'.length).trim() : '';
   const senderWalletPhone = row.sender_wallet_phone || row.senderWalletPhone ||
-    transferDetails.match(/(?:رقم )?محفظة:?\s*([^|]+)/i)?.[1]?.trim() || undefined;
+    transferDetails.match(/(?:رقم )?(?:ال)?محفظة:?\s*([^|]+)/i)?.[1]?.trim() || undefined;
   const walletTransactionId = row.wallet_transaction_id || row.walletTransactionId ||
-    transferDetails.match(/(?:رقم )?عملية:?\s*(.+)$/i)?.[1]?.trim() || undefined;
+    transferDetails.match(/(?:رقم )?(?:ال)?عملية:?\s*(.+)$/i)?.[1]?.trim() || undefined;
   const paymentReference = row.payment_reference || row.paymentReference || row.wallet_phone ||
     (transferDetails || (senderWalletPhone || walletTransactionId ? `محفظة: ${senderWalletPhone || '—'} | عملية: ${walletTransactionId || 'غير مسجل'}` : undefined));
   const customerNotes = transferMarker >= 0
