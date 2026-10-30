@@ -544,6 +544,7 @@ export const AdminDashboard: React.FC = () => {
                 className="w-full pr-9 pl-3 py-2 bg-[#141414] border border-[#333] rounded-lg text-xs text-[#EDE8DC] focus:outline-none focus:border-[#C5A059]"
               />
             </div>
+          </div>
 
           {/* Orders Cards / Table */}
           <div className="space-y-4">
@@ -562,7 +563,7 @@ export const AdminDashboard: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Status Dropdown */}
+                  {/* Order Actions */}
                   <div className="flex items-center justify-end gap-3">
                     <button
                       type="button"
