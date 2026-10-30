@@ -35,6 +35,7 @@ export const AdminDashboard: React.FC = () => {
     deleteProduct,
     orders,
     updateOrderStatus,
+    deleteOrder,
     coupons,
     addCoupon,
     toggleCouponStatus,
@@ -609,6 +610,19 @@ export const AdminDashboard: React.FC = () => {
                       <option value="delivered">تم التسليم بنجاح</option>
                       <option value="cancelled">ملغي</option>
                     </select>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (window.confirm(`هل أنت متأكد من حذف الطلب ${order.id} نهائياً من قاعدة البيانات؟`)) {
+                          void deleteOrder(order.id).catch((error: Error) => showToast(error.message || 'تعذر حذف الطلب', 'error'));
+                        }
+                      }}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors"
+                      title="حذف الطلب من قاعدة البيانات"
+                      aria-label={`حذف الطلب ${order.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
 
