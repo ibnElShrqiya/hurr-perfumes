@@ -586,12 +586,12 @@ export const AdminDashboard: React.FC = () => {
                   <div>
                     <span className="text-[#C5A059] font-semibold block">المستلم:</span>
                     <p className="text-[#EDE8DC] font-bold">{order.customerName}</p>
-                    <p>هاتف: {order.customerPhone}</p>
+                    <p>هاتف: <span dir="ltr" className="inline-block">{order.customerPhone || '—'}</span></p>
                   </div>
                   <div>
                     <span className="text-[#C5A059] font-semibold block">العنوان:</span>
                     <p className="text-[#EDE8DC]">{order.governorate} — {order.city}</p>
-                    <p className="text-[11px] truncate">{order.detailedAddress}</p>
+                    <p className="text-[11px] text-[#A69F90] break-words whitespace-normal leading-relaxed">العنوان بالتفصيل: {order.detailedAddress || '—'}</p>
                   </div>
                   <div>
                     <span className="text-[#C5A059] font-semibold block">الدفع والإجمالي:</span>
@@ -601,6 +601,16 @@ export const AdminDashboard: React.FC = () => {
                     <p className="text-[11px]">
                       {order.paymentMethod === 'cod' ? 'الدفع عند الاستلام' : order.paymentMethod}
                     </p>
+                    {order.paymentReference && (
+                      <p className="text-[11px] text-[#E5C378] break-words">
+                        بيانات التحويل: <span dir="ltr" className="inline-block">{order.paymentReference}</span>
+                      </p>
+                    )}
+                    {order.notes && (
+                      <p className="text-[11px] text-[#A69F90] break-words leading-relaxed">
+                        ملاحظات الطلب: {order.notes}
+                      </p>
+                    )}
                   </div>
                 </div>
 
