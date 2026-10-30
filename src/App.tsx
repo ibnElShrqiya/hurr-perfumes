@@ -8,21 +8,18 @@ import { BrandStorySection } from './components/brand/BrandStorySection';
 import { ProductDetailModal } from './components/product/ProductDetailModal';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
-import { OrderTrackingPage } from './components/tracking/OrderTrackingPage';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { ScentQuizModal } from './components/home/ScentQuizModal';
 import { FaqPolicyModal } from './components/info/FaqPolicyModal';
 import { FloatingWhatsApp } from './components/common/FloatingWhatsApp';
 import { ToastContainer } from './components/common/ToastContainer';
-import { Order } from './types';
 
-type AppView = 'store' | 'checkout' | 'tracking' | 'admin' | 'brand_story';
+type AppView = 'store' | 'checkout' | 'admin' | 'brand_story';
 
 function MainApp() {
   const [currentView, setCurrentView] = useState<AppView>(() =>
     window.location.pathname.replace(/\/$/, '') === '/admin' ? 'admin' : 'store',
   );
-  const [activeTrackingOrder, setActiveTrackingOrder] = useState<Order | null>(null);
   const [isFaqOpen, setIsFaqOpen] = useState(false);
   const [faqTab, setFaqTab] = useState<'faq' | 'shipping' | 'returns'>('faq');
   const [isLightMode, setIsLightMode] = useState(() =>
@@ -49,11 +46,6 @@ function MainApp() {
     return () => window.removeEventListener('popstate', syncRoute);
   }, []);
 
-  const handleOrderCompleted = (order: Order) => {
-    setActiveTrackingOrder(order);
-    setCurrentView('tracking');
-  };
-
   const handleOpenFaqWithTab = (tab: 'faq' | 'shipping' | 'returns') => {
     setFaqTab(tab);
     setIsFaqOpen(true);
@@ -64,7 +56,6 @@ function MainApp() {
       {/* The admin is a standalone workspace: no storefront/customer navigation. */}
       {currentView !== 'admin' && (
         <Header
-          onOpenTracking={() => setCurrentView('tracking')}
           onOpenHome={() => {
             setCurrentView('store');
             window.history.pushState({}, '', '/');
@@ -96,17 +87,7 @@ function MainApp() {
         {currentView === 'checkout' && (
           <CheckoutPage
             onBackToStore={() => setCurrentView('store')}
-            onOrderCompleted={handleOrderCompleted}
-          />
-        )}
-
-        {currentView === 'tracking' && (
-          <OrderTrackingPage
-            initialOrder={activeTrackingOrder}
-            onBackToStore={() => {
-              setActiveTrackingOrder(null);
-              setCurrentView('store');
-            }}
+            onOrderCompleted={() => setCurrentView('store')}
           />
         )}
 
@@ -118,7 +99,6 @@ function MainApp() {
       {currentView !== 'admin' && <Footer
         onOpenBrandStory={() => setCurrentView('brand_story')}
         onOpenFaq={() => handleOpenFaqWithTab('faq')}
-        onOpenTracking={() => setCurrentView('tracking')}
       />}
 
       {/* Storefront overlays must never appear inside the admin workspace. */}
