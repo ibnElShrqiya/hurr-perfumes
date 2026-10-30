@@ -20,6 +20,7 @@ interface StoreContextType {
   subtotal: number; discountAmount: number; shippingFee: number; totalAmount: number; isFreeShipping: boolean; freeShippingProgress: number;
   orders: Order[]; placeOrder: (orderData: NewOrder) => Promise<Order>;
   updateOrderStatus: (orderId: string, shippingStatus: ShippingStatus, paymentStatus?: PaymentStatus) => Promise<void>;
+  deleteOrder: (orderId: string) => Promise<void>;
   getOrderById: (orderId: string) => Order | undefined; getOrdersByPhone: (phone: string) => Order[]; trackOrder: (id: string, token: string) => Promise<Order | null>;
   isAdminLoggedIn: boolean; loginAdmin: (email: string, password: string) => Promise<boolean>; logoutAdmin: () => void;
   addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => Promise<boolean>; updateProduct: (product: Product) => Promise<boolean>; deleteProduct: (productId: string) => void;
@@ -246,6 +247,18 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setOrders((prev) => prev.map((order) => order.id !== orderId ? order : ({ ...order, shippingStatus, paymentStatus: paymentStatus || order.paymentStatus, trackingHistory: order.trackingHistory.map((step) => step.status === shippingStatus ? { ...step, completed: true, date: 'تم التحديث الآن' } : { ...step, completed: false }) })));
     showToast(`تم تحديث حالة الطلب ${orderId} إلى: ${shippingStatus}`, 'success');
   };
+  const deleteOrder = async (orderId: string): Promise<void> => {
+    if (!supabase || !isAdminLoggedIn) throw new Error('يلزم تسجيل دخول المدير لحذف الطلب');
+    const { data, error } = await supabase.from('orders').delete().eq('id', orderId).select('id').maybeSingle();
+    if (error) {
+      console.error('[HUR admin] Failed to delete order:', { orderId, code: error.code, message: error.message, details: error.details });
+      throw new Error(error.message || 'تعذر حذف الطلب من قاعدة البيانات');
+    }
+    if (!data) throw new Error('لم يُحذف الطلب. تحقق من صلاحيات المدير وسياسات قاعدة البيانات.');
+    setOrders((prev) => prev.filter((order) => order.id !== orderId));
+    try { window.localStorage.removeItem(`hurr_track_${orderId}`); } catch { /* local storage may be unavailable */ }
+    showToast(`تم حذف الطلب ${orderId} من قاعدة البيانات`, 'success');
+  };
   const getOrderById = (id: string) => orders.find((order) => order.id.toUpperCase() === id.trim().toUpperCase());
   const getOrdersByPhone = (phone: string) => { const clean = phone.replace(/[^0-9]/g, ''); return orders.filter((order) => order.customerPhone.replace(/[^0-9]/g, '').includes(clean)); };
   const trackOrder = async (id: string, token: string): Promise<Order | null> => {
@@ -337,7 +350,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     products, activeCategory, setActiveCategory, searchQuery, setSearchQuery, selectedFamily, setSelectedFamily, sortBy, setSortBy,
     cart, isCartOpen, setIsCartOpen, addToCart, removeFromCart, updateCartQuantity, clearCart, cartCount, wishlist, toggleWishlist, isInWishlist,
     selectedGovernorate, shippingRates, setSelectedGovernorateById, activeCoupon, applyCoupon, removeCoupon, subtotal, discountAmount, shippingFee, totalAmount, isFreeShipping, freeShippingProgress,
-    orders, placeOrder, updateOrderStatus, getOrderById, getOrdersByPhone, trackOrder, isAdminLoggedIn, loginAdmin, logoutAdmin, addProduct, updateProduct, deleteProduct,
+    orders, placeOrder, updateOrderStatus, deleteOrder, getOrderById, getOrdersByPhone, trackOrder, isAdminLoggedIn, loginAdmin, logoutAdmin, addProduct, updateProduct, deleteProduct,
     coupons, addCoupon, toggleCouponStatus, deleteCoupon, updateShippingRate, isQuizOpen, setIsQuizOpen, quickViewProduct, setQuickViewProduct, toasts, showToast, removeToast,
   }}>{children}</StoreContext.Provider>;
 };
