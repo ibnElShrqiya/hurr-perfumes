@@ -55,7 +55,7 @@ export interface Product {
   isFeatured?: boolean;
   volume: string;             // e.g. "100 مل / 3.4 FL.OZ."
   concentration: PerfumeConcentration;
-  longevity: string;          // e.g. "أكثر من 36 ساعة"
+  longevity: string;          // تُحدد وفق المواصفات المعتمدة لكل منتج
   sillage: string;            // e.g. "فوحان أصيل واسع الانتشار"
   notes: ScentNotes;
   scentFamily: ScentFamily;
