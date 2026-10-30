@@ -2,7 +2,7 @@ import React from 'react';
 import { useStore } from '../../context/StoreContext';
 import { ProductCard } from '../product/ProductCard';
 import { ProductCategory } from '../../types';
-import { Sparkles, SlidersHorizontal } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const CatalogSection: React.FC = () => {
   const {
