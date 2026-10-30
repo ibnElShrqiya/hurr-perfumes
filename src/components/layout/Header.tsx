@@ -61,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             className="flex items-center"
           >
-            <BrandLogo size="md" />
+            <BrandLogo size="sm" showSubtitle={false} />
           </a>
         </div>
 
