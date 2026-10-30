@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: Functional Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
           <button
             type="button"
             onClick={onToggleTheme}
@@ -107,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
             title={isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}
           >
             {isLightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            <span className="hidden sm:inline text-xs font-medium">{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</span>
+            <span className="hidden lg:inline text-xs font-medium">{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</span>
           </button>
           {/* Search Trigger */}
           <button
@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Scent Quiz Assistant Trigger */}
           <button
             onClick={() => setIsQuizOpen(true)}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E5C378] bg-[#1A1813] hover:bg-[#25221B] border border-[#C5A059]/30 rounded-md transition-all whitespace-nowrap shrink-0"
+            className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E5C378] bg-[#1A1813] hover:bg-[#25221B] border border-[#C5A059]/30 rounded-md transition-all whitespace-nowrap shrink-0"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
             <span>دليل اختيار العطر</span>
@@ -149,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Cart Drawer Trigger */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="relative flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#E5C378] text-[#0A0A0A] font-semibold text-xs sm:text-sm rounded-lg transition-all shadow-[0_2px_12px_rgba(197,160,89,0.25)] whitespace-nowrap shrink-0 active:scale-95"
+            className="header-cart-trigger relative flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#E5C378] text-[#0A0A0A] font-semibold text-xs sm:text-sm rounded-lg transition-all shadow-[0_2px_12px_rgba(197,160,89,0.25)] whitespace-nowrap shrink-0 active:scale-95"
             aria-label="سلة الشراء"
           >
             <ShoppingBag className="w-4 h-4 text-[#0A0A0A]" />
