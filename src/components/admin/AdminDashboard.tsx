@@ -599,12 +599,26 @@ export const AdminDashboard: React.FC = () => {
                       {order.totalAmount.toLocaleString('ar-EG')} ج.م
                     </p>
                     <p className="text-[11px]">
-                      {order.paymentMethod === 'cod' ? 'الدفع عند الاستلام' : order.paymentMethod}
+                      {order.paymentMethod === 'cod'
+                        ? 'الدفع عند الاستلام'
+                        : order.paymentMethod === 'vodafone_cash'
+                        ? 'فودافون كاش'
+                        : order.paymentMethod === 'instapay'
+                        ? 'إنستاباي'
+                        : order.paymentMethod}
                     </p>
-                    {order.paymentReference && (
-                      <p className="text-[11px] text-[#E5C378] break-words">
-                        بيانات التحويل: <span dir="ltr" className="inline-block">{order.paymentReference}</span>
-                      </p>
+                    {(order.paymentMethod === 'vodafone_cash' || order.paymentMethod === 'instapay') && (
+                      <>
+                        <p className="text-[11px] text-[#E5C378]">
+                          رقم التحويل إلى المحفظة: <bdi dir="ltr">01062003963</bdi>
+                        </p>
+                        <p className="text-[11px] text-[#A69F90] break-words">
+                          رقم محفظة العميل / مرجع الدفع:{' '}
+                          {order.paymentReference
+                            ? <bdi dir="ltr" className="inline-block text-[#E5C378]">{order.paymentReference}</bdi>
+                            : <span className="text-amber-400">غير مسجل لهذا الطلب</span>}
+                        </p>
+                      </>
                     )}
                     {order.notes && (
                       <p className="text-[11px] text-[#A69F90] break-words leading-relaxed">
