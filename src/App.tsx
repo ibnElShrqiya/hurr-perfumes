@@ -49,15 +49,6 @@ function MainApp() {
     return () => window.removeEventListener('popstate', syncRoute);
   }, []);
 
-  const openAdmin = (event?: React.MouseEvent<HTMLAnchorElement>) => {
-    event?.preventDefault();
-    if (window.location.pathname.replace(/\/$/, '') !== '/admin') {
-      window.history.pushState({}, '', '/admin');
-    }
-    setCurrentView('admin');
-  };
-
-
   const handleOrderCompleted = (order: Order) => {
     setActiveTrackingOrder(order);
     setCurrentView('tracking');
@@ -79,7 +70,6 @@ function MainApp() {
             window.history.pushState({}, '', '/');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          onOpenAdmin={openAdmin}
           onOpenBrandStory={() => setCurrentView('brand_story')}
           onOpenFaq={() => handleOpenFaqWithTab('faq')}
           isLightMode={isLightMode}
