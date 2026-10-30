@@ -117,6 +117,8 @@ export interface Order {
   createdAt: string;
   trackingHistory: TrackingStep[];
   paymentReference?: string;
+  senderWalletPhone?: string;
+  walletTransactionId?: string;
 }
 
 export interface Coupon {
