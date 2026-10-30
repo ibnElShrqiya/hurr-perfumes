@@ -21,7 +21,7 @@ interface StoreContextType {
   orders: Order[]; placeOrder: (orderData: NewOrder) => Promise<Order>;
   updateOrderStatus: (orderId: string, shippingStatus: ShippingStatus, paymentStatus?: PaymentStatus) => Promise<void>;
   deleteOrder: (orderId: string) => Promise<void>;
-  getOrderById: (orderId: string) => Order | undefined; getOrdersByPhone: (phone: string) => Order[]; trackOrder: (id: string, token: string) => Promise<Order | null>;
+  getOrderById: (orderId: string) => Order | undefined; getOrdersByPhone: (phone: string) => Order[];
   isAdminLoggedIn: boolean; loginAdmin: (email: string, password: string) => Promise<boolean>; logoutAdmin: () => void;
   addProduct: (product: Omit<Product, 'id' | 'createdAt'>) => Promise<boolean>; updateProduct: (product: Product) => Promise<boolean>; deleteProduct: (productId: string) => void;
   coupons: Coupon[]; addCoupon: (coupon: Coupon) => void; toggleCouponStatus: (code: string) => void; deleteCoupon: (code: string) => void;
@@ -261,17 +261,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
   const getOrderById = (id: string) => orders.find((order) => order.id.toUpperCase() === id.trim().toUpperCase());
   const getOrdersByPhone = (phone: string) => { const clean = phone.replace(/[^0-9]/g, ''); return orders.filter((order) => order.customerPhone.replace(/[^0-9]/g, '').includes(clean)); };
-  const trackOrder = async (id: string, token: string): Promise<Order | null> => {
-    const cleanId = id.trim();
-    const cleanToken = token.trim();
-    if (!supabase || !cleanId || cleanToken.length < 32) return null;
-    const { data, error } = await supabase.functions.invoke('track-order', { body: { id: cleanId, trackingToken: cleanToken } });
-    if (error || !data?.id) return null;
-    return { id: data.id, customerName: '', customerPhone: '', governorate: '', city: '', detailedAddress: '', paymentStatus: data.paymentStatus,
-      shippingStatus: data.shippingStatus, subtotal: Number(data.subtotal || 0), shippingFee: Number(data.shippingFee || 0), discountAmount: Number(data.discountAmount || 0), totalAmount: Number(data.totalAmount || 0),
-      paymentMethod: data.paymentMethod || 'cod', items: (data.items || []).map((i: any) => ({ productId: '', productName: i.productName, productImage: '', quantity: Number(i.quantity || 0), unitPrice: Number(i.unitPrice || 0), totalPrice: Number(i.totalPrice || 0), selectedSize: i.selectedSize || '' })),
-      createdAt: data.createdAt, trackingHistory: data.trackingHistory || [] };
-  };
   const loginAdmin = async (email: string, password: string): Promise<boolean> => {
     if (!supabase) { showToast('أكمل إعدادات الاتصال أولاً لتفعيل لوحة الإدارة', 'error'); return false; }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -350,7 +339,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     products, activeCategory, setActiveCategory, searchQuery, setSearchQuery, selectedFamily, setSelectedFamily, sortBy, setSortBy,
     cart, isCartOpen, setIsCartOpen, addToCart, removeFromCart, updateCartQuantity, clearCart, cartCount, wishlist, toggleWishlist, isInWishlist,
     selectedGovernorate, shippingRates, setSelectedGovernorateById, activeCoupon, applyCoupon, removeCoupon, subtotal, discountAmount, shippingFee, totalAmount, isFreeShipping, freeShippingProgress,
-    orders, placeOrder, updateOrderStatus, deleteOrder, getOrderById, getOrdersByPhone, trackOrder, isAdminLoggedIn, loginAdmin, logoutAdmin, addProduct, updateProduct, deleteProduct,
+    orders, placeOrder, updateOrderStatus, deleteOrder, getOrderById, getOrdersByPhone, isAdminLoggedIn, loginAdmin, logoutAdmin, addProduct, updateProduct, deleteProduct,
     coupons, addCoupon, toggleCouponStatus, deleteCoupon, updateShippingRate, isQuizOpen, setIsQuizOpen, quickViewProduct, setQuickViewProduct, toasts, showToast, removeToast,
   }}>{children}</StoreContext.Provider>;
 };
