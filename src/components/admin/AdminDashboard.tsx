@@ -608,17 +608,26 @@ export const AdminDashboard: React.FC = () => {
                         : order.paymentMethod}
                     </p>
                     {(order.paymentMethod === 'vodafone_cash' || order.paymentMethod === 'instapay') && (
-                      <>
+                      <div className="mt-1 space-y-1">
                         <p className="text-[11px] text-[#E5C378]">
                           رقم التحويل إلى المحفظة: <bdi dir="ltr">01062003963</bdi>
                         </p>
-                        <p className="text-[11px] text-[#A69F90] break-words">
-                          رقم محفظة العميل / مرجع الدفع:{' '}
-                          {order.paymentReference
-                            ? <bdi dir="ltr" className="inline-block text-[#E5C378]">{order.paymentReference}</bdi>
+                        <p className="text-[11px] text-[#A69F90]">
+                          رقم محفظة العميل:{' '}
+                          {order.senderWalletPhone
+                            ? <bdi dir="ltr" className="inline-block text-[#E5C378]">{order.senderWalletPhone}</bdi>
                             : <span className="text-amber-400">غير مسجل لهذا الطلب</span>}
                         </p>
-                      </>
+                        <p className="text-[11px] text-[#A69F90]">
+                          رقم العملية:{' '}
+                          {order.walletTransactionId
+                            ? <bdi dir="ltr" className="inline-block text-[#E5C378]">{order.walletTransactionId}</bdi>
+                            : <span>غير مسجل</span>}
+                        </p>
+                        {!order.senderWalletPhone && !order.walletTransactionId && order.paymentReference && (
+                          <p className="text-[11px] text-[#E5C378] break-words">بيانات التحويل: {order.paymentReference}</p>
+                        )}
+                      </div>
                     )}
                     {order.notes && (
                       <p className="text-[11px] text-[#A69F90] break-words leading-relaxed">
