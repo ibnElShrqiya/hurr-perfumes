@@ -5,7 +5,6 @@ import { ShoppingBag, Heart, Search, X, Sun, Moon } from 'lucide-react';
 import { ProductCategory } from '../../types';
 
 interface HeaderProps {
-  onOpenTracking: () => void;
   onOpenHome: () => void;
   onOpenBrandStory: () => void;
   onOpenFaq: () => void;
@@ -14,7 +13,6 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  onOpenTracking,
   onOpenHome,
   onOpenBrandStory,
   onOpenFaq,
@@ -41,7 +39,6 @@ export const Header: React.FC<HeaderProps> = ({
     { label: 'المجموعة المختارة', category: 'private_collection' },
     { label: 'عروض حصرية', category: 'offers' },
     { label: 'قصة حُرّ', category: 'custom', action: onOpenBrandStory },
-    { label: 'تتبع الطلب', category: 'custom', action: onOpenTracking },
   ];
 
   return (
