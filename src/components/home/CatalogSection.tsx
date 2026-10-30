@@ -2,7 +2,7 @@ import React from 'react';
 import { useStore } from '../../context/StoreContext';
 import { ProductCard } from '../product/ProductCard';
 import { ProductCategory } from '../../types';
-import { Sparkles, SlidersHorizontal, RefreshCw } from 'lucide-react';
+import { Sparkles, SlidersHorizontal } from 'lucide-react';
 
 export const CatalogSection: React.FC = () => {
   const {
@@ -27,12 +27,7 @@ export const CatalogSection: React.FC = () => {
   ];
 
   const families = [
-    { id: 'all', label: 'كافة النوتات' },
-    { id: 'oud', label: 'العود' },
-    { id: 'amber', label: 'العنبر والتوابل' },
-    { id: 'musk', label: 'المسك والورد الطائفي' },
-    { id: 'leather', label: 'الجلود والتبغ' },
-    { id: 'oriental_floral', label: 'الزهور الشرقية' },
+    { id: 'all', label: 'كافة المنتجات' },
   ];
 
   // Filter & Sort Logic
@@ -122,9 +117,8 @@ export const CatalogSection: React.FC = () => {
         })}
       </div>
 
-      {/* Scent Family Sub-filters */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs text-[#8A8275] pt-1">
-        <span className="text-[#A69F90] shrink-0 font-medium">العائلة الشمية:</span>
+      {/* Product Family Filter */}
+      <div className="flex items-center gap-2 pt-1">
         {families.map((fam) => {
           const isSelected = selectedFamily === fam.id;
           return (
@@ -141,21 +135,6 @@ export const CatalogSection: React.FC = () => {
             </button>
           );
         })}
-
-        {/* Reset button if filtered */}
-        {(activeCategory !== 'all' || selectedFamily !== 'all' || searchQuery) && (
-          <button
-            onClick={() => {
-              setActiveCategory('all');
-              setSelectedFamily('all');
-              setSearchQuery('');
-            }}
-            className="text-[11px] text-[#C5A059] hover:underline flex items-center gap-1 mr-auto shrink-0"
-          >
-            <RefreshCw className="w-3 h-3" />
-            <span>إعادة ضبط التصفية</span>
-          </button>
-        )}
       </div>
 
       {/* Active Search Notification */}
