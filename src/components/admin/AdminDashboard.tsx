@@ -7,8 +7,6 @@ import {
   Package,
   ShoppingBag,
   Tag,
-  Settings,
-  Database,
   Plus,
   Trash2,
   Edit,
@@ -45,7 +43,7 @@ export const AdminDashboard: React.FC = () => {
     showToast,
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'coupons' | 'shipping' | 'database'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'coupons' | 'shipping'>('analytics');
 
   // Login Form
   const [adminEmail, setAdminEmail] = useState('');
@@ -392,7 +390,6 @@ export const AdminDashboard: React.FC = () => {
           { id: 'orders', label: `إدارة الطلبات (${orders.length})`, icon: ShoppingBag },
           { id: 'coupons', label: `كوبونات الخصم (${coupons.length})`, icon: Tag },
           { id: 'shipping', label: 'الشحن والمحتوى', icon: Truck },
-          { id: 'database', label: 'إعدادات المتجر', icon: Settings },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -841,43 +838,6 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tab 6: Store configuration */}
-      {activeTab === 'database' && (
-        <div className="space-y-6">
-          <div className="p-4 sm:p-6 bg-[#111111] border border-[#C5A059]/30 rounded-2xl space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[#222] pb-4">
-              <div className="flex items-center gap-2">
-                <Database className="w-5 h-5 text-[#C5A059]" />
-                <h3 className="text-base font-serif font-bold text-[#EDE8DC]">إعدادات الاتصال والبيانات</h3>
-              </div>
-              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-semibold">
-                اتصال البيانات عبر إعدادات البيئة
-              </span>
-            </div>
-
-            <p className="text-xs text-[#B0A99B] leading-relaxed">
-              تم تجهيز المتجر بمخطط قاعدة بيانات PostgreSQL متكامل مع سياسات الأمان على مستوى الصفوف (Row Level Security)، وتحديث المخزون الذري لمنع بيع كميات غير متوفرة (Atomic Inventory Updates)، وجداول مخصصة للعملاء والطلبات والكوبونات والشحن.
-            </p>
-
-            {/* إعدادات الاتصال */}
-            <div className="p-4 bg-[#141414] border border-[#222] rounded-xl space-y-3">
-              <h4 className="text-xs font-bold text-[#E5C378]">متغيرات البيئة للربط المباشر:</h4>
-              <div className="bg-[#0A0A0A] p-3 rounded font-mono text-xs text-[#C5A059] space-y-1 overflow-x-auto">
-                <p>رابط قاعدة البيانات</p>
-                <p>مفتاح الاتصال العام</p>
-              </div>
-              <p className="text-[11px] text-[#777]">
-                تُضبط إعدادات الاتصال الآمنة من إعدادات استضافة الموقع قبل استقبال طلبات حقيقية.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-[#333] bg-[#141414] p-4 text-sm leading-7 text-[#B0A99B]">
-              تُدار بنية البيانات وصلاحياتها من لوحة إدارة قاعدة البيانات. لا يتم تنزيل ملفات قاعدة البيانات من واجهة المتجر.
             </div>
           </div>
         </div>
