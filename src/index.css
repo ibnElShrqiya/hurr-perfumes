@@ -325,7 +325,7 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     justify-content: flex-start !important;
     gap: .12rem !important;
   }
-  .hurr-app header > div:first-child > div:last-child > button,
+  .hurr-app header > div:first-child > div:last-child > button:not(.header-cart-trigger),
   .hurr-app header > div:first-child > div:last-child > a {
     min-width: 30px !important;
     min-height: 30px !important;
@@ -336,7 +336,7 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     align-items: center;
     justify-content: center;
   }
-  .hurr-app header > div:first-child > div:last-child svg {
+  .hurr-app header > div:first-child > div:last-child > .header-cart-trigger {\n    width: auto !important; min-width: 48px !important; max-width: none !important;\n    height: 32px !important; padding: .3rem .45rem !important; gap: .25rem !important; flex: 0 0 auto !important;\n  }\n  .hurr-app header > div:first-child > div:last-child svg {
     width: 17px !important;
     height: 17px !important;
   }
