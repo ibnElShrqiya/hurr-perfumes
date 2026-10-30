@@ -20,6 +20,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     xl: { logo: 184, sub: 'text-xs' },
   };
   const currentSize = sizeMap[size];
+  const gradientId = React.useId().replace(/:/g, '');
   const goldStops = variant === 'light'
     ? ['#FFFFFF', '#F1E5C4', '#FFFFFF']
     : variant === 'monochrome'
@@ -39,7 +40,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         className="shrink-0"
       >
         <defs>
-          <linearGradient id="hurrWordmarkGold" x1="35" y1="24" x2="185" y2="120" gradientUnits="userSpaceOnUse">
+          <linearGradient id={gradientId} x1="35" y1="24" x2="185" y2="120" gradientUnits="userSpaceOnUse">
             <stop offset="0" stopColor={goldStops[0]} />
             <stop offset="0.48" stopColor={goldStops[1]} />
             <stop offset="1" stopColor={goldStops[2]} />
@@ -55,7 +56,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           fontFamily="'Amiri', 'Traditional Arabic', serif"
           fontSize="70"
           fontWeight="700"
-          fill="url(#hurrWordmarkGold)"
+          fill={`url(#${gradientId})`}
         >
           حُرّ
         </text>
@@ -71,7 +72,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         >
           HURR
         </text>
-        <path d="M34 123H88M132 123H186" stroke="url(#hurrWordmarkGold)" strokeWidth="1.5" />
+        <path d="M34 123H88M132 123H186" stroke={`url(#${gradientId})`} strokeWidth="1.5" />
         <path d="M110 116L117 123L110 130L103 123L110 116Z" fill="url(#hurrWordmarkGold)" />
       </svg>
 
