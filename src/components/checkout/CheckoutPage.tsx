@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { EGYPTIAN_GOVERNORATES } from '../../data/governorates';
 import { PaymentMethod, Order } from '../../types';
+import { isEgyptianMobile } from '../../lib/phone';
 import {
   ShieldCheck,
   Truck,
@@ -63,11 +64,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       errs.customerName = 'يرجى إدخال الاسم كما يظهر في بيانات الاستلام';
     }
 
-    // Egyptian phone validation: 11 digits starting with 010, 011, 012, or 015
-    const cleanPhone = customerPhone.replace(/\s+/g, '');
-    const egPhoneRegex = /^(010|011|012|015)[0-9]{8}$/;
-    if (!egPhoneRegex.test(cleanPhone)) {
-      errs.customerPhone = 'يرجى إدخال رقم هاتف مصري صحيح (11 رقماً يبدأ بـ 010 أو 011 أو 012 أو 015)';
+    if (!isEgyptianMobile(customerPhone)) {
+      errs.customerPhone = 'يرجى إدخال رقم هاتف مصري صحيح؛ يقبل الموقع الأرقام العربية أو الإنجليزية وصيغة +20.';
     }
 
     if (!city.trim()) {
@@ -378,7 +376,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 {/* 2. Vodafone Cash & InstaPay */}
                 <label
                   className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay'
+                    paymentMethod === 'vodafone_cash'
                       ? 'bg-[#1C1A14] border-[#C5A059]'
                       : 'bg-[#141414] border-[#262626] hover:border-[#444]'
                   }`}
@@ -387,7 +385,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     type="radio"
                     name="paymentMethod"
                     value="vodafone_cash"
-                    checked={paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay'}
+                    checked={paymentMethod === 'vodafone_cash'}
                     onChange={() => setPaymentMethod('vodafone_cash')}
                     className="mt-1 text-[#C5A059] focus:ring-[#C5A059]"
                   />
@@ -395,15 +393,26 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-[#EDE8DC] flex items-center gap-2">
                         <Smartphone className="w-4 h-4 text-[#C5A059]" />
-                        <span>تحويل يدوي عبر فودافون كاش أو إنستاباي</span>
+                        <span>تحويل يدوي عبر فودافون كاش</span>
                       </span>
                       <span className="text-[10px] bg-[#C5A059]/10 text-[#E5C378] border border-[#C5A059]/30 px-2 py-0.5 rounded">
                         01062003963
                       </span>
                     </div>
                     <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                      حوّل إلى الرقم الموضح، ثم أدخل بيانات التحويل لمراجعتها قبل اعتماد الطلب: <strong>01062003963</strong>
+                      حوّل عبر فودافون كاش إلى الرقم الموضح، ثم أدخل بيانات التحويل لمراجعتها قبل اعتماد الطلب: <strong>01062003963</strong>
                     </p>
+                  </div>
+                </label>
+
+                <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'instapay' ? 'bg-[#1C1A14] border-[#C5A059]' : 'bg-[#141414] border-[#262626] hover:border-[#444]'}`}>
+                  <input type="radio" name="paymentMethod" value="instapay" checked={paymentMethod === 'instapay'} onChange={() => setPaymentMethod('instapay')} className="mt-1 text-[#C5A059] focus:ring-[#C5A059]" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-[#EDE8DC]">تحويل يدوي عبر إنستاباي</span>
+                      <span className="text-[10px] bg-[#C5A059]/10 text-[#E5C378] border border-[#C5A059]/30 px-2 py-0.5 rounded">01062003963</span>
+                    </div>
+                    <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">أدخل رقم الهاتف المرتبط بحساب إنستاباي الذي حوّلت منه لمراجعة الدفع.</p>
                   </div>
                 </label>
 

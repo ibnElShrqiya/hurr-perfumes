@@ -157,7 +157,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                     {/* Quantity controls */}
                     <div className="flex items-center bg-[#1A1A1A] border border-[#333] rounded-md overflow-hidden">
                       <button
-                        onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
+                        onClick={() => updateCartQuantity(item.productId, item.quantity - 1, item.selectedSize)}
                         className="px-2 py-0.5 text-xs text-[#B0A99B] hover:bg-[#252525]"
                       >
                         -
@@ -166,7 +166,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
+                        onClick={() => updateCartQuantity(item.productId, item.quantity + 1, item.selectedSize)}
                         className="px-2 py-0.5 text-xs text-[#B0A99B] hover:bg-[#252525]"
                       >
                         +
@@ -177,7 +177,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
 
                 {/* Remove button */}
                 <button
-                  onClick={() => removeFromCart(item.productId)}
+                  onClick={() => removeFromCart(item.productId, item.selectedSize)}
                   aria-label="حذف من السلة"
                   className="p-1 text-[#666] hover:text-red-400 self-start"
                 >

@@ -9,7 +9,16 @@ Deno.serve(async (req) => {
     const required = ['customerName','customerPhone','governorate','city','detailedAddress','paymentMethod'];
     if (required.some((k) => typeof payload[k] !== 'string' || !payload[k].trim()) || !Array.isArray(payload.items)) throw new Error('بيانات الطلب غير مكتملة');
     if (payload.customerName.length > 120 || payload.city.length > 120 || payload.governorate.length > 120 || payload.detailedAddress.length > 600 || (payload.notes?.length ?? 0) > 500) throw new Error('بعض بيانات الطلب أطول من المسموح');
-    if (!/^(010|011|012|015)\d{8}$/.test(payload.customerPhone.replace(/\s/g, ''))) throw new Error('رقم الهاتف غير صالح');
+    const arabicDigits = '٠١٢٣٤٥٦٧٨٩';
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+    let phone = String(payload.customerPhone)
+      .replace(/[٠-٩]/g, (digit) => String(arabicDigits.indexOf(digit)))
+      .replace(/[۰-۹]/g, (digit) => String(persianDigits.indexOf(digit)))
+      .replace(/[^\d+]/g, '');
+    if (phone.startsWith('+20')) phone = `0${phone.slice(3)}`;
+    else if (phone.startsWith('0020')) phone = `0${phone.slice(4)}`;
+    if (!/^(010|011|012|015)\d{8}$/.test(phone)) throw new Error('رقم الهاتف غير صالح');
+    payload.customerPhone = phone;
     if (payload.customerEmail != null && (typeof payload.customerEmail !== 'string' || payload.customerEmail.length > 254)) throw new Error('البريد الإلكتروني غير صالح');
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');

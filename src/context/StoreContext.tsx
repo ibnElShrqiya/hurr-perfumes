@@ -4,6 +4,7 @@ import {
 } from '../types';
 import { EGYPTIAN_GOVERNORATES, FREE_SHIPPING_THRESHOLD } from '../data/governorates';
 import { supabase, fromDbProduct, toDbProduct, fromDbCoupon } from '../lib/supabase';
+import { normalizeEgyptianMobile } from '../lib/phone';
 
 export interface ToastMessage { id: string; message: string; type: 'success' | 'info' | 'warning' | 'error'; }
 type NewOrder = Omit<Order, 'id' | 'createdAt' | 'trackingHistory'>;
@@ -12,8 +13,8 @@ interface StoreContextType {
   searchQuery: string; setSearchQuery: (q: string) => void; selectedFamily: string; setSelectedFamily: (fam: string) => void;
   sortBy: 'featured' | 'price_asc' | 'price_desc' | 'rating'; setSortBy: (sort: 'featured' | 'price_asc' | 'price_desc' | 'rating') => void;
   cart: CartItem[]; isCartOpen: boolean; setIsCartOpen: (open: boolean) => void;
-  addToCart: (product: Product, quantity?: number, selectedSize?: string) => void; removeFromCart: (productId: string) => void;
-  updateCartQuantity: (productId: string, quantity: number) => void; clearCart: () => void; cartCount: number;
+  addToCart: (product: Product, quantity?: number, selectedSize?: string) => void; removeFromCart: (productId: string, selectedSize?: string) => void;
+  updateCartQuantity: (productId: string, quantity: number, selectedSize?: string) => void; clearCart: () => void; cartCount: number;
   wishlist: string[]; toggleWishlist: (productId: string) => void; isInWishlist: (productId: string) => boolean;
   selectedGovernorate: GovernorateShipping; shippingRates: GovernorateShipping[]; setSelectedGovernorateById: (id: string) => void;
   activeCoupon: Coupon | null; applyCoupon: (code: string) => { success: boolean; message: string }; removeCoupon: () => void;
@@ -172,11 +173,11 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
     showToast(`تمت إضافة "${product.nameAr}" إلى سلة مشترياتك`, 'success'); setIsCartOpen(true);
   };
-  const removeFromCart = (productId: string) => { setCart((prev) => prev.filter((item) => item.productId !== productId)); showToast('تم حذف المنتج من السلة', 'info'); };
-  const updateCartQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) return removeFromCart(productId);
+  const removeFromCart = (productId: string, selectedSize?: string) => { setCart((prev) => prev.filter((item) => item.productId !== productId || (selectedSize !== undefined && item.selectedSize !== selectedSize))); showToast('تم حذف المنتج من السلة', 'info'); };
+  const updateCartQuantity = (productId: string, quantity: number, selectedSize?: string) => {
+    if (quantity <= 0) return removeFromCart(productId, selectedSize);
     setCart((prev) => prev.map((item) => {
-      if (item.productId !== productId) return item;
+      if (item.productId !== productId || (selectedSize !== undefined && item.selectedSize !== selectedSize)) return item;
       if (quantity > item.product.stock) { showToast(`أقصى كمية متوفرة هي ${item.product.stock} قطع`, 'warning'); return item; }
       return { ...item, quantity };
     }));
@@ -220,7 +221,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     ].filter(Boolean).join(' | ');
     const storedNotes = [orderData.notes?.trim(), transferDetails ? `بيانات التحويل: ${transferDetails}` : ''].filter(Boolean).join(' | ').slice(0, 500);
     const { data, error } = await supabase.functions.invoke('create-order', { body: {
-      customerName: orderData.customerName, customerPhone: orderData.customerPhone.replace(/\s/g, ''),
+      customerName: orderData.customerName, customerPhone: normalizeEgyptianMobile(orderData.customerPhone),
       customerEmail: orderData.customerEmail, governorate: orderData.governorate, city: orderData.city,
       detailedAddress: orderData.detailedAddress, notes: storedNotes || undefined,
       senderWalletPhone: orderData.senderWalletPhone?.trim() || undefined,
