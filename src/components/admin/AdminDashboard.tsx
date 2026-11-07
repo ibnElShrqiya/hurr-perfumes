@@ -598,9 +598,16 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                   <div>
                     <span className="text-[#C5A059] font-semibold block">الدفع والإجمالي:</span>
-                    <p className="text-[#EDE8DC] font-bold font-sans tabular-nums">
-                      {order.totalAmount.toLocaleString('ar-EG')} ج.م
-                    </p>
+                    <div className="mt-1 space-y-1 text-[11px] text-[#A69F90] font-sans tabular-nums">
+                      <p>قيمة المنتجات: {order.subtotal.toLocaleString('ar-EG')} ج.م</p>
+                      {order.discountAmount > 0 && (
+                        <p className="text-emerald-400">الخصم: −{order.discountAmount.toLocaleString('ar-EG')} ج.م</p>
+                      )}
+                      <p>مصاريف الشحن: {order.shippingFee.toLocaleString('ar-EG')} ج.م</p>
+                      <p className="pt-1 text-xs font-bold text-[#EDE8DC]">
+                        الإجمالي شامل الشحن: {order.totalAmount.toLocaleString('ar-EG')} ج.م
+                      </p>
+                    </div>
                     <p className="text-[11px]">
                       {order.paymentMethod === 'cod'
                         ? 'الدفع عند الاستلام'
