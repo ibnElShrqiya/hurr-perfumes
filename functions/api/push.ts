@@ -22,8 +22,17 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
   const rawBody = await request.text();
   const key = await crypto.subtle.importKey('raw', encoder.encode(env.HURR_PUSH_WEBHOOK_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const expected = `sha256=${toHex(await crypto.subtle.sign('HMAC', key, encoder.encode(rawBody)))}`;
-  if (!safeEqual(request.headers.get('X-HURR-Signature') || '', expected)) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  const suppliedSignature = request.headers.get('X-HURR-Signature') || '';
+  const diagnosticId = (request.headers.get('X-HURR-Request-ID') || crypto.randomUUID()).replace(/[^a-zA-Z0-9-]/g, '').slice(0, 64);
+  if (!safeEqual(suppliedSignature, expected)) {
+    console.warn('[hurr-push] HMAC verification failed', {
+      diagnosticId,
+      signatureHeaderPresent: Boolean(suppliedSignature),
+      signatureFormatValid: /^sha256=[a-f0-9]{64}$/.test(suppliedSignature),
+      bodyBytes: encoder.encode(rawBody).length,
+      secretConfigured: Boolean(env.HURR_PUSH_WEBHOOK_SECRET),
+    });
+    return Response.json({ error: 'Unauthorized', diagnosticId }, { status: 401 });
   }
   let payload: { orderId?: unknown; adminUserIds?: unknown };
   try { payload = JSON.parse(rawBody); } catch { return Response.json({ error: 'Invalid JSON' }, { status: 400 }); }
@@ -59,3 +68,5 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
   }
   return Response.json({ delivered: recipients, messageId: typeof result?.id === 'string' ? result.id : undefined }, { status: 200 });
 }
+
+
