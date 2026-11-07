@@ -32,6 +32,42 @@ Deno.serve(async (req) => {
       console.error('[create-order] Database RPC failed', { message: error.message, code: error.code, details: error.details, hint: error.hint });
       throw new Error(error.message || 'تعذر حفظ الطلب في قاعدة البيانات');
     }
+    // Notify admins only after the database RPC has committed the order.
+    // Delivery failures must never turn a successful order into a checkout failure.
+    const savedOrder = data?.order ?? data;
+    const orderId = savedOrder?.id;
+    const workerUrl = Deno.env.get('CLOUDFLARE_PUSH_WORKER_URL');
+    const webhookSecret = Deno.env.get('HURR_PUSH_WEBHOOK_SECRET');
+    if (orderId && workerUrl && webhookSecret) {
+      try {
+        const [adminRoles, profileRoles] = await Promise.all([
+          db.from('admin_roles').select('user_id').eq('role', 'admin'),
+          db.from('profiles').select('user_id').eq('role', 'admin'),
+        ]);
+        const adminUserIds = [...new Set([
+          ...(adminRoles.data || []).map((row: any) => row.user_id),
+          ...(profileRoles.data || []).map((row: any) => row.user_id),
+        ].filter((id: unknown): id is string => typeof id === 'string' && id.length > 0))];
+        if (adminUserIds.length) {
+          const body = JSON.stringify({ orderId: String(orderId), adminUserIds });
+          const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(webhookSecret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+          const signatureBytes = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body)));
+          const signature = [...signatureBytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000);
+          try {
+            const pushResponse = await fetch(workerUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-HURR-Signature': `sha256=${signature}` },
+              body, signal: controller.signal,
+            });
+            if (!pushResponse.ok) console.warn('[create-order] Push delivery failed with status', pushResponse.status);
+          } finally { clearTimeout(timeout); }
+        }
+      } catch (pushError) {
+        console.warn('[create-order] Push delivery failed; order was saved', pushError instanceof Error ? pushError.message : 'unknown error');
+      }
+    }
     return Response.json(data, { headers: cors });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'تعذر إنشاء الطلب';

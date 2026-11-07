@@ -303,7 +303,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (role !== 'admin') { await supabase.auth.signOut(); showToast('تم تسجيل الدخول لكن الحساب غير مخوّل للإدارة. تحقق من جدول admin_roles وصلاحيات القراءة.', 'error'); return false; }
     setIsAdminLoggedIn(true); showToast('تم تسجيل الدخول إلى لوحة حُرّ', 'success'); return true;
   };
-  const logoutAdmin = async () => { if (supabase) await supabase.auth.signOut(); setIsAdminLoggedIn(false); showToast('تم تسجيل الخروج من لوحة التحكم', 'info'); };
+  const logoutAdmin = async () => { try { const deferred = (window as any).OneSignalDeferred; if (deferred) deferred.push(async (OneSignal: any) => { await OneSignal.logout(); }); } catch (error) { console.warn('[HUR push] Could not clear admin push identity', error); } if (supabase) await supabase.auth.signOut(); setIsAdminLoggedIn(false); showToast('تم تسجيل الخروج من لوحة التحكم', 'info'); };
 
   const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>): Promise<boolean> => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return false; }
