@@ -55,15 +55,17 @@ Deno.serve(async (req) => {
           const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(webhookSecret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
           const signatureBytes = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body)));
           const signature = [...signatureBytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+          const diagnosticId = crypto.randomUUID();
           const controller = new AbortController();
           const timeout = setTimeout(() => controller.abort(), 5000);
           try {
             const pushResponse = await fetch(workerUrl, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-HURR-Signature': `sha256=${signature}` },
+              headers: { 'Content-Type': 'application/json', 'X-HURR-Signature': `sha256=${signature}`, 'X-HURR-Request-ID': diagnosticId },
               body, signal: controller.signal,
             });
-            if (!pushResponse.ok) console.warn('[create-order] Push delivery failed', { status: pushResponse.status, response: (await pushResponse.text()).slice(0, 500) });
+            if (!pushResponse.ok) console.warn('[create-order] Push delivery failed', { diagnosticId, status: pushResponse.status, response: (await pushResponse.text()).slice(0, 500) });
+            else console.info('[create-order] Push delivery succeeded', { diagnosticId, status: pushResponse.status });
           } finally { clearTimeout(timeout); }
         } else {
           console.warn('[create-order] No administrator user IDs found; order was saved but no push was sent', { adminRolesRows: adminRoles.data?.length ?? 0, profileRows: profileRoles.data?.length ?? 0 });
@@ -79,3 +81,5 @@ Deno.serve(async (req) => {
     return Response.json({ error: message }, { status: 400, headers: cors });
   }
 });
+
+
