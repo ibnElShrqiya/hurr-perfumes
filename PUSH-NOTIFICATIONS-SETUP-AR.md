@@ -4,19 +4,25 @@
 
 ## OneSignal
 
-1. أنشئ حساباً وتطبيقاً من نوع Web Push في OneSignal.
-2. أضف نطاق المتجر النهائي عبر HTTPS إلى إعداد الموقع في OneSignal.
-3. أضف **App ID** إلى `VITE_ONESIGNAL_APP_ID`، و**Safari Web ID** إلى `VITE_ONESIGNAL_SAFARI_WEB_ID`، ثم أعد نشر الموقع.
-4. سجّل الدخول إلى `/admin` بحساب مدير، واسمح بالإشعارات واضغط «تفعيل على هذا الجهاز» على كل جهاز. iPhone يتطلب إضافة الموقع إلى الشاشة الرئيسية.
+1. التطبيق المستخدم هو `hurr`، والنطاق الفعلي `https://hurr-web-site.pages.dev`.
+2. أضف **App ID** إلى `VITE_ONESIGNAL_APP_ID` و**Safari Web ID** إلى `VITE_ONESIGNAL_SAFARI_WEB_ID في بيئة بناء Cloudflare Pages.
+3. يستخدم الموقع تكامل Custom Code وزر التفعيل داخل لوحة الإدارة. لا تفعّل زر OneSignal العام ولا تنشئ مطالبة اشتراك للزوار.
+4. سجّل الدخول إلى `/admin` بحساب مدير واسمح بالإشعارات على كل جهاز. على iPhone، أضف الموقع إلى الشاشة الرئيسية.
 
-## Cloudflare
+## Cloudflare Pages Function
 
-من `cloudflare/notifications-worker` انشر Worker باستخدام Wrangler. أضف الأسرار التالية في Cloudflare: `ONESIGNAL_APP_ID`, `ONESIGNAL_REST_API_KEY`, `HURR_PUSH_WEBHOOK_SECRET`, `PUBLIC_SITE_URL`. استخدم عنوان المتجر النهائي لـ `PUBLIC_SITE_URL` وسراً عشوائياً قوياً لـ `HURR_PUSH_WEBHOOK_SECRET`.
+الاستقبال يعمل بوظيفة Cloudflare Pages ضمن بيئة Workers، على المسار `POST /api/push`. بعد تجهيز الكود، اضبط Production variables/secrets في مشروع Cloudflare Pages `hurr-web-site`:
 
-أضف في Supabase Edge Function secrets: `CLOUDFLARE_PUSH_WORKER_URL` و`HURR_PUSH_WEBHOOK_SECRET` بالقيمة المطابقة. أبقِ `SUPABASE_URL` و`SUPABASE_SERVICE_ROLE_KEY` متاحين لوظيفة الطلب الحالية، ثم أعد نشر `create-order`.
+- Variables: `ONESIGNAL_APP_ID`, `PUBLIC_SITE_URL=https://hurr-web-site.pages.dev`
+- Secrets: `ONESIGNAL_REST_API_KEY`, `HURR_PUSH_WEBHOOK_SECRET`
 
-يمكن استخدام عنوان `workers.dev` الافتراضي؛ لا يلزم DNS إضافي. لا يحتاج Worker إلى CORS لأنه يستقبل استدعاءً خادمياً موقّعاً.
+أضف متغيري الواجهة `VITE_ONESIGNAL_APP_ID` و`VITE_ONESIGNAL_SAFARI_WEB_ID` إلى إعدادات البناء نفسها. لا تضع REST API Key أو HMAC secret في متغيرات `VITE_` أو المستودع.
 
-## قبل التشغيل
+في Supabase Edge Function secrets اضبط `CLOUDFLARE_PUSH_WORKER_URL=https://hurr-web-site.pages.dev/api/push` و`HURR_PUSH_WEBHOOK_SECRET` بالقيمة المشتركة نفسها. اترك `SUPABASE_URL` و`SUPABASE_SERVICE_ROLE_KEY` متاحين لوظيفة إنشاء الطلب الحالية، ثم أعد نشر `create-order`.
 
-تحتاج حساب OneSignal ومفتاح REST API، نشر Worker وإعداده، إضافة App ID لبيئة الموقع، وربط نطاق HTTPS في OneSignal. تأكد أن حساب المدير موجود في `admin_roles` أو `profiles` بدور `admin`. لا تُرسل بيانات العميل؛ الإشعار عام ويحمل رقم الطلب والرابط المفلتر إلى لوحة الإدارة، وتبقى المصادقة مطلوبة لرؤية التفاصيل.
+تعطل OneSignal أو Cloudflare لا يغيّر نتيجة الطلب المحفوظ. يرسل النظام تنبيهاً عاماً ورقم الطلب فقط، ويظل تسجيل دخول المدير مطلوباً لعرض التفاصيل.
+
+## التشغيل
+
+- لا يلزم DNS إضافي لـ Worker لأننا نستخدم نطاق Pages الحالي.
+- قبل الإطلاق الفعلي: دمج التغيير، ضبط الأسرار في Pages وSupabase، ثم نشر الواجهة ووظيفة `create-order`.
