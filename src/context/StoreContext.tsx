@@ -60,7 +60,7 @@ const mapOrder = (row: any): Order => {
     paymentStatus: row.payment_status ?? row.paymentStatus ?? 'pending',
     shippingStatus: row.shipping_status ?? row.shippingStatus ?? 'new',
     subtotal: Number(row.subtotal ?? 0), shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0), discountAmount: Number(row.discount_amount ?? row.discountAmount ?? 0),
-    couponCode: row.coupon_code ?? row.couponCode ?? undefined, totalAmount: Number(row.total_amount ?? row.totalAmount ?? 0),
+    couponCode: row.coupon_code ?? row.couponCode ?? undefined, totalAmount: Number(row.total_amount ?? row.totalAmount ?? 0) || Math.max(0, Number(row.subtotal ?? 0) - Number(row.discount_amount ?? row.discountAmount ?? 0) + Number(row.shipping_fee ?? row.shippingFee ?? 0)),
     items: (row.order_items || row.items || []).map((item: any) => ({
       productId: item.product_id ?? item.productId ?? '', productName: item.product_name ?? item.productName ?? '', productImage: item.product_image ?? item.productImage ?? '',
       quantity: Number(item.quantity ?? 0), unitPrice: Number(item.unit_price ?? item.unitPrice ?? 0),

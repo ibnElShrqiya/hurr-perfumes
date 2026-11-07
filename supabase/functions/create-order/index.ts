@@ -38,12 +38,14 @@ Deno.serve(async (req) => {
     const orderId = savedOrder?.id;
     const workerUrl = Deno.env.get('CLOUDFLARE_PUSH_WORKER_URL');
     const webhookSecret = Deno.env.get('HURR_PUSH_WEBHOOK_SECRET');
+    if (!workerUrl || !webhookSecret) console.warn('[create-order] Push secrets missing', { workerUrlConfigured: Boolean(workerUrl), webhookSecretConfigured: Boolean(webhookSecret) });
     if (orderId && workerUrl && webhookSecret) {
       try {
         const [adminRoles, profileRoles] = await Promise.all([
           db.from('admin_roles').select('user_id').eq('role', 'admin'),
           db.from('profiles').select('user_id').eq('role', 'admin'),
         ]);
+        if (adminRoles.error || profileRoles.error) console.warn('[create-order] Admin role lookup returned errors', { adminRolesCode: adminRoles.error?.code, adminRolesMessage: adminRoles.error?.message, profilesCode: profileRoles.error?.code, profilesMessage: profileRoles.error?.message });
         const adminUserIds = [...new Set([
           ...(adminRoles.data || []).map((row: any) => row.user_id),
           ...(profileRoles.data || []).map((row: any) => row.user_id),
@@ -61,8 +63,10 @@ Deno.serve(async (req) => {
               headers: { 'Content-Type': 'application/json', 'X-HURR-Signature': `sha256=${signature}` },
               body, signal: controller.signal,
             });
-            if (!pushResponse.ok) console.warn('[create-order] Push delivery failed with status', pushResponse.status);
+            if (!pushResponse.ok) console.warn('[create-order] Push delivery failed', { status: pushResponse.status, response: (await pushResponse.text()).slice(0, 500) });
           } finally { clearTimeout(timeout); }
+        } else {
+          console.warn('[create-order] No administrator user IDs found; order was saved but no push was sent', { adminRolesRows: adminRoles.data?.length ?? 0, profileRows: profileRoles.data?.length ?? 0 });
         }
       } catch (pushError) {
         console.warn('[create-order] Push delivery failed; order was saved', pushError instanceof Error ? pushError.message : 'unknown error');

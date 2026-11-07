@@ -51,9 +51,11 @@ export async function onRequestPost({ request, env }: PagesContext): Promise<Res
       data: { orderId },
     }),
   });
-  if (!response.ok) {
-    console.error('[hurr-push] OneSignal rejected notification', response.status);
-    return Response.json({ error: 'Push delivery failed' }, { status: 502 });
+  const result = await response.json().catch(() => null) as { id?: unknown; recipients?: unknown; errors?: unknown } | null;
+  const recipients = Number(result?.recipients ?? 0);
+  if (!response.ok || recipients < 1) {
+    console.error('[hurr-push] OneSignal did not deliver to an active subscription', { status: response.status, recipients, errors: result?.errors });
+    return Response.json({ error: recipients < 1 ? 'No active admin push subscription matched' : 'Push delivery failed' }, { status: 502 });
   }
-  return Response.json({ delivered: 1 }, { status: 200 });
+  return Response.json({ delivered: recipients, messageId: typeof result?.id === 'string' ? result.id : undefined }, { status: 200 });
 }

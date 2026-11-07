@@ -605,7 +605,7 @@ export const AdminDashboard: React.FC = () => {
                       )}
                       <p>مصاريف الشحن: {order.shippingFee.toLocaleString('ar-EG')} ج.م</p>
                       <p className="pt-1 text-xs font-bold text-[#EDE8DC]">
-                        الإجمالي شامل الشحن: {order.totalAmount.toLocaleString('ar-EG')} ج.م
+                        الإجمالي شامل الشحن: {(order.totalAmount > 0 ? order.totalAmount : Math.max(0, order.subtotal - order.discountAmount + order.shippingFee)).toLocaleString('ar-EG')} ج.م
                       </p>
                     </div>
                     <p className="text-[11px]">

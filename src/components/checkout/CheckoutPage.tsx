@@ -29,13 +29,15 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     subtotal,
     discountAmount,
     shippingFee,
-    totalAmount,
     selectedGovernorate,
     setSelectedGovernorateById,
     activeCoupon,
     placeOrder,
     showToast,
   } = useStore();
+
+  // Derive the payable amount from the visible line items so a stale context value cannot show zero.
+  const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + Number(shippingFee || 0));
 
   // Form Fields
   const [customerName, setCustomerName] = useState('');
@@ -133,7 +135,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         shippingFee,
         discountAmount,
         couponCode: activeCoupon?.code,
-        totalAmount,
+        totalAmount: checkoutTotalAmount,
         items: orderItems,
         paymentReference:
           paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay'
@@ -420,7 +422,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 {(paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay') && (
                   <div className="p-4 bg-[#181611] border border-[#C5A059]/40 rounded-xl space-y-3 mr-6 animate-in fade-in">
                     <p className="text-xs text-[#E5C378] leading-relaxed">
-                      📌 يرجى تحويل مبلغ <strong className="text-white tabular-nums">{totalAmount.toLocaleString('ar-EG')} ج.م</strong> إلى رقم فودافون كاش / إنستاباي: <strong className="text-white">01062003963</strong> ثم أدخل بيانات التحويل لمراجعة الدفع.
+                      📌 يرجى تحويل مبلغ <strong className="text-white tabular-nums">{checkoutTotalAmount.toLocaleString('ar-EG')} ج.م</strong> إلى رقم فودافون كاش / إنستاباي: <strong className="text-white">01062003963</strong> ثم أدخل بيانات التحويل لمراجعة الدفع.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
@@ -555,7 +557,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 <div className="flex justify-between text-base font-bold text-[#FBF9F5] border-t border-[#222] pt-3 mt-3">
                   <span>المبلغ الإجمالي المستحق:</span>
                   <span className="gold-gradient-text font-sans tabular-nums text-lg">
-                    {totalAmount.toLocaleString('ar-EG')} ج.م
+                    {checkoutTotalAmount.toLocaleString('ar-EG')} ج.م
                   </span>
                 </div>
               </div>
