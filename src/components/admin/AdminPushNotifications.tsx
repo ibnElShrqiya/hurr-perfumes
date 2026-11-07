@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { BellRing } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-type OneSignalApi = { init:(options:{appId:string;allowLocalhostAsSecureOrigin:boolean})=>Promise<void>; login:(externalId:string)=>Promise<void>; logout:()=>Promise<void>; Notifications:{requestPermission:()=>Promise<void>} };
+type OneSignalApi = { init:(options:{appId:string;allowLocalhostAsSecureOrigin:boolean;safari_web_id?:string})=>Promise<void>; login:(externalId:string)=>Promise<void>; logout:()=>Promise<void>; Notifications:{requestPermission:()=>Promise<void>} };
 declare global { interface Window { OneSignalDeferred?: Array<(sdk:OneSignalApi)=>void> } }
-const appId=(import.meta.env.VITE_ONESIGNAL_APP_ID as string|undefined)?.trim(); let initPromise:Promise<OneSignalApi>|undefined;
+const appId=(import.meta.env.VITE_ONESIGNAL_APP_ID as string|undefined)?.trim(); const safariWebId=(import.meta.env.VITE_ONESIGNAL_SAFARI_WEB_ID as string|undefined)?.trim(); let initPromise:Promise<OneSignalApi>|undefined;
 function getOneSignal():Promise<OneSignalApi>{
  if(!appId)return Promise.reject(new Error('أضف VITE_ONESIGNAL_APP_ID إلى إعدادات الموقع.'));
  if(!initPromise)initPromise=new Promise((resolve,reject)=>{
   window.OneSignalDeferred=window.OneSignalDeferred||[];
-  window.OneSignalDeferred.push(async sdk=>{try{await sdk.init({appId,allowLocalhostAsSecureOrigin:import.meta.env.DEV});resolve(sdk)}catch(error){reject(error)}});
+  window.OneSignalDeferred.push(async sdk=>{try{await sdk.init({appId,allowLocalhostAsSecureOrigin:import.meta.env.DEV,...(safariWebId?{safari_web_id:safariWebId}:{})});resolve(sdk)}catch(error){reject(error)}});
   if(!document.querySelector('script[data-hurr-onesignal]')){const script=document.createElement('script');script.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';script.async=true;script.dataset.hurrOnesignal='true';script.onerror=()=>reject(new Error('تعذر تحميل خدمة الإشعارات.'));document.head.appendChild(script)}
  });
  return initPromise;

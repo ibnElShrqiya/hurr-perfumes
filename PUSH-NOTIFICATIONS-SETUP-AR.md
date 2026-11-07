@@ -6,7 +6,7 @@
 
 1. أنشئ حساباً وتطبيقاً من نوع Web Push في OneSignal.
 2. أضف نطاق المتجر النهائي عبر HTTPS إلى إعداد الموقع في OneSignal.
-3. أضف **App ID** إلى متغير البناء `VITE_ONESIGNAL_APP_ID`، ثم أعد نشر الموقع.
+3. أضف **App ID** إلى `VITE_ONESIGNAL_APP_ID`، و**Safari Web ID** إلى `VITE_ONESIGNAL_SAFARI_WEB_ID`، ثم أعد نشر الموقع.
 4. سجّل الدخول إلى `/admin` بحساب مدير، واسمح بالإشعارات واضغط «تفعيل على هذا الجهاز» على كل جهاز. iPhone يتطلب إضافة الموقع إلى الشاشة الرئيسية.
 
 ## Cloudflare
