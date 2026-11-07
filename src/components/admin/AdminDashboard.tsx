@@ -21,6 +21,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
+import { AdminPushNotifications } from './AdminPushNotifications';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -42,7 +43,7 @@ export const AdminDashboard: React.FC = () => {
     showToast,
   } = useStore();
 
-  const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'coupons' | 'shipping'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'products' | 'orders' | 'coupons' | 'shipping'>(() => new URLSearchParams(window.location.search).has('order') ? 'orders' : 'analytics');
 
   // Login Form
   const [adminEmail, setAdminEmail] = useState('');
@@ -77,7 +78,7 @@ export const AdminDashboard: React.FC = () => {
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // Orders Filter
-  const [orderSearch, setOrderSearch] = useState('');
+  const [orderSearch, setOrderSearch] = useState(() => new URLSearchParams(window.location.search).get('order') || '');
 
   // Product Search
   const [productSearch, setProductSearch] = useState('');
@@ -404,6 +405,8 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Tab 1: Analytics Overview */}
+      <AdminPushNotifications />
+
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           <div className="p-6 bg-[#111111] border border-[#222] rounded-2xl space-y-4">
