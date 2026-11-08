@@ -44,7 +44,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + checkoutShippingFee);
 
   // Payment Selection
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('instapay');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
 
   // Vodafone Cash / Instapay details
   const [senderWalletPhone, setSenderWalletPhone] = useState('');
@@ -333,6 +333,28 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               </h3>
 
               <div className="space-y-3">
+                {/* Cash on delivery */}
+                <label className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
+                  paymentMethod === 'cod'
+                    ? 'bg-[#1C1A14] border-[#C5A059]'
+                    : 'bg-[#141414] border-[#262626] hover:border-[#444]'
+                }`}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cod"
+                    checked={paymentMethod === 'cod'}
+                    onChange={() => setPaymentMethod('cod')}
+                    className="mt-1 text-[#C5A059] focus:ring-[#C5A059]"
+                  />
+                  <div className="flex-1">
+                    <span className="text-sm font-bold text-[#EDE8DC]">الدفع عند الاستلام</span>
+                    <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
+                      ادفع قيمة طلبك نقدًا لمندوب الشحن عند استلام العطر.
+                    </p>
+                  </div>
+                </label>
+
                 {/* 2. Vodafone Cash & InstaPay */}
                 <label
                   className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
