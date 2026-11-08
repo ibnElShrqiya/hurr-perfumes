@@ -927,6 +927,16 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   min-width: 0 !important;
   max-width: none !important;
 }
+@media (max-width: 639px) {
+  .hurr-app section#catalog-section .hurr-featured-carousel {
+    grid-auto-columns: 100% !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+}
 @media (min-width: 640px) {
   .hurr-app section#catalog-section .hurr-featured-carousel { grid-auto-columns: 48% !important; }
 }
