@@ -6,13 +6,9 @@ import { isEgyptianMobile } from '../../lib/phone';
 import {
   ShieldCheck,
   Truck,
-  CreditCard,
-  Banknote,
   Smartphone,
   ArrowRight,
   CheckCircle,
-  AlertCircle,
-  HelpCircle,
 } from 'lucide-react';
 
 interface CheckoutPageProps {
@@ -42,13 +38,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   // Form Fields
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
   const [city, setCity] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   const [notes, setNotes] = useState('');
 
   // Payment Selection
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('instapay');
 
   // Vodafone Cash / Instapay details
   const [senderWalletPhone, setSenderWalletPhone] = useState('');
@@ -76,9 +71,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
     if (!detailedAddress.trim() || detailedAddress.trim().length < 10) {
       errs.detailedAddress = 'يرجى كتابة العنوان بالتفصيل (اسم الشارع، رقم العمارة، الشقة، علامة مميزة)';
-    }
-
-    if (paymentMethod === 'card') {
     }
 
     if (paymentMethod === 'vodafone_cash' || paymentMethod === 'instapay') {
@@ -123,7 +115,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
       const newOrder = await placeOrder({
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
-        customerEmail: customerEmail.trim() || undefined,
         governorate: selectedGovernorate.nameAr,
         city: city.trim(),
         detailedAddress: detailedAddress.trim(),
@@ -219,7 +210,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   <div>
                     <label className="block text-xs font-medium text-[#C8C2B3] mb-1">
                       رقم الهاتف المحمول (واتساب) <span className="text-amber-500">*</span>
@@ -237,18 +228,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-medium text-[#C8C2B3] mb-1">
-                      البريد الإلكتروني (اختياري - لاستلام الفاتورة)
-                    </label>
-                    <input
-                      type="email"
-                      value={customerEmail}
-                      onChange={(e) => setCustomerEmail(e.target.value)}
-                      placeholder="name@example.com"
-                      className="w-full p-2.5 bg-[#181818] border border-[#333] focus:border-[#C5A059] rounded-lg text-sm text-[#EDE8DC] focus:outline-none"
-                    />
-                  </div>
                 </div>
               </div>
             </div>
@@ -343,38 +322,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
               </h3>
 
               <div className="space-y-3">
-                {/* 1. Cash on Delivery (COD) */}
-                <label
-                  className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'cod'
-                      ? 'bg-[#1C1A14] border-[#C5A059]'
-                      : 'bg-[#141414] border-[#262626] hover:border-[#444]'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={() => setPaymentMethod('cod')}
-                    className="mt-1 text-[#C5A059] focus:ring-[#C5A059]"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[#EDE8DC] flex items-center gap-2">
-                        <Banknote className="w-4 h-4 text-[#C5A059]" />
-                        <span>الدفع عند الاستلام</span>
-                      </span>
-                      <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded">
-                        الأكثر طلباً في مصر
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                      ادفع نقداً لمندوب الشحن عند استلام الطرد وفحصه والتأكد من سلامة الزجاجات والعينة.
-                    </p>
-                  </div>
-                </label>
-
                 {/* 2. Vodafone Cash & InstaPay */}
                 <label
                   className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
@@ -456,39 +403,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   </div>
                 )}
 
-                {/* 3. Online Cards (Visa / Mastercard / Meeza) */}
-                <label
-                  className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                    paymentMethod === 'card'
-                      ? 'bg-[#1C1A14] border-[#C5A059]'
-                      : 'bg-[#141414] border-[#262626] hover:border-[#444]'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="card"
-                    checked={paymentMethod === 'card'}
-                    disabled
-                    className="mt-1 text-[#C5A059] focus:ring-[#C5A059]"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-[#EDE8DC] flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-[#C5A059]" />
-                        <span>الدفع بالبطاقة (يتطلب تفعيل بوابة الدفع)</span>
-                      </span>
-                      <span className="text-[10px] text-[#8A8275] flex items-center gap-1">
-                        بوابة الدفع غير مفعّلة
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#8A8275] mt-1 leading-relaxed">
-                      هذه الوسيلة غير مفعّلة حاليًا، وستتاح بعد ربط بوابة دفع معتمدة.
-                    </p>
-                  </div>
-                </label>
-
-                <p className="text-[10px] text-[#8A8275]">تُفعّل البطاقات بعد ربط بوابة دفع معتمدة.</p>
               </div>
             </div>
           </div>
@@ -543,7 +457,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
                 <div className="flex justify-between">
                   <span>
-                    شحن لـ {selectedGovernorate.nameAr} ({selectedGovernorate.estimatedDelivery}):
+                    + مصاريف الشحن:
                   </span>
                   <span className="font-sans text-[#EDE8DC] tabular-nums">
                     {shippingFee === 0 ? (
