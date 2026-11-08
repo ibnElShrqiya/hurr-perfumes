@@ -1505,3 +1505,22 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   font-weight: 700;
   white-space: nowrap;
 }
+
+
+/* Mobile overrides must follow the shared card rules above. */
+@media (max-width: 767px) {
+  .hurr-app #catalog-section .hurr-product-card__body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr) !important;
+    min-height: 204px !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__image { min-height: 204px !important; }
+  .hurr-app #catalog-section .hurr-product-card__info { padding: 12px 10px !important; }
+}
+@media (max-width: 380px) {
+  .hurr-app #catalog-section .hurr-product-card__body {
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr) !important;
+    min-height: 190px !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__image { min-height: 190px !important; }
+  .hurr-app #catalog-section .hurr-product-card__info { padding: 10px 8px !important; }
+}
