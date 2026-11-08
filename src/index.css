@@ -939,28 +939,38 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     height: 100% !important;
     object-fit: cover !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) {
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    position: absolute !important;
     top: 16px !important;
     left: 12px !important;
-    right: auto !important;
-    width: 56% !important;
-    max-width: 56% !important;
+    right: 42% !important;
+    width: auto !important;
+    max-width: none !important;
     text-align: right !important;
-    z-index: 3 !important;
+    z-index: 4 !important;
+    padding: 8px 10px !important;
+    border: 1px solid rgba(211, 168, 76, .3) !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, rgba(12, 8, 4, .9), rgba(23, 13, 5, .7)) !important;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, .28) !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:first-child {
-    font-size: 17px !important;
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:first-child {
+    font-size: 18px !important;
     line-height: 1.55 !important;
     text-shadow: 0 2px 7px rgba(0, 0, 0, .95) !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:nth-child(2) {
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:nth-child(2) {
     margin-top: 5px !important;
-    font-size: 12px !important;
+    font-size: 13px !important;
     line-height: 1.6 !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:nth-child(3) {
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:nth-child(3) {
     margin-top: 8px !important;
-    font-size: 11px !important;
+    font-size: 12px !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
+    transform: scale(1.35) !important;
+    object-position: center center !important;
   }
   .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
     right: 7px !important;

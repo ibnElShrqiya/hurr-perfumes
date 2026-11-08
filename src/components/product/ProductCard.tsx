@@ -34,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Heart className={`h-4 w-4 ${inWishlist ? 'fill-[#e8b949]' : ''}`} />
         </button>
         {product.discountPercentage ? <span className="absolute right-3 top-2 z-10 rounded-full border border-[#ebc866] bg-[#251708]/90 px-2.5 py-1 text-[9px] font-bold text-[#f2d482]">خصم {product.discountPercentage}%</span> : product.isBestseller && <span className="absolute right-3 top-2 z-10 rounded-full bg-gradient-to-b from-[#ffe89e] to-[#d79b2c] px-3 py-1 text-[9px] font-bold text-[#271706]">الأكثر مبيعًا</span>}
-        <button onClick={() => setQuickViewProduct(product)} className="absolute left-4 top-4 z-[1] max-w-[58%] text-right text-[#fff4e4]">
+        <button onClick={() => setQuickViewProduct(product)} className="hurr-product-card__details absolute left-4 top-4 z-[1] max-w-[58%] text-right text-[#fff4e4]">
           <span className="block font-serif text-lg font-bold drop-shadow sm:text-xl">{product.nameAr}</span>
           <span className="mt-1 block text-[11px] text-[#f2cd72]">{categoryLabel[product.category] || product.scentFamilyAr}</span>
           <span className="mt-2 flex items-center gap-1 text-[11px] text-[#f1c252]" aria-label={`التقييم ${product.rating} من 5`}>
@@ -42,7 +42,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="mr-1 text-[9px] text-[#e8dcc7]">({product.reviewsCount})</span>
           </span>
         </button>
-        <div className="absolute bottom-0 right-3 z-[1] h-[158px] w-[108px] transition-transform duration-500 group-hover:-translate-y-1 sm:right-5 sm:h-[172px] sm:w-[126px]">
+        <div className="hurr-product-card__bottle absolute bottom-0 right-3 z-[1] h-[158px] w-[108px] transition-transform duration-500 group-hover:-translate-y-1 sm:right-5 sm:h-[172px] sm:w-[126px]">
           <BottleVisual product={product} size="sm" className="!h-full !w-full" />
         </div>
         {isLowStock && <div className="absolute bottom-2 right-[125px] z-[2] flex items-center gap-1 text-[9px] font-medium text-[#ffe39c]"><AlertCircle className="h-3 w-3"/> متبقي {product.stock}</div>}
