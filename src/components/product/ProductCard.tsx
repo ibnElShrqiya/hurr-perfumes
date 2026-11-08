@@ -2,133 +2,60 @@ import React from 'react';
 import { Product } from '../../types';
 import { useStore } from '../../context/StoreContext';
 import { BottleVisual } from '../common/BottleVisual';
-import { ShoppingBag, Eye, Heart, Sparkles, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Heart, Star, AlertCircle } from 'lucide-react';
 
-interface ProductCardProps {
-  product: Product;
-}
+interface ProductCardProps { product: Product; }
+
+const categoryScene: Record<string, string> = {
+  men: '/images/collection-men.jpg',
+  women: '/images/collection-women.jpg',
+  unisex: '/images/collection-unisex.jpg',
+  private_collection: '/images/collection-men.jpg',
+  offers: '/images/collection-unisex.jpg',
+};
+
+const categoryLabel: Record<string, string> = {
+  men: 'عطر رجالي', women: 'عطر نسائي', unisex: 'عطر للجنسين',
+  private_collection: 'مجموعة حُرّ', offers: 'عرض خاص',
+};
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, toggleWishlist, isInWishlist, setQuickViewProduct } = useStore();
   const inWishlist = isInWishlist(product.id);
-
   const isLowStock = product.stock > 0 && product.stock <= 5;
   const isOutOfStock = product.stock <= 0;
 
   return (
-    <article className="group relative bg-[#121212] border border-[#222222] hover:border-[#C5A059]/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_12px_30px_rgba(0,0,0,0.8)] flex flex-col justify-between">
-      {/* Visual Container */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[4/3] bg-gradient-to-b from-[#181818] to-[#0E0E0E] p-2 sm:p-4 flex items-center justify-center overflow-hidden">
-        {/* Wishlist Floating Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleWishlist(product.id);
-          }}
-          aria-label="إضافة لقائمة الرغبات"
-          className="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-[#0A0A0A]/70 backdrop-blur-md border border-[#333] hover:border-[#C5A059] flex items-center justify-center text-[#C5BFB0] hover:text-[#C5A059] transition-all"
-        >
-          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-[#C5A059] text-[#C5A059]' : ''}`} />
+    <article className="hurr-product-card group relative overflow-hidden rounded-xl border border-[#835b2b] bg-[#120d08] shadow-[0_10px_28px_rgba(0,0,0,.32)] transition hover:border-[#e5b94e]">
+      <div className="hurr-product-card__visual relative h-[178px] overflow-hidden sm:h-[192px]">
+        <img src={categoryScene[product.category] || categoryScene.unisex} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-75 transition duration-500 group-hover:scale-[1.04] group-hover:opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-l from-[#110b06]/95 via-[#110b06]/40 to-transparent" />
+        <button onClick={() => toggleWishlist(product.id)} aria-label={inWishlist ? 'إزالة من المفضلة' : 'إضافة للمفضلة'} className="absolute bottom-3 left-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-[#e0b648] bg-[#100a06]/90 text-[#f0c555] transition hover:bg-[#24180b]">
+          <Heart className={`h-4 w-4 ${inWishlist ? 'fill-[#e8b949]' : ''}`} />
         </button>
-
-        {/* Status Indicators (Discipline: Quiet text / Subtle single tag) */}
-        {product.discountPercentage && (
-          <div className="absolute top-3 right-3 z-10 text-[10px] font-semibold text-[#D4AF37] bg-[#0A0A0A]/80 border border-[#C5A059]/40 px-2 py-0.5 rounded backdrop-blur-md">
-            خصم {product.discountPercentage}%
-          </div>
-        )}
-
-        {/* Flacon Render */}
-        <div className="relative z-0 transform group-hover:scale-105 transition-transform duration-500">
-          <BottleVisual product={product} size="md" />
+        {product.discountPercentage ? <span className="absolute right-3 top-2 z-10 rounded-full border border-[#ebc866] bg-[#251708]/90 px-2.5 py-1 text-[9px] font-bold text-[#f2d482]">خصم {product.discountPercentage}%</span> : product.isBestseller && <span className="absolute right-3 top-2 z-10 rounded-full bg-gradient-to-b from-[#ffe89e] to-[#d79b2c] px-3 py-1 text-[9px] font-bold text-[#271706]">الأكثر مبيعًا</span>}
+        <button onClick={() => setQuickViewProduct(product)} className="absolute left-4 top-4 z-[1] max-w-[58%] text-right text-[#fff4e4]">
+          <span className="block font-serif text-lg font-bold drop-shadow sm:text-xl">{product.nameAr}</span>
+          <span className="mt-1 block text-[11px] text-[#f2cd72]">{categoryLabel[product.category] || product.scentFamilyAr}</span>
+          <span className="mt-2 flex items-center gap-1 text-[11px] text-[#f1c252]" aria-label={`التقييم ${product.rating} من 5`}>
+            <Star className="h-3 w-3 fill-current"/><Star className="h-3 w-3 fill-current"/><Star className="h-3 w-3 fill-current"/><Star className="h-3 w-3 fill-current"/><Star className="h-3 w-3 fill-current"/>
+            <span className="mr-1 text-[9px] text-[#e8dcc7]">({product.reviewsCount})</span>
+          </span>
+        </button>
+        <div className="absolute bottom-0 right-3 z-[1] h-[158px] w-[108px] transition-transform duration-500 group-hover:-translate-y-1 sm:right-5 sm:h-[172px] sm:w-[126px]">
+          <BottleVisual product={product} size="sm" className="!h-full !w-full" />
         </div>
-
-        {/* Quick View Overlay Button */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3 backdrop-blur-[2px]">
-          <button
-            onClick={() => setQuickViewProduct(product)}
-            className="px-4 py-2 bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDE8DC] border border-[#C5A059]/60 text-xs font-semibold rounded-lg shadow-lg flex items-center gap-1.5 transition-all hover:scale-105"
-          >
-            <Eye className="w-3.5 h-3.5 text-[#C5A059]" />
-            <span>نظرة سريعة</span>
-          </button>
-        </div>
+        {isLowStock && <div className="absolute bottom-2 right-[125px] z-[2] flex items-center gap-1 text-[9px] font-medium text-[#ffe39c]"><AlertCircle className="h-3 w-3"/> متبقي {product.stock}</div>}
+        {isOutOfStock && <span className="absolute bottom-2 right-3 z-[2] rounded bg-black/75 px-2 py-1 text-[9px] text-red-200">نفد مؤقتاً</span>}
       </div>
-
-      {/* Card Body & Unboxed Metadata */}
-      <div className="p-3 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3 text-right">
-        <div>
-          {/* Unboxed Metadata Line with typographic separators */}
-          <div className="flex items-center justify-start gap-1.5 text-xs text-[#8A8275]">
-            <span>{product.scentFamilyAr}</span>
-            <span aria-hidden="true">·</span>
-            <span>{product.volume}</span>
-            <span aria-hidden="true">·</span>
-            <span className="text-[#C5A059]">{product.rating} ★</span>
-          </div>
-
-          {/* Product Title */}
-          <h3
-            onClick={() => setQuickViewProduct(product)}
-            className="text-base sm:text-lg font-serif font-bold text-[#FBF9F5] hover:text-[#C5A059] cursor-pointer transition-colors mt-1"
-          >
-            {product.nameAr}
-          </h3>
-
-          {/* Short Tagline */}
-          <p className="text-xs text-[#9E9687] line-clamp-2 mt-1 leading-relaxed font-light">
-            {product.tagline}
-          </p>
+        <div className="flex min-h-[58px] items-center justify-between gap-2 border-t border-[#9b7132]/35 bg-gradient-to-b from-[#18110a] to-[#100b07] px-3 py-2.5 sm:px-4">
+        <div className="text-left">
+          <span className="text-sm font-bold text-[#fff5df] sm:text-base">{product.price.toLocaleString('ar-EG')} <span className="text-[10px] font-normal">جنيه</span></span>
+          {product.originalPrice && <span className="mr-1 text-[10px] text-[#9b8a70] line-through">{product.originalPrice.toLocaleString('ar-EG')}</span>}
         </div>
-
-        {/* Scent Top Notes Preview */}
-        <div className="pt-1 flex flex-wrap gap-1 text-[11px] text-[#A69F90]">
-          <span className="text-[#C5A059]/90 font-medium">النفحات:</span>
-          <span>{product.notes.top.slice(0, 2).join('، ')}</span>
-        </div>
-
-        {/* Stock status urgency */}
-        {isLowStock && (
-          <div className="flex items-center gap-1.5 text-[11px] text-amber-400 font-medium pt-0.5">
-            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-            <span>متبقي في المخزن {product.stock} قطع فقط!</span>
-          </div>
-        )}
-
-        {isOutOfStock && (
-          <div className="text-[11px] text-red-400 font-medium pt-0.5">
-            نفد من المخزن مؤقتاً
-          </div>
-        )}
-
-        {/* Pricing & Purchase CTA */}
-        <div className="pt-2 sm:pt-3 border-t border-[#1F1E1B] flex items-center justify-between gap-2">
-          {/* Price */}
-          <div className="text-right">
-            <div className="text-base sm:text-lg font-bold text-[#EDE8DC] tabular-nums">
-              {product.price.toLocaleString('ar-EG')} <span className="text-xs font-normal text-[#C5A059]">ج.م</span>
-            </div>
-            {product.originalPrice && (
-              <span className="text-xs text-[#6B6559] line-through block tabular-nums">
-                {product.originalPrice.toLocaleString('ar-EG')} ج.م
-              </span>
-            )}
-          </div>
-
-          {/* Add to Cart Button */}
-          <button
-            onClick={() => addToCart(product, 1)}
-            disabled={isOutOfStock}
-            className={`px-3.5 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 shrink-0 ${
-              isOutOfStock
-                ? 'bg-[#222] text-[#666] cursor-not-allowed'
-                : 'bg-[#1C1A16] hover:bg-[#C5A059] text-[#E5C378] hover:text-[#0A0A0A] border border-[#C5A059]/40 hover:border-[#C5A059] shadow-sm active:scale-95'
-            }`}
-          >
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>{isOutOfStock ? 'نفد' : 'أضف للسلة'}</span>
-          </button>
-        </div>
+        <button onClick={() => addToCart(product, 1)} disabled={isOutOfStock} className={`inline-flex min-h-8 items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-bold transition sm:text-xs ${isOutOfStock ? 'cursor-not-allowed border-[#554a37] bg-[#29251e] text-[#807969]' : 'border-[#f2cc6f] bg-gradient-to-b from-[#ffe08a] to-[#d7982b] text-[#211505] hover:brightness-110'}`}>
+          <ShoppingCart className="h-3.5 w-3.5"/> {isOutOfStock ? 'نفد' : 'أضف إلى السلة'}
+        </button>
       </div>
     </article>
   );

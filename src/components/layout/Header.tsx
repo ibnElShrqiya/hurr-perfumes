@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrandLogo } from '../common/BrandLogo';
 import { useStore } from '../../context/StoreContext';
-import { ShoppingBag, Heart, Search, X, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Heart, Search, X, Menu, Sun, Moon } from 'lucide-react';
 import { ProductCategory } from '../../types';
 
 interface HeaderProps {
@@ -12,209 +12,75 @@ interface HeaderProps {
   onToggleTheme: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  onOpenHome,
-  onOpenBrandStory,
-  onOpenFaq,
-  isLightMode,
-  onToggleTheme,
-}) => {
-  const {
-    cartCount,
-    setIsCartOpen,
-    wishlist,
-    activeCategory,
-    setActiveCategory,
-    searchQuery,
-    setSearchQuery,
-  } = useStore();
+type NavItem = { label: string; category?: ProductCategory | 'all'; action?: () => void };
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+export const Header: React.FC<HeaderProps> = ({ onOpenHome, onOpenBrandStory, onOpenFaq, isLightMode, onToggleTheme }) => {
+  const { cartCount, setIsCartOpen, setActiveCategory, searchQuery, setSearchQuery } = useStore();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navLinks: { label: string; category: ProductCategory | 'all' | 'custom'; action?: () => void }[] = [
+  const navLinks: NavItem[] = [
     { label: 'الرئيسية', category: 'all', action: onOpenHome },
-    { label: 'عطور للجنسين', category: 'unisex' },
-    { label: 'عطور رجالية', category: 'men' },
-    { label: 'عطور نسائية', category: 'women' },
-    { label: 'المجموعة المختارة', category: 'private_collection' },
-    { label: 'عروض حصرية', category: 'offers' },
-    { label: 'قصة حُرّ', category: 'custom', action: onOpenBrandStory },
+    { label: 'العطور', category: 'all' },
+    { label: 'العروض', category: 'offers' },
+    { label: 'من نحن', action: onOpenBrandStory },
+    { label: 'تواصل معنا', action: onOpenFaq },
   ];
 
+  const navigate = (item: NavItem) => {
+    if (item.action) {
+      if (item.category === 'all') setActiveCategory('all');
+      item.action();
+    } else if (item.category) {
+      setActiveCategory(item.category);
+      onOpenHome();
+      window.setTimeout(() => document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  const openCart = () => setIsCartOpen(true);
+  const openWishlist = () => document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth' });
+
   return (
-    <header className="sticky top-0 z-30 w-full bg-[#0A0A0A]/95 backdrop-blur-md border-b border-[#C5A059]/20 transition-all">
+    <header className="hurr-site-header sticky top-0 z-40 w-full border-b border-[#8d6023]/55 bg-[#0c0906]/95 text-[#f4ead8] backdrop-blur-md">
+      <div className="hurr-header-main mx-auto grid h-[70px] max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
+        <button type="button" className="hurr-mobile-menu-button justify-self-start text-[#f3d486] xl:hidden" onClick={() => setIsMobileMenuOpen((open) => !open)} aria-label={isMobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'} aria-expanded={isMobileMenuOpen}>
+          {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
 
-      {/* 2. Top Bar Contract: Zone 1 (Wordmark) — Zone 2 (4-5 Nav Links) — Zone 3 (Action cluster) */}
-      <div className="hurr-header-main max-w-7xl mx-auto px-4 sm:px-6 h-18 sm:h-20 flex items-center justify-between gap-6 sm:gap-8">
-        {/* Zone 1: Brand Wordmark */}
-        <div className="hurr-header-brand flex items-center shrink-0">
-          <a
-            href="/"
-            onClick={(e) => {
-              e.preventDefault();
-              setActiveCategory('all');
-              onOpenHome();
-            }}
-            className="flex items-center"
-          >
-            <BrandLogo size="sm" showSubtitle={false} />
-          </a>
-        </div>
-
-        {/* Zone 2: Clean single-line text navigation links */}
-        <nav className="hidden xl:flex items-center gap-6 text-sm font-medium text-[#C8C2B3]">
-          {navLinks.map((item) => {
-            const isActive = item.category === activeCategory;
-            return (
-              <button
-                key={item.label}
-                onClick={() => {
-                  if (item.action) {
-                    if (item.category === 'all') setActiveCategory('all');
-                    item.action();
-                  } else if (item.category !== 'custom') {
-                    setActiveCategory(item.category);
-                    onOpenHome();
-                    window.setTimeout(() => {
-                      document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 80);
-                  }
-                }}
-                className={`relative py-1 transition-colors whitespace-nowrap shrink-0 hover:text-[#E5C378] ${
-                  isActive ? 'text-[#E5C378] font-semibold' : ''
-                }`}
-              >
-                {item.label}
-                {isActive && (
-                  <span className="absolute bottom-0 right-0 left-0 h-0.5 bg-[#C5A059] rounded-full" />
-                )}
-              </button>
-            );
-          })}
+        <nav aria-label="التنقل الرئيسي" className="hurr-desktop-nav col-start-1 row-start-1 hidden items-center gap-5 justify-self-start text-[13px] font-medium xl:flex 2xl:gap-7">
+          {navLinks.map((item, index) => <button key={item.label} onClick={() => navigate(item)} className={`relative py-2 transition-colors hover:text-[#f5d47e] ${index === 0 ? 'font-bold text-[#f5d47e]' : 'text-[#f3eee5]'}`}>
+            {item.label}{index === 0 && <span className="absolute inset-x-0 -bottom-1 h-px bg-[#ecc25e] shadow-[0_0_8px_rgba(236,194,94,.8)]" />}
+          </button>)}
         </nav>
 
-        {/* Zone 3: Functional Action Controls */}
-        <div className="hurr-header-actions flex items-center gap-1 sm:gap-2 lg:gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            className="header-icon-trigger theme-nav-toggle inline-flex items-center justify-center gap-2 rounded-full border border-[#C5A059]/40 px-2.5 py-2 text-[#C5A059] transition-colors hover:bg-[#C5A059]/10 sm:px-3"
-            aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'}
-            title={isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}
-          >
-            {isLightMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            <span className="hidden lg:inline text-xs font-medium">{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</span>
-          </button>
-          {/* Search Trigger */}
-          <button
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="header-icon-trigger p-2 text-[#C8C2B3] hover:text-[#C5A059] transition-colors rounded-full hover:bg-[#181818]"
-            title="بحث في العطور"
-            aria-label="بحث في العطور"
-          >
-            <Search className="w-5 h-5" />
-          </button>
+        <a href="/" onClick={(event) => { event.preventDefault(); setActiveCategory('all'); onOpenHome(); setIsMobileMenuOpen(false); }} className="hurr-header-brand col-start-2 row-start-1 justify-self-center" aria-label="الصفحة الرئيسية - حُرّ">
+          <BrandLogo size="md" showSubtitle={false} variant={isLightMode ? 'monochrome' : 'gold'} />
+        </a>
 
-          {/* Wishlist count */}
-          <button
-            onClick={() => {
-              const catalogEl = document.getElementById('catalog-section');
-              if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="relative p-2 text-[#C8C2B3] hover:text-[#C5A059] transition-colors rounded-full hover:bg-[#181818]"
-            title="قائمة الرغبات"
-            aria-label="قائمة الرغبات"
-          >
-            <Heart className="w-5 h-5" />
-            {wishlist.length > 0 && (
-              <span className="absolute 1 -top-0.5 -right-0.5 bg-[#C5A059] text-[#0A0A0A] font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-                {wishlist.length}
-              </span>
-            )}
-          </button>
-
-          {/* Cart Drawer Trigger */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="header-cart-trigger relative flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-gradient-to-r from-[#C5A059] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#E5C378] text-[#0A0A0A] font-semibold text-xs sm:text-sm rounded-lg transition-all shadow-[0_2px_12px_rgba(197,160,89,0.25)] whitespace-nowrap shrink-0 active:scale-95"
-            aria-label="سلة الشراء"
-          >
-            <ShoppingBag className="w-4 h-4 text-[#0A0A0A]" />
-            <span className="hidden sm:inline">السلة</span>
-            <span className="w-5 h-5 rounded-full bg-[#0A0A0A] text-[#E5C378] text-[11px] font-bold flex items-center justify-center">
-              {cartCount}
-            </span>
-          </button>
-
+        <div className="hurr-header-actions col-start-3 row-start-1 hidden items-center justify-self-end xl:flex">
+          <label className="hurr-header-search mr-5 flex h-9 w-[238px] items-center gap-2 rounded-full border border-[#80643b] bg-[#18130d] px-3 text-[#f1cf72]">
+            <Search className="h-4 w-4 shrink-0" />
+            <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="ابحث عن عطر..." className="w-full bg-transparent text-right text-xs text-[#f5ead2] outline-none placeholder:text-[#b6aa97]" aria-label="ابحث عن عطر" />
+          </label>
+          <button onClick={openCart} className="relative mx-2 flex min-w-12 flex-col items-center gap-0.5 text-[#f1dfbc] transition hover:text-[#f5cf70]" aria-label="السلة"><ShoppingBag className="h-5 w-5"/><span className="text-[10px]">السلة</span><span className="absolute -right-0.5 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-to-b from-[#ffe89e] to-[#d99b2d] text-[9px] font-bold text-[#211507]">{cartCount}</span></button>
+          <button onClick={openWishlist} className="relative mx-2 flex min-w-12 flex-col items-center gap-0.5 text-[#f1dfbc] transition hover:text-[#f5cf70]" aria-label="المفضلة"><Heart className="h-5 w-5"/><span className="text-[10px]">المفضلة</span></button>
+          <button onClick={onToggleTheme} className="hurr-theme-toggle theme-nav-toggle mx-2 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#80643b] text-[#f1cf72] transition hover:bg-[#241a0d]" aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'} title={isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}>{isLightMode ? <Moon className="h-4 w-4"/> : <Sun className="h-4 w-4"/>}</button>
         </div>
+
+        <button onClick={openCart} className="hurr-mobile-cart col-start-3 row-start-1 hidden justify-self-end text-[#efc252]" aria-label={`السلة، ${cartCount} منتجات`}><ShoppingBag className="h-6 w-6"/><span className="absolute -right-2 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#f4cc66] text-[9px] font-bold text-[#211507]">{cartCount}</span></button>
       </div>
 
-      {/* Collapsible Search Bar Layer */}
-      {isSearchOpen && (
-        <div className="bg-[#121212] border-b border-[#C5A059]/20 px-4 py-3 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="max-w-3xl mx-auto flex items-center gap-3">
-            <Search className="w-5 h-5 text-[#C5A059] shrink-0" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="ابحث باسم العطر، المكونات، مثل: عود معتق، عنبر، مسك، فانيليا، جلد..."
-              className="w-full bg-transparent border-0 text-[#EDE8DC] placeholder-[#767064] text-sm focus:outline-none focus:ring-0"
-              autoFocus
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="text-[#767064] hover:text-[#EDE8DC]"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-            <button
-              onClick={() => {
-                setIsSearchOpen(false);
-                const catalog = document.getElementById('catalog-section');
-                if (catalog) catalog.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="text-xs bg-[#C5A059] text-[#0A0A0A] font-semibold px-3 py-1.5 rounded"
-            >
-              عرض النتائج
-            </button>
-          </div>
+      {isMobileMenuOpen && <div className="hurr-mobile-menu border-t border-[#805d2e]/45 bg-[#100b07] px-4 pb-4 pt-3 shadow-xl xl:hidden">
+        <label className="mb-3 flex h-10 items-center gap-2 rounded-full border border-[#71562f] bg-[#1a130b] px-3 text-[#eac665]"><Search className="h-4 w-4"/><input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="ابحث عن عطر..." className="w-full bg-transparent text-right text-sm outline-none placeholder:text-[#a99b86]" /></label>
+        <nav className="grid grid-cols-2 gap-2" aria-label="قائمة الهاتف">
+          {navLinks.map((item) => <button key={`m-${item.label}`} onClick={() => navigate(item)} className="rounded-lg border border-[#76572c]/45 bg-[#17110b] px-3 py-2.5 text-right text-sm text-[#eee1c9] hover:border-[#d8aa4d]">{item.label}</button>)}
+        </nav>
+        <div className="mt-3 border-t border-[#76572c]/35 pt-3">
+          <button onClick={openWishlist} className="inline-flex items-center gap-2 text-xs text-[#e9d7b1]"><Heart className="h-4 w-4 text-[#e8be59]"/> المفضلة</button>
+          <button onClick={onToggleTheme} className="mr-5 inline-flex items-center gap-2 text-xs text-[#e9d7b1]" aria-label={isLightMode ? 'تفعيل الوضع الداكن' : 'تفعيل الوضع الفاتح'}>{isLightMode ? <Moon className="h-4 w-4 text-[#9a702c]"/> : <Sun className="h-4 w-4 text-[#e8be59]"/>}{isLightMode ? 'الوضع الداكن' : 'الوضع الفاتح'}</button>
         </div>
-      )}
-
-      {/* Mobile Category Quick Navigation Strip */}
-      <div className="mobile-category-strip xl:hidden w-full min-w-0 overflow-x-auto no-scrollbar border-t border-[#1F1E1B] bg-[#0E0E0E] px-4 py-2 flex items-center gap-2">
-        {navLinks.map((item) => {
-          const isActive = item.category === activeCategory;
-          return (
-            <button
-              key={`m-${item.label}`}
-              aria-pressed={isActive}
-              onClick={() => {
-                if (item.action) {
-                  if (item.category === 'all') setActiveCategory('all');
-                  item.action();
-                } else if (item.category !== 'custom') {
-                  setActiveCategory(item.category);
-                  onOpenHome();
-                  window.setTimeout(() => {
-                    document.getElementById('catalog-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }, 80);
-                }
-              }}
-              className={`px-3 py-1 text-xs rounded-full whitespace-nowrap shrink-0 transition-colors ${
-                isActive
-                  ? 'bg-[#C5A059] text-[#0A0A0A] font-semibold'
-                  : 'text-[#A69F90] hover:text-[#EDE8DC] bg-[#161616]'
-              }`}
-            >
-              {item.label}
-            </button>
-          );
-        })}
-      </div>
+      </div>}
     </header>
   );
 };

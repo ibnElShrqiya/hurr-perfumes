@@ -4,6 +4,7 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { HeroSection } from './components/home/HeroSection';
 import { CatalogSection } from './components/home/CatalogSection';
+import { CollectionShowcase } from './components/home/CollectionShowcase';
 import { BrandStorySection } from './components/brand/BrandStorySection';
 import { ProductDetailModal } from './components/product/ProductDetailModal';
 import { CartDrawer } from './components/cart/CartDrawer';
@@ -23,7 +24,7 @@ function MainApp() {
   const [isFaqOpen, setIsFaqOpen] = useState(false);
   const [faqTab, setFaqTab] = useState<'faq' | 'shipping' | 'returns'>('faq');
   const [isLightMode, setIsLightMode] = useState(() =>
-    window.localStorage.getItem('hurr-theme') !== 'dark',
+    window.localStorage.getItem('hurr-theme') === 'light',
   );
 
   const { quickViewProduct, setQuickViewProduct } = useStore();
@@ -52,7 +53,7 @@ function MainApp() {
   };
 
   return (
-    <div className={`hurr-app min-h-screen flex flex-col selection:bg-[#C5A059] selection:text-[#0A0A0A] ${currentView === 'admin' ? 'admin-shell bg-[#080808] text-[#EDE8DC]' : isLightMode ? 'light-mode justify-between' : 'bg-[#080808] text-[#EDE8DC] justify-between'}`}>
+    <div className={`hurr-app min-h-screen flex flex-col selection:bg-[#C5A059] selection:text-[#0A0A0A] ${currentView === 'admin' ? 'admin-shell bg-[#080808] text-[#EDE8DC]' : `${isLightMode ? 'light-mode' : 'bg-[#080808] text-[#EDE8DC]'} justify-between`}`}>
       {/* The admin is a standalone workspace: no storefront/customer navigation. */}
       {currentView !== 'admin' && (
         <Header
@@ -73,6 +74,7 @@ function MainApp() {
         {currentView === 'store' && (
           <>
             <HeroSection />
+            <CollectionShowcase />
             <CatalogSection />
             <BrandStorySection />
           </>

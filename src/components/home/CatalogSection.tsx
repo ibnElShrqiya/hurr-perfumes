@@ -1,8 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { ProductCard } from '../product/ProductCard';
-import { ProductCategory } from '../../types';
-import { Sparkles } from 'lucide-react';
 
 export const CatalogSection: React.FC = () => {
   const {
@@ -16,19 +14,11 @@ export const CatalogSection: React.FC = () => {
     sortBy,
     setSortBy,
   } = useStore();
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  const categories: { id: ProductCategory | 'all'; label: string }[] = [
-    { id: 'all', label: 'كافة المجموعات الأصيلة' },
-    { id: 'unisex', label: 'عطور للجنسين' },
-    { id: 'men', label: 'عطور رجالية' },
-    { id: 'women', label: 'عطور نسائية' },
-    { id: 'private_collection', label: 'المجموعة المختارة' },
-    { id: 'offers', label: 'العروض الحصرية وباقات الطيب' },
-  ];
-
-  const families = [
-    { id: 'all', label: 'كافة المنتجات' },
-  ];
+  const scrollCarousel = (direction: 'next' | 'previous') => {
+    carouselRef.current?.scrollBy({ left: direction === 'next' ? -360 : 360, behavior: 'smooth' });
+  };
 
   // Filter & Sort Logic
   const visibleProducts = products.filter((product) => product.status !== 'draft');
@@ -65,76 +55,17 @@ export const CatalogSection: React.FC = () => {
   });
 
   return (
-    <section id="catalog-section" className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 text-right space-y-8">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#222] pb-6">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#C5A059] mb-1">
-            <Sparkles className="w-4 h-4" />
-            <span>خزانة العطور الأصيلة</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#FBF9F5]">
-            توليفات دار حُــــرّ الاستثنائية
-          </h2>
-        </div>
-
-        {/* Product Count & Sort */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-[#8A8275]">
-            عرض {sortedProducts.length} من {visibleProducts.length} عطور
-          </span>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="p-2 bg-[#141414] border border-[#333] focus:border-[#C5A059] rounded-lg text-xs text-[#EDE8DC] focus:outline-none"
-          >
+    <section id="catalog-section" className="mx-auto max-w-[1440px] space-y-5 px-4 py-5 text-right sm:px-6 sm:py-7">
+      <div className="relative flex items-center justify-center border-0 pb-1">
+        <h2 className="hurr-ornate-heading">أبرز العطور</h2>
+        <div className="absolute left-0 flex items-center gap-3">
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)} aria-label="ترتيب العطور" className="rounded-lg border border-[#76582f] bg-[#170f08] p-2 text-xs text-[#ead8b6] focus:border-[#C5A059] focus:outline-none">
             <option value="featured">الأكثر طلباً وتميزاً</option>
             <option value="price_asc">السعر: من الأقل للأعلى</option>
             <option value="price_desc">السعر: من الأعلى للأقل</option>
             <option value="rating">الأعلى تقييماً (★)</option>
           </select>
         </div>
-      </div>
-
-      {/* Category Tabs (Functional Segmented Control) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2">
-        {categories.map((cat) => {
-          const isActive = activeCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap shrink-0 ${
-                isActive
-                  ? 'bg-gradient-to-r from-[#C5A059] to-[#D4AF37] text-[#0A0A0A] shadow-md'
-                  : 'bg-[#121212] text-[#A69F90] hover:text-[#EDE8DC] hover:bg-[#181818] border border-[#222]'
-              }`}
-            >
-              {cat.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Product Family Filter */}
-      <div className="flex items-center gap-2 pt-1">
-        {families.map((fam) => {
-          const isSelected = selectedFamily === fam.id;
-          return (
-            <button
-              key={fam.id}
-              onClick={() => setSelectedFamily(fam.id)}
-              className={`px-3 py-1 rounded-lg transition-colors whitespace-nowrap shrink-0 ${
-                isSelected
-                  ? 'bg-[#222] text-[#E5C378] border border-[#C5A059]/50 font-bold'
-                  : 'hover:text-[#EDE8DC]'
-              }`}
-            >
-              {fam.label}
-            </button>
-          );
-        })}
       </div>
 
       {/* Active Search Notification */}
@@ -164,10 +95,14 @@ export const CatalogSection: React.FC = () => {
           >إعادة ضبط التصفية</button>}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {sortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div className="hurr-carousel-frame relative">
+          <div ref={carouselRef} className="hurr-featured-carousel grid grid-flow-col overflow-x-auto no-scrollbar">
+            {sortedProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+          </div>
+          {sortedProducts.length > 1 && <>
+            <button onClick={() => scrollCarousel('previous')} aria-label="العطر السابق" className="hurr-carousel-arrow absolute -right-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#9d6d29] bg-[#291909]/95 text-[#f3c65e] shadow-lg sm:flex">‹</button>
+            <button onClick={() => scrollCarousel('next')} aria-label="العطر التالي" className="hurr-carousel-arrow absolute -left-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#9d6d29] bg-[#291909]/95 text-[#f3c65e] shadow-lg sm:flex">›</button>
+          </>}
         </div>
       )}
     </section>

@@ -74,7 +74,7 @@
 
 /* Light theme defaults and readable contrast for the storefront. */
 html, body, #root { min-height: 100%; }
-html, body { background: #f7f4ec; color: #28251f; }
+html, body { background: #080808; color: #EDE8DC; }
 .hurr-app.light-mode { background: #f7f4ec !important; color: #28251f !important; }
 /* Keep horizontal scrolling inside navigation/filter strips, never on the page. */
 html, body, #root, .hurr-app { width: 100%; max-width: 100%; }
@@ -276,6 +276,206 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-app header > div:first-child > div:last-child > button,
   .hurr-app header > div:first-child > div:last-child > a { padding: .35rem; min-width: 30px; min-height: 30px; }
   .hurr-app section { padding-inline: .75rem; }
+}
+
+/* HURR reference storefront: warm black, ornate gold, and the supplied product artwork. */
+.hurr-site-header { box-shadow: 0 3px 18px rgba(0, 0, 0, .38); }
+.hurr-header-main { display: grid !important; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important; }
+.hurr-header-brand svg { width: 110px; height: 52px; }
+.hurr-desktop-nav button { white-space: nowrap; }
+.hurr-header-search input::placeholder { opacity: 1; }
+.hurr-mobile-cart { position: relative; align-items: center; justify-content: center; }
+.hurr-mobile-menu { box-shadow: 0 16px 30px rgba(0, 0, 0, .45); }
+
+.hurr-home-hero { min-height: 458px; background-color: #100903; }
+.hurr-home-hero__art { position: absolute; inset: 0; overflow: hidden; }
+.hurr-home-hero__art img {
+  position: absolute; inset-block: 0; left: 0; width: 70%; height: 100%;
+  object-fit: cover; object-position: center 52%;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 72%, transparent 100%);
+}
+.hurr-home-hero__art::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 32%, rgba(13, 8, 4, .42) 57%, #100903 83%),
+    linear-gradient(0deg, rgba(8, 5, 2, .62), transparent 24%, transparent 82%, rgba(8, 5, 2, .2));
+}
+.hurr-home-hero__inner { min-height: 458px; padding: 28px 4% 88px; display: flex; align-items: center; }
+.hurr-home-hero__copy { width: 42%; margin-inline-start: auto; position: relative; z-index: 1; }
+.hurr-home-hero__promises {
+  position: absolute; z-index: 2; left: 9%; bottom: 11px; width: 82%; min-height: 60px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center;
+  border: 1px solid rgba(151, 103, 39, .42); border-radius: 15px;
+  background: linear-gradient(90deg, rgba(22, 14, 7, .9), rgba(14, 10, 7, .82));
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .3); backdrop-filter: blur(10px);
+}
+.hurr-ornate-heading {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  margin: 0 auto 14px; color: #f0cc78; font: 700 26px/1.35 'Amiri', 'Traditional Arabic', Georgia, serif;
+  text-align: center;
+}
+.hurr-ornate-heading::before, .hurr-ornate-heading::after {
+  content: ''; width: 72px; height: 8px; flex: 0 0 72px;
+  background: linear-gradient(90deg, transparent, #bd8d37 28%, #e5c062 82%, transparent);
+  clip-path: polygon(0 45%, 42% 45%, 50% 0, 58% 45%, 100% 45%, 100% 55%, 58% 55%, 50% 100%, 42% 55%, 0 55%);
+}
+.hurr-collection-grid { direction: rtl; }
+.hurr-collection { height: 130px; }
+.hurr-collection img { object-position: center 55%; }
+.hurr-collections { padding-bottom: 20px; }
+#catalog-section { padding-top: 12px !important; }
+#catalog-section > div:first-child {
+  align-items: center !important; justify-content: center !important; text-align: center;
+  border: 0 !important; padding-bottom: 4px !important;
+}
+#catalog-section > div:first-child > div:first-child { width: 100%; }
+#catalog-section > div:first-child > div:first-child > div { display: none !important; }
+#catalog-section > div:first-child h2 { color: #f0cc78 !important; font-family: 'Amiri', 'Traditional Arabic', Georgia, serif; font-size: 25px !important; }
+#catalog-section > div:first-child > div:last-child { position: absolute; left: max(20px, calc((100vw - 1350px) / 2)); }
+#catalog-section > div:first-child select { background-color: #170f08 !important; border-color: #715327 !important; }
+#catalog-section .grid { gap: 14px !important; }
+
+@media (max-width: 1279px) {
+  .hurr-site-header .hurr-header-main { grid-template-columns: 42px minmax(0, 1fr) 42px !important; height: 60px !important; padding-inline: 12px !important; gap: 6px !important; }
+  .hurr-mobile-menu-button, .hurr-mobile-cart { display: flex !important; }
+  .hurr-header-brand { grid-column: 2 !important; grid-row: 1 !important; justify-self: center !important; transform: none !important; position: static !important; }
+  .hurr-header-brand svg { width: 96px; height: 46px; }
+}
+@media (max-width: 767px) {
+  .hurr-app section.hurr-home-hero:first-of-type:not(#catalog-section) { padding: 0 !important; }
+  .hurr-home-hero { min-height: 0; }
+  .hurr-home-hero__art { inset: 0 0 auto; height: clamp(185px, 55vw, 230px); }
+  .hurr-home-hero__art img { width: 100%; height: 100%; object-position: center 50%; -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 73%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 73%, transparent 100%); }
+  .hurr-home-hero__art::after { background: linear-gradient(0deg, #100903 0%, rgba(16, 9, 3, .12) 44%, rgba(7, 4, 2, .1) 100%); }
+  .hurr-home-hero__inner { display: block; min-height: 0; padding: clamp(190px, 56vw, 235px) 16px 0; }
+  .hurr-home-hero__copy { width: 100%; margin: 0 auto; text-align: center; }
+  .hurr-home-hero__copy > div { justify-content: center; }
+  .hurr-home-hero__copy > p { font-size: 12px; line-height: 1.75; }
+  .hurr-home-hero__copy > button { margin-top: 10px; min-height: 38px; padding-inline: 24px; font-size: 12px; }
+  .hurr-home-hero__promises { position: relative; inset: auto; width: calc(100% + 12px); min-height: 66px; margin: 18px -6px 0; border-radius: 13px; }
+  .hurr-home-hero__promises > div { gap: 5px; padding: 6px 2px; }
+  .hurr-home-hero__promises svg { width: 19px; height: 19px; }
+  .hurr-home-hero__promises span { font-size: 8px; line-height: 1.45; }
+  .hurr-collections { padding: 13px 12px 18px; }
+  .hurr-ornate-heading { font-size: 21px; gap: 12px; margin-bottom: 10px; }
+  .hurr-ornate-heading::before, .hurr-ornate-heading::after { width: 48px; flex-basis: 48px; }
+  .hurr-collection-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; }
+  .hurr-collection { height: 74px; border-radius: 11px; }
+  .hurr-collection img { object-position: center 52%; }
+  .hurr-collection > div:last-child { padding: 8px 14px; }
+  .hurr-collection > div:last-child > div > span:first-child { font-size: 15px; }
+  .hurr-collection > div:last-child > div > span:last-child { margin-top: 4px; padding: 2px 8px; font-size: 9px; }
+  .hurr-collection svg { width: 25px; height: 25px; }
+  #catalog-section { padding: 8px 12px 28px !important; gap: 12px !important; }
+  #catalog-section > div:first-child h2 { font-size: 21px !important; }
+  #catalog-section > div:first-child > div:last-child { position: static; width: auto; }
+  #catalog-section > div:first-child select { max-width: 125px; font-size: 9px !important; padding: 5px 7px !important; }
+}
+
+/* Warm ivory storefront theme: retain the original dark product artwork while
+   giving navigation, content surfaces, and product details a coherent light palette. */
+.hurr-app.light-mode {
+  --hurr-ivory: #f7f2e7;
+  --hurr-paper: #fffdf8;
+  --hurr-ink: #332719;
+  --hurr-muted: #72634d;
+  --hurr-gold: #9a7029;
+  background: var(--hurr-ivory) !important;
+  color: var(--hurr-ink) !important;
+}
+.hurr-app.light-mode .hurr-site-header {
+  background: rgba(255, 253, 248, .97) !important;
+  color: var(--hurr-ink) !important;
+  border-color: #ddcda9 !important;
+  box-shadow: 0 4px 20px rgba(65, 43, 16, .12);
+}
+.hurr-app.light-mode .hurr-desktop-nav button,
+.hurr-app.light-mode .hurr-header-actions button,
+.hurr-app.light-mode .hurr-mobile-menu-button,
+.hurr-app.light-mode .hurr-mobile-cart { color: #604718 !important; }
+.hurr-app.light-mode .hurr-desktop-nav button:first-child { color: #9a7029 !important; }
+.hurr-app.light-mode .hurr-header-search,
+.hurr-app.light-mode .hurr-mobile-menu label { background: #f5efe2 !important; border-color: #d8c59e !important; color: #926c2b !important; }
+.hurr-app.light-mode .hurr-header-search input,
+.hurr-app.light-mode .hurr-mobile-menu input { color: #35291b !important; }
+.hurr-app.light-mode .hurr-mobile-menu { background: #fffdf8 !important; border-color: #e1d3b5 !important; box-shadow: 0 16px 30px rgba(65, 43, 16, .15); }
+.hurr-app.light-mode .hurr-mobile-menu nav button { color: #493720 !important; background: #f8f3e9 !important; border-color: #e5d8bc !important; }
+.hurr-app.light-mode .hurr-mobile-menu > div button { color: #604718 !important; }
+.hurr-app.light-mode .hurr-home-hero { background: #f7f2e7 !important; border-color: #dfcca4 !important; }
+.hurr-app.light-mode .hurr-home-hero__art img {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 66%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 66%, transparent 100%);
+}
+.hurr-app.light-mode .hurr-home-hero__art::after {
+  background: linear-gradient(90deg, transparent 22%, rgba(247, 242, 231, .18) 52%, #f7f2e7 80%),
+    linear-gradient(0deg, rgba(43, 28, 10, .18), transparent 24%, transparent 82%, rgba(43, 28, 10, .08));
+}
+.hurr-app.light-mode .hurr-home-hero__copy > p:first-child,
+.hurr-app.light-mode .hurr-home-hero__copy h1 { color: #76541f !important; text-shadow: 0 1px #fff9ea; }
+.hurr-app.light-mode .hurr-home-hero__copy > p:not(:first-child) { color: #51432f !important; }
+.hurr-app.light-mode .hurr-home-hero__promises {
+  background: rgba(255, 253, 248, .94) !important;
+  border-color: #dcc99f !important;
+  box-shadow: 0 8px 22px rgba(67, 46, 20, .13);
+}
+.hurr-app.light-mode .hurr-home-hero__promises span,
+.hurr-app.light-mode .hurr-home-hero__promises span span { color: #493a27 !important; }
+.hurr-app.light-mode .hurr-home-hero__promises svg { color: #9a7029 !important; }
+.hurr-app.light-mode .hurr-collections,
+.hurr-app.light-mode #catalog-section,
+.hurr-app.light-mode .hurr-app main { background-color: var(--hurr-ivory) !important; }
+.hurr-app.light-mode .hurr-ornate-heading,
+.hurr-app.light-mode #catalog-section > div:first-child h2 { color: #805d25 !important; }
+.hurr-app.light-mode .hurr-ornate-heading::before,
+.hurr-app.light-mode .hurr-ornate-heading::after { background: linear-gradient(90deg, transparent, #c8a65e 28%, #a77b2d 82%, transparent); }
+.hurr-app.light-mode .hurr-collection { box-shadow: 0 7px 20px rgba(61, 39, 15, .15); }
+.hurr-app.light-mode .hurr-product-card {
+  background: #fffdf8 !important;
+  border-color: #d7bd83 !important;
+  box-shadow: 0 8px 22px rgba(61, 39, 15, .13) !important;
+}
+.hurr-app.light-mode .hurr-product-card > div:last-child {
+  background: linear-gradient(180deg, #fffdf8, #f1e8d6) !important;
+  border-color: #e4d4b2 !important;
+}
+.hurr-app.light-mode .hurr-product-card > div:last-child > div > span:first-child { color: #392b1b !important; }
+.hurr-app.light-mode .hurr-product-card > div:last-child > div > span:first-child span { color: #6d5a3e !important; }
+.hurr-app.light-mode #catalog-section select {
+  color: #45351f !important;
+  background: #fffdf8 !important;
+  border-color: #d7c49d !important;
+}
+.hurr-app.light-mode footer { background: #eee5d3 !important; color: #493a27 !important; border-color: #d9c8a5 !important; }
+.hurr-app.light-mode .hurr-theme-toggle { background: #f7f0df !important; border-color: #d6bd86 !important; color: #805d25 !important; }
+@media (max-width: 767px) {
+  .hurr-app.light-mode .hurr-home-hero__art img {
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+  }
+  .hurr-app.light-mode .hurr-home-hero__art::after {
+    background: linear-gradient(0deg, #f7f2e7 0%, rgba(247, 242, 231, .12) 42%, rgba(7, 4, 2, .04) 100%);
+  }
+}
+
+/* Home editorial layout */
+.hurr-hero-glow {
+  background:
+    radial-gradient(ellipse at 19% 48%, rgba(197, 160, 89, .12), transparent 37%),
+    radial-gradient(ellipse at 82% 4%, rgba(197, 160, 89, .055), transparent 32%),
+    repeating-linear-gradient(135deg, transparent 0 54px, rgba(197, 160, 89, .018) 55px 56px, transparent 57px 112px);
+}
+.hurr-collection-card { isolation: isolate; }
+.hurr-collection-card::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  z-index: 0;
+  border: 1px solid rgba(197, 160, 89, .08);
+  pointer-events: none;
+}
+@media (max-width: 639px) {
+  .hurr-hero { scroll-margin-top: 100px; }
+  .hurr-collection-card { min-height: 126px; }
 }
 
 
@@ -577,4 +777,139 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     height: 30px !important;
     min-height: 30px !important;
   }
+}
+
+/* Final responsive overrides for the reference composition. */
+.hurr-app .hurr-site-header .hurr-header-main { display: grid !important; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important; }
+.hurr-home-hero__copy { margin-inline-start: 0; margin-inline-end: auto; }
+.hurr-product-card__visual { isolation: isolate; }
+.hurr-product-card__visual > img:first-child { z-index: 0; }
+.hurr-product-card__visual > div:nth-child(2) { z-index: 1; }
+.hurr-product-card__visual > button { cursor: pointer; }
+.hurr-product-card__visual > div:last-of-type { filter: drop-shadow(0 5px 12px rgba(0, 0, 0, .42)); }
+.hurr-product-card__visual > div:last-of-type img { object-fit: contain; }
+.hurr-product-card > div:last-child { min-height: 58px; }
+.hurr-collection-grid .hurr-collection > div:last-child { flex-direction: row; }
+#catalog-section .hurr-ornate-heading { margin-bottom: 0; }
+
+@media (max-width: 1279px) {
+  .hurr-app .hurr-site-header .hurr-header-main { display: grid !important; grid-template-columns: 42px minmax(0, 1fr) 42px !important; height: 60px !important; padding-inline: 12px !important; gap: 6px !important; }
+  .hurr-app .hurr-site-header .hurr-mobile-menu-button,
+  .hurr-app .hurr-site-header .hurr-mobile-cart { display: flex !important; }
+  .hurr-app .hurr-site-header .hurr-header-brand { position: static !important; grid-column: 2 !important; grid-row: 1 !important; justify-self: center !important; transform: none !important; }
+  .hurr-app .hurr-site-header .hurr-header-brand svg { width: 96px !important; height: 46px !important; }
+}
+@media (max-width: 767px) {
+  .hurr-app .hurr-home-hero { min-height: 0 !important; padding: 0 !important; }
+  .hurr-app .hurr-home-hero h1 { font-size: clamp(1.8rem, 7vw, 2.15rem) !important; line-height: 1.4 !important; }
+  .hurr-app .hurr-home-hero__art { inset: 0 0 auto !important; height: clamp(185px, 55vw, 230px) !important; }
+  .hurr-app .hurr-home-hero__art img { width: 100% !important; height: 100% !important; object-position: center 50% !important; -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 73%, transparent 100%) !important; mask-image: linear-gradient(180deg, #000 0%, #000 73%, transparent 100%) !important; }
+  .hurr-app .hurr-home-hero__art::after { background: linear-gradient(0deg, #100903 0%, rgba(16, 9, 3, .12) 44%, rgba(7, 4, 2, .1) 100%) !important; }
+  .hurr-app .hurr-home-hero__inner { display: block !important; min-height: 0 !important; padding: clamp(190px, 56vw, 235px) 16px 0 !important; }
+  .hurr-app .hurr-home-hero__copy { width: 100% !important; margin: 0 auto !important; text-align: center !important; }
+  .hurr-app .hurr-home-hero__copy > div { justify-content: center !important; }
+  .hurr-app .hurr-home-hero__copy > p { font-size: 12px !important; line-height: 1.75 !important; }
+  .hurr-app .hurr-home-hero__copy > button { width: auto !important; margin-top: 10px !important; min-height: 38px !important; padding-inline: 24px !important; font-size: 12px !important; }
+  .hurr-app .hurr-home-hero__promises { position: relative !important; inset: auto !important; width: calc(100% + 12px) !important; min-height: 66px !important; margin: 18px -6px 0 !important; border-radius: 13px !important; }
+  .hurr-app .hurr-home-hero__promises > div { gap: 5px !important; padding: 6px 2px !important; }
+  .hurr-app .hurr-home-hero__promises svg { width: 19px !important; height: 19px !important; }
+  .hurr-app .hurr-home-hero__promises span { font-size: 8px !important; line-height: 1.45 !important; }
+  .hurr-app .hurr-collections { padding: 13px 12px 18px !important; }
+  .hurr-app .hurr-ornate-heading { font-size: 21px !important; gap: 12px !important; margin-bottom: 10px !important; }
+  .hurr-app .hurr-ornate-heading::before, .hurr-app .hurr-ornate-heading::after { width: 48px !important; flex-basis: 48px !important; }
+  .hurr-app .hurr-collection-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 8px !important; }
+  .hurr-app .hurr-collection { height: 74px !important; border-radius: 11px !important; }
+  .hurr-app .hurr-collection img { object-position: center 52% !important; }
+  .hurr-app .hurr-collection > div:last-child { padding: 8px 14px !important; }
+  .hurr-app .hurr-collection > div:last-child > div > span:first-child { font-size: 15px !important; }
+  .hurr-app .hurr-collection > div:last-child > div > span:last-child { margin-top: 4px !important; padding: 2px 8px !important; font-size: 9px !important; }
+  .hurr-app .hurr-collection svg { width: 25px !important; height: 25px !important; }
+  .hurr-app section#catalog-section { padding: 8px 12px 28px !important; gap: 12px !important; }
+  .hurr-app #catalog-section > div:first-child { gap: 0 !important; }
+  .hurr-app #catalog-section > div:first-child > div:last-child { position: absolute !important; left: 0 !important; width: auto !important; }
+  .hurr-app #catalog-section > div:first-child select { max-width: 120px !important; padding: 5px 7px !important; font-size: 9px !important; }
+  .hurr-app section#catalog-section .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .55rem !important; }
+  .hurr-app article.hurr-product-card > .hurr-product-card__visual { height: 154px !important; min-height: 0 !important; aspect-ratio: auto !important; padding: 0 !important; }
+  .hurr-app article.hurr-product-card > div:last-child { min-height: 52px !important; padding: 7px !important; }
+  .hurr-app article.hurr-product-card button { min-height: 29px !important; padding: 5px 7px !important; font-size: 9px !important; }
+}
+.hurr-featured-carousel { grid-auto-columns: 86%; gap: 12px; scroll-snap-type: x mandatory; }
+.hurr-featured-carousel > article { scroll-snap-align: start; }
+.hurr-carousel-arrow { font-size: 25px; line-height: 1; }
+@media (min-width: 640px) { .hurr-featured-carousel { grid-auto-columns: 48%; gap: 14px; } }
+@media (min-width: 1024px) { .hurr-featured-carousel { grid-auto-columns: calc((100% - 28px) / 3); gap: 14px; } }
+
+/* Phone header and hero: override legacy mobile rules that re-show desktop controls. */
+@media (max-width: 767px) {
+  .hurr-app .hurr-site-header .hurr-header-main {
+    display: grid !important;
+    grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+    grid-template-rows: 60px !important;
+    min-height: 60px !important;
+    height: 60px !important;
+    padding: 0 12px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    justify-content: initial !important;
+  }
+
+  .hurr-app .hurr-site-header .hurr-header-actions { display: none !important; }
+  .hurr-app .hurr-site-header .hurr-desktop-nav { display: none !important; }
+  .hurr-app .hurr-site-header .hurr-mobile-menu-button,
+  .hurr-app .hurr-site-header .hurr-mobile-cart { display: flex !important; }
+  .hurr-app .hurr-site-header .hurr-header-brand {
+    position: static !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+  .hurr-app .hurr-site-header .hurr-header-brand svg { width: 96px !important; height: 46px !important; }
+
+  .hurr-app .hurr-home-hero {
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+  .hurr-app .hurr-home-hero__art {
+    inset: 0 0 auto !important;
+    height: clamp(180px, 55vw, 225px) !important;
+  }
+  .hurr-app .hurr-home-hero__art img {
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 50% !important;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 74%, transparent 100%) !important;
+    mask-image: linear-gradient(180deg, #000 0%, #000 74%, transparent 100%) !important;
+  }
+  .hurr-app .hurr-home-hero__inner {
+    display: block !important;
+    min-height: 0 !important;
+    padding: clamp(184px, 55vw, 229px) 16px 0 !important;
+  }
+  .hurr-app .hurr-home-hero__copy { width: 100% !important; margin: 0 auto !important; text-align: center !important; }
+  .hurr-app section.hurr-home-hero:first-of-type:not(#catalog-section) .hurr-home-hero__copy h1 { font-size: clamp(1.75rem, 7vw, 2.1rem) !important; line-height: 1.35 !important; }
+  .hurr-app section.hurr-home-hero:first-of-type:not(#catalog-section) .hurr-home-hero__copy > p { font-size: .9rem !important; line-height: 1.7 !important; }
+  .hurr-app .hurr-home-hero__copy > button { width: auto !important; min-height: 40px !important; }
+  .hurr-app .hurr-home-hero__promises {
+    position: relative !important;
+    inset: auto !important;
+    width: calc(100% + 12px) !important;
+    min-height: 68px !important;
+    margin: 16px -6px 0 !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .hurr-app .hurr-home-hero__promises > div { min-width: 0 !important; gap: 4px !important; padding: 5px 2px !important; }
+  .hurr-app .hurr-home-hero__promises svg { width: 18px !important; height: 18px !important; }
+  .hurr-app .hurr-home-hero__promises span { font-size: 8px !important; line-height: 1.4 !important; }
+
+  .hurr-app a[aria-label="تواصل مع حُرّ عبر واتساب"] {
+    left: 12px !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    padding: 5px !important;
+  }
+  .hurr-app a[aria-label="تواصل مع حُرّ عبر واتساب"] > div:first-child { width: 36px !important; height: 36px !important; }
 }
