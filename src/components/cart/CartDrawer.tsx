@@ -28,13 +28,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
     subtotal,
     discountAmount,
     shippingFee,
-    totalAmount,
     isFreeShipping,
     freeShippingProgress,
     activeCoupon,
     applyCoupon,
     removeCoupon,
-    selectedGovernorate,
     showToast,
   } = useStore();
 
@@ -255,20 +253,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
               )}
 
               <div className="flex justify-between">
-                <span>الشحن إلى ({selectedGovernorate.nameAr}):</span>
+                <span>+ مصاريف الشحن:</span>
                 <span className="font-sans tabular-nums text-[#EDE8DC]">
-                  {isFreeShipping ? (
-                    <span className="text-[#C5A059] font-bold">مجاني</span>
-                  ) : (
-                    `${shippingFee} ج.م`
-                  )}
+                  <span className="text-[#C5A059]">تُحسب حسب المحافظة</span>
                 </span>
               </div>
 
               <div className="flex justify-between text-sm font-bold text-[#FBF9F5] border-t border-[#222] pt-2 mt-2">
-                <span>الإجمالي النهائي:</span>
+                <span>الإجمالي قبل الشحن:</span>
                 <span className="gold-gradient-text font-sans tabular-nums text-base">
-                  {totalAmount.toLocaleString('ar-EG')} ج.م
+                  {Math.max(0, subtotal - discountAmount).toLocaleString('ar-EG')} ج.م
                 </span>
               </div>
             </div>
