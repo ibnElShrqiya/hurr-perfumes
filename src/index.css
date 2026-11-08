@@ -1112,3 +1112,247 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     grid-auto-columns: calc((100% - 28px) / 3) !important;
   }
 }
+
+
+/* HURR mobile finish: balanced product composition and complete viewport fit. */
+@media (max-width: 767px) {
+  .hurr-app,
+  .hurr-app main,
+  .hurr-app #catalog-section,
+  .hurr-app .hurr-carousel-frame {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .hurr-app #catalog-section {
+    padding-inline: 12px !important;
+    overflow: hidden;
+  }
+
+  .hurr-app #catalog-section > div:first-child {
+    min-height: 44px;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .hurr-app #catalog-section > div:first-child h2 {
+    margin-inline: auto !important;
+    max-width: calc(100% - 112px);
+    font-size: clamp(21px, 6vw, 25px) !important;
+    white-space: nowrap;
+  }
+
+  .hurr-app #catalog-section > div:first-child > div:last-child {
+    left: 0 !important;
+    max-width: 112px;
+  }
+
+  .hurr-app #catalog-section > div:first-child select {
+    max-width: 112px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hurr-app #catalog-section .hurr-featured-carousel {
+    display: grid !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: minmax(0, 100%) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 12px !important;
+    padding: 0 0 5px !important;
+    overflow-x: auto !important;
+    scroll-padding-inline: 0;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-inline: contain;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    scroll-snap-align: start;
+    border-radius: 14px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    height: clamp(205px, 62vw, 245px) !important;
+    min-height: 205px !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    background: #160e08 !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > img:first-child {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: center 54% !important;
+    opacity: .88 !important;
+    z-index: 0 !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > div:nth-child(2) {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+    background: linear-gradient(90deg, rgba(10, 7, 4, .82) 0%, rgba(10, 7, 4, .42) 52%, rgba(10, 7, 4, .16) 100%) !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    position: absolute !important;
+    top: 50% !important;
+    left: 12px !important;
+    right: auto !important;
+    width: 43% !important;
+    max-width: 43% !important;
+    transform: translateY(-50%) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-align: right !important;
+    z-index: 4 !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:first-child {
+    font-size: clamp(17px, 5vw, 21px) !important;
+    line-height: 1.45 !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:nth-child(2) {
+    margin-top: 5px !important;
+    font-size: 12px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details > span:nth-child(3) {
+    margin-top: 8px !important;
+    flex-wrap: wrap;
+    font-size: 11px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+    position: absolute !important;
+    top: 8px !important;
+    right: 5px !important;
+    bottom: 8px !important;
+    width: 52% !important;
+    max-width: 52% !important;
+    height: calc(100% - 16px) !important;
+    z-index: 3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle > div {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle img,
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card > div:last-child {
+    display: flex !important;
+    min-height: 64px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    padding: 9px 10px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card > div:last-child > div {
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card > div:last-child button {
+    min-height: 40px !important;
+    flex: 0 0 auto;
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+
+  .hurr-app .hurr-collections {
+    padding-inline: 12px !important;
+  }
+
+  .hurr-app .hurr-collection-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .hurr-app footer {
+    position: relative;
+    padding-top: 34px !important;
+    padding-bottom: calc(30px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .hurr-app footer .grid {
+    min-width: 0;
+  }
+
+  .hurr-app footer a,
+  .hurr-app footer button {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .hurr-app a[aria-label="تواصل مع حُرّ عبر واتساب"] {
+    z-index: 35 !important;
+    left: max(12px, env(safe-area-inset-left)) !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .hurr-app #catalog-section {
+    padding-inline: 10px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual {
+    height: 205px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    left: 9px !important;
+    width: 42% !important;
+    max-width: 42% !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card > div:last-child {
+    gap: 5px !important;
+    padding-inline: 8px !important;
+  }
+
+  .hurr-app #catalog-section .hurr-product-card > div:last-child button {
+    padding-inline: 9px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hurr-app #catalog-section .hurr-featured-carousel {
+    grid-auto-columns: calc((100% - 28px) / 3) !important;
+  }
+}
