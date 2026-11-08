@@ -32,11 +32,13 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   } = useStore();
 
   // Derive the payable amount from the visible line items so a stale context value cannot show zero.
-  const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + Number(shippingFee || 0));
+  const checkoutShippingFee = hasSelectedGovernorate ? Number(shippingFee || 0) : 0;
+  const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + checkoutShippingFee);
 
   // Form Fields
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const [hasSelectedGovernorate, setHasSelectedGovernorate] = useState(false);
   const [city, setCity] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   const [notes, setNotes] = useState('');
@@ -62,6 +64,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
     if (!isEgyptianMobile(customerPhone)) {
       errs.customerPhone = 'يرجى إدخال رقم هاتف مصري صحيح؛ يقبل الموقع الأرقام العربية أو الإنجليزية وصيغة +20.';
+    }
+
+    if (!hasSelectedGovernorate) {
+      errs.governorate = 'يرجى اختيار المحافظة لحساب مصاريف الشحن';
     }
 
     if (!city.trim()) {
@@ -122,7 +128,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         paymentStatus: 'pending',
         shippingStatus: 'new',
         subtotal,
-        shippingFee,
+        shippingFee: checkoutShippingFee,
         discountAmount,
         couponCode: activeCoupon?.code,
         totalAmount: checkoutTotalAmount,
@@ -248,16 +254,22 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                       المحافظة المصرية <span className="text-amber-500">*</span>
                     </label>
                     <select
-                      value={selectedGovernorate.id}
-                      onChange={(e) => setSelectedGovernorateById(e.target.value)}
+                      required
+                      value={hasSelectedGovernorate ? selectedGovernorate.id : ''}
+                      onChange={(e) => {
+                        setSelectedGovernorateById(e.target.value);
+                        setHasSelectedGovernorate(Boolean(e.target.value));
+                      }}
                       className="w-full p-2.5 bg-[#181818] border border-[#333] focus:border-[#C5A059] rounded-lg text-sm text-[#EDE8DC] focus:outline-none"
                     >
+                      <option value="">اختر المحافظة</option>
                       {EGYPTIAN_GOVERNORATES.map((gov) => (
                         <option key={gov.id} value={gov.id}>
                           {gov.nameAr}
                         </option>
                       ))}
                     </select>
+                    {errors.governorate && <p className="text-[11px] text-red-400 mt-1">{errors.governorate}</p>}
                   </div>
 
                   {/* City / Area */}
@@ -459,10 +471,12 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     + مصاريف الشحن:
                   </span>
                   <span className="font-sans text-[#EDE8DC] tabular-nums">
-                    {shippingFee === 0 ? (
+                    {!hasSelectedGovernorate ? (
+                      <span className="text-[#A69F90]">اختر المحافظة</span>
+                    ) : checkoutShippingFee === 0 ? (
                       <span className="text-[#C5A059] font-bold">مجاني</span>
                     ) : (
-                      `${shippingFee} ج.م`
+                      `${checkoutShippingFee} ج.م`
                     )}
                   </span>
                 </div>
