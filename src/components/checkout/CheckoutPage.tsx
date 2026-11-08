@@ -5,7 +5,6 @@ import { PaymentMethod, Order } from '../../types';
 import { isEgyptianMobile } from '../../lib/phone';
 import {
   ShieldCheck,
-  Truck,
   Smartphone,
   ArrowRight,
   CheckCircle,
