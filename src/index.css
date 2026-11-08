@@ -968,11 +968,6 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     margin-top: 8px !important;
     font-size: 12px !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
-    transform: scale(1.5) !important;
-    object-position: left center !important;
-    transform-origin: left center !important;
-  }
   .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
     right: 7px !important;
     bottom: 0 !important;
