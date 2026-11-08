@@ -913,3 +913,23 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   }
   .hurr-app a[aria-label="تواصل مع حُرّ عبر واتساب"] > div:first-child { width: 36px !important; height: 36px !important; }
 }
+
+/* Keep product carousel tracks separate from the catalog's two-column grid. */
+.hurr-app section#catalog-section .hurr-featured-carousel {
+  display: grid !important;
+  grid-template-columns: none !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: 86% !important;
+  align-items: stretch !important;
+}
+.hurr-app section#catalog-section .hurr-featured-carousel > .hurr-product-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+@media (min-width: 640px) {
+  .hurr-app section#catalog-section .hurr-featured-carousel { grid-auto-columns: 48% !important; }
+}
+@media (min-width: 1024px) {
+  .hurr-app section#catalog-section .hurr-featured-carousel { grid-auto-columns: calc((100% - 28px) / 3) !important; }
+}
