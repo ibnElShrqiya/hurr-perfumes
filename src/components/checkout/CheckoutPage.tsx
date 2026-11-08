@@ -31,10 +31,6 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
     showToast,
   } = useStore();
 
-  // Derive the payable amount from the visible line items so a stale context value cannot show zero.
-  const checkoutShippingFee = hasSelectedGovernorate ? Number(shippingFee || 0) : 0;
-  const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + checkoutShippingFee);
-
   // Form Fields
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -42,6 +38,10 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const [city, setCity] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Shipping is calculated only after the customer chooses a governorate.
+  const checkoutShippingFee = hasSelectedGovernorate ? Number(shippingFee || 0) : 0;
+  const checkoutTotalAmount = Math.max(0, Number(subtotal || 0) - Number(discountAmount || 0) + checkoutShippingFee);
 
   // Payment Selection
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('instapay');
