@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   Tag,
   Truck,
-  CheckCircle,
 } from 'lucide-react';
 import { FREE_SHIPPING_THRESHOLD } from '../../data/governorates';
 
