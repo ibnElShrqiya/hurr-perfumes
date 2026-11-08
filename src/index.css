@@ -1447,3 +1447,61 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-app #catalog-section .hurr-product-card__info { padding: 10px 8px; }
   .hurr-app #catalog-section .hurr-product-card__info button:not([aria-label]) { font-size: 15px !important; }
 }
+
+
+/* Shared product-card structure for desktop and mobile. */
+.hurr-product-card__body {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  min-height: 220px;
+  direction: ltr;
+  background: linear-gradient(135deg, #171008, #0e0a06);
+}
+.hurr-product-card__image {
+  position: relative;
+  min-width: 0;
+  min-height: 220px;
+  padding: 10px;
+  background: radial-gradient(ellipse at center, rgba(196, 151, 65, .2), transparent 68%), #f4f0e7;
+  border-inline-end: 1px solid rgba(197, 160, 89, .3);
+}
+.hurr-product-card__image > div {
+  position: relative;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 200px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hurr-product-card__image img,
+.hurr-product-card__image svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+.hurr-product-card__info {
+  direction: rtl;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 16px 14px;
+  text-align: right;
+}
+.hurr-product-card__discount {
+  position: absolute;
+  top: 9px;
+  left: 8px;
+  z-index: 3;
+  border: 1px solid #e6c36f;
+  border-radius: 999px;
+  background: #2a1b08;
+  padding: 4px 8px;
+  color: #f5d88d;
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
