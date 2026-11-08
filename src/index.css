@@ -968,11 +968,6 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
     margin-top: 8px !important;
     font-size: 12px !important;
   }
-  .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
-    transform: scale(1.5) !important;
-    object-position: left center !important;
-    transform-origin: left center !important;
-  }
   .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
     right: 7px !important;
     bottom: 0 !important;
@@ -985,4 +980,135 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
 }
 @media (min-width: 1024px) {
   .hurr-app section#catalog-section .hurr-featured-carousel { grid-auto-columns: calc((100% - 28px) / 3) !important; }
+}
+
+
+/* Mobile storefront composition: keep the royal desktop artwork while using the
+   full card width on phones and avoiding the cropped half-card treatment. */
+@media (max-width: 767px) {
+  .hurr-app { overflow-x: clip; }
+  .hurr-app .hurr-header-main {
+    grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  }
+  .hurr-app .hurr-home-hero__promises {
+    width: 100% !important;
+    margin-inline: 0 !important;
+  }
+  .hurr-app .hurr-collection-grid { gap: 10px !important; }
+  .hurr-app .hurr-collection {
+    min-height: 86px !important;
+    height: auto !important;
+  }
+  .hurr-app .hurr-collection > div:last-child {
+    min-height: 86px;
+    padding: 10px 14px !important;
+  }
+
+  .hurr-app section#catalog-section .hurr-featured-carousel {
+    width: 100%;
+    grid-auto-columns: 100% !important;
+    gap: 12px !important;
+    padding-bottom: 2px;
+  }
+  .hurr-app section#catalog-section .hurr-product-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual {
+    height: clamp(190px, 58vw, 240px) !important;
+    min-height: 190px !important;
+    aspect-ratio: auto !important;
+    background: radial-gradient(ellipse at 76% 54%, rgba(155, 102, 33, .16), transparent 54%), #120d08;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    transform-origin: center !important;
+    object-fit: cover !important;
+    object-position: center 52% !important;
+    opacity: .66 !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > div:nth-child(2) {
+    background: linear-gradient(90deg, rgba(12, 8, 4, .3), rgba(12, 8, 4, .76) 58%, rgba(12, 8, 4, .25)) !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    top: 18px !important;
+    left: 14px !important;
+    right: 42% !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 4px 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    text-align: right !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+    right: 8px !important;
+    bottom: 8px !important;
+    width: 38% !important;
+    height: calc(100% - 16px) !important;
+    max-width: 150px;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card > div:last-child {
+    min-height: 62px !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card > div:last-child button {
+    min-height: 40px !important;
+    padding: 8px 13px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+  .hurr-app footer {
+    padding-top: 2.5rem !important;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom)) !important;
+  }
+  .hurr-app footer > div { padding-inline: 1rem !important; }
+  .hurr-app footer .grid { gap: 1.5rem !important; }
+  .hurr-app footer [class*="max-w-sm"] { max-width: 100% !important; }
+  .hurr-app a[aria-label="تواصل مع حُرّ عبر واتساب"] {
+    left: max(12px, env(safe-area-inset-left)) !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    z-index: 30 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .hurr-app section#catalog-section .hurr-product-card__visual {
+    height: 190px !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    left: 10px !important;
+    right: 40% !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card > div:last-child {
+    gap: 5px !important;
+    padding-inline: 8px !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card > div:last-child button {
+    padding-inline: 9px !important;
+    font-size: 10px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .hurr-app section#catalog-section .hurr-featured-carousel {
+    grid-auto-columns: calc((100% - 14px) / 2) !important;
+  }
+}
+@media (min-width: 1024px) {
+  .hurr-app section#catalog-section .hurr-featured-carousel {
+    grid-auto-columns: calc((100% - 28px) / 3) !important;
+  }
 }
