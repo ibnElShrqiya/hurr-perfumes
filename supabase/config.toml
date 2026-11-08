@@ -13,3 +13,6 @@ verify_jwt = true
 
 [functions.track-order]
 verify_jwt = true
+
+[functions.validate-coupon]
+verify_jwt = true

@@ -40,20 +40,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
 
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   if (!isCartOpen) return null;
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError('');
     if (!couponInput.trim()) return;
 
-    const res = applyCoupon(couponInput);
-    if (res.success) {
-      showToast(res.message, 'success');
-      setCouponInput('');
-    } else {
-      setCouponError(res.message);
+    setIsApplyingCoupon(true);
+    try {
+      const res = await applyCoupon(couponInput);
+      if (res.success) {
+        showToast(res.message, 'success');
+        setCouponInput('');
+      } else {
+        setCouponError(res.message);
+      }
+    } finally {
+      setIsApplyingCoupon(false);
     }
   };
 
@@ -219,9 +225,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onProceedToCheckout }) =
                     />
                     <button
                       type="submit"
+                      disabled={isApplyingCoupon || !couponInput.trim()}
                       className="px-3 py-2 bg-[#222] hover:bg-[#C5A059] text-[#EDE8DC] hover:text-[#0A0A0A] border border-[#444] text-xs font-semibold rounded-lg transition-colors"
                     >
-                      تطبيق
+                      {isApplyingCoupon ? 'جارٍ التحقق…' : 'تطبيق'}
                     </button>
                   </div>
                   {couponError && <p className="text-[10px] text-red-400">{couponError}</p>}

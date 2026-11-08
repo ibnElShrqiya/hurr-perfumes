@@ -66,6 +66,12 @@ grant select,insert,update,delete on public.products,public.coupons,public.order
 grant select on public.profiles to authenticated;
 -- Admin UI reads the signed-in user's role from this table. RLS alone is not enough:
 -- the authenticated role also needs table-level SELECT permission.
+create table if not exists public.admin_roles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  role text not null default 'admin',
+  created_at timestamptz not null default now()
+);
+alter table public.admin_roles enable row level security;
 grant select on public.admin_roles to authenticated;
 
 create policy products_public_active on public.products for select to anon,authenticated using (status='active');

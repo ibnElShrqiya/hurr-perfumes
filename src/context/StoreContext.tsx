@@ -17,7 +17,7 @@ interface StoreContextType {
   updateCartQuantity: (productId: string, quantity: number, selectedSize?: string) => void; clearCart: () => void; cartCount: number;
   wishlist: string[]; toggleWishlist: (productId: string) => void; isInWishlist: (productId: string) => boolean;
   selectedGovernorate: GovernorateShipping; shippingRates: GovernorateShipping[]; setSelectedGovernorateById: (id: string) => void;
-  activeCoupon: Coupon | null; applyCoupon: (code: string) => { success: boolean; message: string }; removeCoupon: () => void;
+  activeCoupon: Coupon | null; applyCoupon: (code: string) => Promise<{ success: boolean; message: string }>; removeCoupon: () => void;
   subtotal: number; discountAmount: number; shippingFee: number; totalAmount: number; isFreeShipping: boolean; freeShippingProgress: number;
   orders: Order[]; placeOrder: (orderData: NewOrder) => Promise<Order>;
   updateOrderStatus: (orderId: string, shippingStatus: ShippingStatus, paymentStatus?: PaymentStatus) => Promise<void>;
@@ -79,6 +79,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [shippingRates, setShippingRates] = useState<GovernorateShipping[]>(EGYPTIAN_GOVERNORATES);
   const [selectedGovernorate, setSelectedGovernorate] = useState<GovernorateShipping>(EGYPTIAN_GOVERNORATES[0]);
   const [activeCoupon, setActiveCoupon] = useState<Coupon | null>(null);
+  const [activeCouponDiscount, setActiveCouponDiscount] = useState(0);
   const [activeCategory, setActiveCategory] = useState<ProductCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFamily, setSelectedFamily] = useState('all');
@@ -114,23 +115,21 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!supabase) return;
     let alive = true;
     const loadPublicData = async () => {
-      const [productResult, couponResult, shippingResult] = await Promise.all([
+      const [productResult, shippingResult] = await Promise.all([
         supabase!.from('products').select('*').order('created_at', { ascending: false }),
-        supabase!.from('coupons').select('*').order('created_at', { ascending: false }),
         supabase!.from('shipping_rates').select('*'),
       ]);
       if (!alive) return;
       if (productResult.data) setProducts(productResult.data.map(fromDbProduct));
       else if (productResult.error) console.warn('[HUR store] Products load failed:', productResult.error.message);
-      if (couponResult.data) setCoupons(couponResult.data.map(fromDbCoupon));
-      else if (couponResult.error) console.warn('[HUR store] Coupons load failed:', couponResult.error.message);
       if (shippingResult.data) applyShippingRows(shippingResult.data);
     };
     const syncSession = async (session: any) => {
-      if (!session) { if (alive) setIsAdminLoggedIn(false); return; }
+      if (!session) { if (alive) { setIsAdminLoggedIn(false); setCoupons([]); } return; }
       const role = await getAdminRole(session.user.id);
       if (!alive) return;
       setIsAdminLoggedIn(role === 'admin');
+      if (role !== 'admin') { setCoupons([]); return; }
       if (role === 'admin') {
         const [p, c, o, s] = await Promise.all([
           supabase!.from('products').select('*').order('created_at', { ascending: false }),
@@ -192,19 +191,79 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setSelectedGovernorateById = (id: string) => { const found = shippingRates.find((gov) => gov.id === id); if (found) setSelectedGovernorate(found); };
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const discountAmount = activeCoupon && subtotal >= activeCoupon.minOrderAmount
-    ? activeCoupon.discountType === 'percentage' ? Math.round(subtotal * activeCoupon.value / 100) : Math.min(subtotal, activeCoupon.value) : 0;
+  const discountAmount = activeCoupon ? Math.min(subtotal, Math.max(0, activeCouponDiscount)) : 0;
   const isFreeShipping = subtotal - discountAmount >= FREE_SHIPPING_THRESHOLD;
   const shippingFee = cart.length === 0 ? 0 : isFreeShipping ? 0 : selectedGovernorate.fee;
   const freeShippingProgress = Math.min(100, Math.round(subtotal / FREE_SHIPPING_THRESHOLD * 100));
   const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
-  const applyCoupon = (code: string): { success: boolean; message: string } => {
-    const clean = code.trim().toUpperCase(); const found = coupons.find((c) => c.code.toUpperCase() === clean && c.isActive && (!c.expiresAt || new Date(c.expiresAt).getTime() > Date.now()) && (c.maxUses == null || c.usageCount < c.maxUses));
-    if (!found) return { success: false, message: 'كود الخصم غير صحيح أو منتهي الصلاحية أو استنفد عدد استخداماته' };
-    if (subtotal < found.minOrderAmount) return { success: false, message: `هذا الكوبون يتطلب حداً أدنى للطلب بقيمة ${found.minOrderAmount} ج.م` };
-    setActiveCoupon(found); return { success: true, message: `تم تفعيل كوبون الخصم: ${found.description}` };
+  const validateCouponOnServer = async (code: string) => {
+    if (!supabase) throw new Error('خدمة التحقق من الكوبونات غير متاحة حالياً.');
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) console.warn('[HUR coupon] Session lookup failed:', sessionError.message);
+    if (!sessionData.session) {
+      const { data: anonData, error: authError } = await supabase.auth.signInAnonymously();
+      if (authError || !anonData.session) throw new Error('تعذر إنشاء جلسة آمنة للتحقق من الكوبون. حاول مرة أخرى.');
+    }
+    const { data, error } = await supabase.functions.invoke('validate-coupon', {
+      body: {
+        code: code.trim().toUpperCase(),
+        items: cart.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+      },
+    });
+    if (error) {
+      const context = (error as any).context;
+      let serverMessage = data?.error;
+      if (!serverMessage && context && typeof context.clone === 'function') {
+        try { serverMessage = (await context.clone().json())?.error; } catch { /* non-JSON response */ }
+      }
+      throw new Error(serverMessage || 'تعذر التحقق من كود الخصم. حاول مرة أخرى.');
+    }
+    if (!data?.valid) throw new Error(data?.error || 'كود الخصم غير صالح أو غير مستوفٍ للشروط.');
+    return data;
   };
-  const removeCoupon = () => { setActiveCoupon(null); showToast('تم إلغاء كود الخصم', 'info'); };
+
+  const applyCoupon = async (code: string): Promise<{ success: boolean; message: string }> => {
+    if (!code.trim()) return { success: false, message: 'اكتب كود الخصم أولاً.' };
+    if (!cart.length) return { success: false, message: 'أضف منتجات إلى السلة أولاً.' };
+    try {
+      const result = await validateCouponOnServer(code);
+      const applied: Coupon = {
+        code: String(result.couponCode),
+        discountType: 'fixed',
+        value: Number(result.discountAmount || 0),
+        minOrderAmount: 0,
+        isActive: true,
+        usageCount: 0,
+        description: String(result.description || 'تم تطبيق الخصم'),
+      };
+      setActiveCoupon(applied);
+      setActiveCouponDiscount(Number(result.discountAmount || 0));
+      return { success: true, message: `تم التحقق من الكوبون وتطبيق خصم ${Number(result.discountAmount || 0).toLocaleString('ar-EG')} ج.م` };
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : 'كود الخصم غير صالح.' };
+    }
+  };
+  const removeCoupon = () => { setActiveCoupon(null); setActiveCouponDiscount(0); showToast('تم إلغاء كود الخصم', 'info'); };
+
+  // Revalidate the preview whenever cart contents change; the order RPC still
+  // performs the final authoritative check and increments usage atomically.
+  useEffect(() => {
+    if (!activeCoupon || !cart.length || !supabase) {
+      if (!activeCoupon) setActiveCouponDiscount(0);
+      return;
+    }
+    let cancelled = false;
+    void validateCouponOnServer(activeCoupon.code).then((result) => {
+      if (!cancelled) setActiveCouponDiscount(Number(result.discountAmount || 0));
+    }).catch((error) => {
+      if (!cancelled) {
+        setActiveCoupon(null);
+        setActiveCouponDiscount(0);
+        showToast(error instanceof Error ? error.message : 'لم يعد الكوبون صالحاً لهذه السلة.', 'warning');
+      }
+    });
+    return () => { cancelled = true; };
+  }, [cart, activeCoupon?.code]);
 
   const placeOrder = async (orderData: NewOrder): Promise<Order> => {
     if (!supabase) throw new Error('المتجر غير متصل بقاعدة الطلبات الآمنة. يرجى المحاولة لاحقاً.');
@@ -303,7 +362,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (role !== 'admin') { await supabase.auth.signOut(); showToast('تم تسجيل الدخول لكن الحساب غير مخوّل للإدارة. تحقق من جدول admin_roles وصلاحيات القراءة.', 'error'); return false; }
     setIsAdminLoggedIn(true); showToast('تم تسجيل الدخول إلى لوحة حُرّ', 'success'); return true;
   };
-  const logoutAdmin = async () => { try { const deferred = (window as any).OneSignalDeferred; if (deferred) deferred.push(async (OneSignal: any) => { await OneSignal.logout(); }); } catch (error) { console.warn('[HUR push] Could not clear admin push identity', error); } if (supabase) await supabase.auth.signOut(); setIsAdminLoggedIn(false); showToast('تم تسجيل الخروج من لوحة التحكم', 'info'); };
+  const logoutAdmin = async () => { if (supabase) await supabase.auth.signOut(); setIsAdminLoggedIn(false); showToast('تم تسجيل الخروج من لوحة التحكم', 'info'); };
 
   const addProduct = async (productData: Omit<Product, 'id' | 'createdAt'>): Promise<boolean> => {
     if (!supabase || !isAdminLoggedIn) { showToast('يلزم اتصال قاعدة البيانات وتسجيل دخول المدير لحفظ المنتج.', 'error'); return false; }

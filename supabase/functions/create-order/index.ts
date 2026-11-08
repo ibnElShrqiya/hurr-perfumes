@@ -35,7 +35,7 @@ async function sendTelegramNotification(
   // Read trusted order data from the database after saving.
   const { data: order, error: orderError } = await db
     .from('orders')
-    .select('id, order_number, customer_name, phone, governorate, city, address, total, payment_method')
+    .select('id, customer_name, customer_phone, governorate, city, detailed_address, total_amount, payment_method')
     .eq('id', orderId)
     .single();
 
@@ -65,23 +65,25 @@ async function sendTelegramNotification(
 
   const paymentMethods: Record<string, string> = {
     cod: 'الدفع عند الاستلام',
-    online: 'الدفع الإلكتروني',
+    card: 'الدفع بالبطاقة',
+    vodafone_cash: 'فودافون كاش',
+    instapay: 'إنستاباي',
   };
 
   const message = [
     '🛍️ طلب جديد | متجر حُرّ',
     '',
-    `📦 رقم الطلب: #${telegramText(order.order_number ?? order.id)}`,
+    `📦 رقم الطلب: ${telegramText(order.id)}`,
     `👤 العميل: ${telegramText(order.customer_name)}`,
-    `📱 الهاتف: ${telegramText(order.phone)}`,
+    `📱 الهاتف: ${telegramText(order.customer_phone)}`,
     `📍 المحافظة: ${telegramText(order.governorate)}`,
     `🏙️ المدينة: ${telegramText(order.city)}`,
-    `🏠 العنوان: ${telegramText(order.address)}`,
+    `🏠 العنوان: ${telegramText(order.detailed_address)}`,
     '',
     '🛒 المنتجات:',
     products,
     '',
-    `💰 الإجمالي: ${telegramText(order.total)} جنيه مصري`,
+    `💰 الإجمالي: ${telegramText(order.total_amount)} جنيه مصري`,
     `💳 الدفع: ${paymentMethods[order.payment_method] ?? telegramText(order.payment_method)}`,
     '',
     'افتح لوحة إدارة حُرّ لمراجعة الطلب.',

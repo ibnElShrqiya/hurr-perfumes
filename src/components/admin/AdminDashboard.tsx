@@ -21,7 +21,6 @@ import {
   Lock,
 } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
-import { AdminPushNotifications } from './AdminPushNotifications';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -405,7 +404,6 @@ export const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Tab 1: Analytics Overview */}
-      <AdminPushNotifications />
 
       {activeTab === 'analytics' && (
         <div className="space-y-6">
