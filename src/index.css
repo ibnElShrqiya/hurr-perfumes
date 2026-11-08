@@ -1524,3 +1524,209 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-app #catalog-section .hurr-product-card__image { min-height: 190px !important; }
   .hurr-app #catalog-section .hurr-product-card__info { padding: 10px 8px !important; }
 }
+
+
+/* Stable product card v2: the bottle has its own frame and never shares
+   a positioning context with product copy. These selectors intentionally
+   avoid the legacy card classes and BottleVisual internals. */
+.hurr-product-card-v2 .hurr-card-v2-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  min-height: 210px;
+  direction: ltr;
+  background: linear-gradient(135deg, #171008, #0e0a06);
+}
+.hurr-product-card-v2 .hurr-card-v2-image {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 210px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 12px 8px;
+  border: 0;
+  border-inline-end: 1px solid rgba(197, 160, 89, .28);
+  background: radial-gradient(ellipse at center, rgba(197, 160, 89, .2), transparent 68%), linear-gradient(145deg, #21170d, #0c0906);
+  cursor: pointer;
+}
+.hurr-product-card-v2 .hurr-card-v2-image-glow {
+  position: absolute;
+  inset: 12% 8%;
+  border-radius: 50%;
+  background: rgba(197, 160, 89, .12);
+  filter: blur(24px);
+  pointer-events: none;
+}
+.hurr-product-card-v2 .hurr-card-v2-bottle-frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 132px;
+  height: 176px;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+}
+.hurr-product-card-v2 .hurr-card-v2-bottle-frame > div {
+  display: flex;
+  width: 120px !important;
+  height: 160px !important;
+  max-width: 100% !important;
+  align-items: center;
+  justify-content: center;
+}
+.hurr-product-card-v2 .hurr-card-v2-bottle-frame img,
+.hurr-product-card-v2 .hurr-card-v2-bottle-frame svg {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+.hurr-product-card-v2 .hurr-card-v2-discount {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  left: 7px;
+  max-width: calc(100% - 14px);
+  padding: 4px 7px;
+  border: 1px solid #e6c36f;
+  border-radius: 999px;
+  background: #2a1b08;
+  color: #f5d88d;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.hurr-product-card-v2 .hurr-card-v2-info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14px 12px;
+  direction: rtl;
+  text-align: right;
+}
+.hurr-product-card-v2 .hurr-card-v2-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 7px;
+}
+.hurr-product-card-v2 .hurr-card-v2-category {
+  display: block;
+  margin-bottom: 5px;
+  color: #d9b96f;
+  font-size: 10px;
+}
+.hurr-product-card-v2 .hurr-card-v2-name {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff4e4;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: right;
+  cursor: pointer;
+}
+.hurr-product-card-v2 .hurr-card-v2-wishlist {
+  display: flex;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #8d6a36;
+  border-radius: 50%;
+  background: #1b130b;
+  color: #f0c555;
+}
+.hurr-product-card-v2 .hurr-card-v2-rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  margin-top: 13px;
+  color: #f1c252;
+}
+.hurr-product-card-v2 .hurr-card-v2-rating span {
+  margin-inline-start: 4px;
+  color: #c8b99f;
+  font-size: 10px;
+}
+.hurr-product-card-v2 .hurr-card-v2-stock,
+.hurr-product-card-v2 .hurr-card-v2-out {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 11px;
+  color: #ffe39c;
+  font-size: 10px;
+}
+.hurr-product-card-v2 .hurr-card-v2-out {
+  color: #fecaca;
+}
+.hurr-product-card-v2 .hurr-card-v2-footer {
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 1px solid rgba(155, 113, 50, .35);
+  background: linear-gradient(180deg, #18110a, #100b07);
+}
+.hurr-product-card-v2 .hurr-card-v2-price {
+  min-width: 0;
+  color: #fff5df;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.hurr-product-card-v2 .hurr-card-v2-price small {
+  font-size: 10px;
+  font-weight: 400;
+}
+.hurr-product-card-v2 .hurr-card-v2-price del {
+  display: block;
+  color: #9b8a70;
+  font-size: 10px;
+  font-weight: 400;
+}
+.hurr-product-card-v2 .hurr-card-v2-add {
+  display: inline-flex;
+  min-height: 39px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #f2cc6f;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe08a, #d7982b);
+  color: #211505;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.hurr-product-card-v2 .hurr-card-v2-add.is-disabled {
+  border-color: #554a37;
+  background: #29251e;
+  color: #807969;
+  cursor: not-allowed;
+}
+@media (max-width: 380px) {
+  .hurr-product-card-v2 .hurr-card-v2-layout { min-height: 190px; }
+  .hurr-product-card-v2 .hurr-card-v2-image { min-height: 190px; padding: 8px 5px; }
+  .hurr-product-card-v2 .hurr-card-v2-bottle-frame { width: 116px; height: 166px; }
+  .hurr-product-card-v2 .hurr-card-v2-bottle-frame > div { width: 108px !important; height: 150px !important; }
+  .hurr-product-card-v2 .hurr-card-v2-info { padding: 10px 8px; }
+  .hurr-product-card-v2 .hurr-card-v2-name { font-size: 15px; }
+  .hurr-product-card-v2 .hurr-card-v2-footer { padding-inline: 8px; gap: 5px; }
+  .hurr-product-card-v2 .hurr-card-v2-add { padding-inline: 9px; font-size: 10px; }
+}
