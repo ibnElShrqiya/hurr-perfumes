@@ -1730,3 +1730,134 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-product-card-v2 .hurr-card-v2-footer { padding-inline: 8px; gap: 5px; }
   .hurr-product-card-v2 .hurr-card-v2-add { padding-inline: 9px; font-size: 10px; }
 }
+
+
+/* Restore the original HURR category artwork behind each product bottle. */
+.hurr-app #catalog-section .hurr-product-card__visual {
+  isolation: isolate;
+  background: #160e08;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > img:first-child {
+  z-index: 0;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > div:nth-child(2) {
+  z-index: 1;
+  pointer-events: none;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+  z-index: 4;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle > div {
+  display: flex;
+  width: 100% !important;
+  height: 100% !important;
+  align-items: center;
+  justify-content: center;
+}
+.hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle img,
+.hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+.hurr-app #catalog-section .hurr-product-card__original-price {
+  display: inline-block;
+  margin-inline-start: 7px;
+  color: #d2b982;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 600;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: #b18a48;
+}
+@media (max-width: 767px) {
+  .hurr-app #catalog-section .hurr-product-card__visual {
+    display: block !important;
+    position: relative !important;
+    height: clamp(215px, 64vw, 250px) !important;
+    min-height: 215px !important;
+    overflow: hidden !important;
+    background: #160e08 !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > img:first-child {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 52% !important;
+    opacity: .78 !important;
+    transform: none !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > div:nth-child(2) {
+    position: absolute !important;
+    inset: 0 !important;
+    background: linear-gradient(90deg, rgba(12,8,4,.88) 0%, rgba(12,8,4,.48) 55%, rgba(12,8,4,.18) 100%) !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    position: absolute !important;
+    top: 50% !important;
+    left: 12px !important;
+    right: auto !important;
+    width: 43% !important;
+    max-width: 43% !important;
+    transform: translateY(-50%) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-align: right !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+    position: absolute !important;
+    top: 8px !important;
+    right: 5px !important;
+    bottom: 8px !important;
+    width: 50% !important;
+    max-width: 50% !important;
+    height: calc(100% - 16px) !important;
+    z-index: 5 !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle > div {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle img,
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle svg {
+    object-fit: contain !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__original-price {
+    font-size: 14px !important;
+  }
+}
+@media (max-width: 380px) {
+  .hurr-app #catalog-section .hurr-product-card__visual {
+    height: 215px !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__details {
+    left: 9px !important;
+    width: 42% !important;
+    max-width: 42% !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+    right: 2px !important;
+    width: 51% !important;
+    max-width: 51% !important;
+  }
+  .hurr-app #catalog-section .hurr-product-card__original-price {
+    font-size: 13px !important;
+  }
+}
