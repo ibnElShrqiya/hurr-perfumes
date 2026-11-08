@@ -931,10 +931,42 @@ body, #root, .hurr-app { min-width: 0; overflow-x: clip; }
   .hurr-app section#catalog-section .hurr-featured-carousel {
     grid-auto-columns: 100% !important;
   }
+  .hurr-app section#catalog-section article.hurr-product-card > .hurr-product-card__visual {
+    height: 188px !important;
+  }
   .hurr-app section#catalog-section .hurr-product-card__visual > img:first-child {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) {
+    top: 16px !important;
+    left: 12px !important;
+    right: auto !important;
+    width: 56% !important;
+    max-width: 56% !important;
+    text-align: right !important;
+    z-index: 3 !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:first-child {
+    font-size: 17px !important;
+    line-height: 1.55 !important;
+    text-shadow: 0 2px 7px rgba(0, 0, 0, .95) !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:nth-child(2) {
+    margin-top: 5px !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > button:nth-of-type(2) > span:nth-child(3) {
+    margin-top: 8px !important;
+    font-size: 11px !important;
+  }
+  .hurr-app section#catalog-section .hurr-product-card__visual > .hurr-product-card__bottle {
+    right: 7px !important;
+    bottom: 0 !important;
+    width: 38% !important;
+    height: 100% !important;
   }
 }
 @media (min-width: 640px) {
